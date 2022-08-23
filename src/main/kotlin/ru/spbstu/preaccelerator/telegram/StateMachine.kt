@@ -9,6 +9,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.flows.cancelCommand
 import ru.spbstu.preaccelerator.telegram.flows.fallback
 import ru.spbstu.preaccelerator.telegram.flows.startFlow
+import ru.spbstu.preaccelerator.telegram.flows.stateCommand
 
 fun createStateMachine(
     stateRepository: StateRepository<UserId, DialogState>
@@ -31,6 +32,7 @@ fun createStateMachine(
     anyRole {
         anyState {
             cancelCommand()
+            stateCommand()
             fallback()
         }
     }
