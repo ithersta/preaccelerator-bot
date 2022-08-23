@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8884b579-e976-45ba-bb19-a829e0c38648" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/PreacceleratorModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/PreacceleratorModule.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/StateMachine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/StateMachine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/entities/state/StartFlowState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/entities/state/StartFlowState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/CancelCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/CancelCommand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/Fallback.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/Fallback.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/StartFlow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/StartFlow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/resources/strings/MessageStrings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/resources/strings/MessageStrings.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,21 +85,21 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator" />
@@ -173,7 +181,9 @@
       <updated>1661253781278</updated>
       <workItem from="1661253782379" duration="3768000" />
       <workItem from="1661257569000" duration="8282000" />
-      <workItem from="1661267224848" duration="8292000" />
+      <workItem from="1661267224848" duration="8944000" />
+      <workItem from="1661277965789" duration="147000" />
+      <workItem from="1661282345332" duration="761000" />
     </task>
     <servers />
   </component>

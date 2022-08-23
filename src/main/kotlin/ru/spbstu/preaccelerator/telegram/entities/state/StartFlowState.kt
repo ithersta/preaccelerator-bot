@@ -5,4 +5,7 @@ import kotlinx.serialization.Serializable
 object StartFlowState {
     @Serializable
     object WaitingForContact : DialogState
+
+    @Serializable
+    object After : DialogState
 }

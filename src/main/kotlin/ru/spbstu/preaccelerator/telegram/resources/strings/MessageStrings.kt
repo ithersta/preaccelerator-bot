@@ -3,6 +3,7 @@ package ru.spbstu.preaccelerator.telegram.resources.strings
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
+        const val NoRoleAssigned = "Твоего номера нет в базе"
     }
 
     object Cancel {

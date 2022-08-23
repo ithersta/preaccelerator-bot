@@ -6,6 +6,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.spbstu.preaccelerator.data.createAppDatabase
 import ru.spbstu.preaccelerator.data.createDataSource
+import ru.spbstu.preaccelerator.telegram.createStateMachine
 import ru.spbstu.preaccelerator.telegram.repository.UserDialogStateRepository
 
 val preacceleratorModule = module(createdAtStart = true) {

@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator
+package ru.spbstu.preaccelerator.telegram
 
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.repository.StateRepository
