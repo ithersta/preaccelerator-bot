@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.resources.strings
+package ru.spbstu.preaccelerator.telegram.resources.strings
 
 object MessageStrings {
     object Start {

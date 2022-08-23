@@ -1,10 +1,10 @@
-package ru.spbstu.preaccelerator.repository
+package ru.spbstu.preaccelerator.telegram.repository
 
 import com.ithersta.tgbotapi.fsm.repository.StateRepository
 import dev.inmo.tgbotapi.types.UserId
 import ru.spbstu.preaccelerator.data.AppDatabase
-import ru.spbstu.preaccelerator.entities.state.DialogState
-import ru.spbstu.preaccelerator.entities.state.EmptyState
+import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 
 class UserDialogStateRepository(
     private val appDatabase: AppDatabase

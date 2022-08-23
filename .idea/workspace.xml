@@ -5,18 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8884b579-e976-45ba-bb19-a829e0c38648" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/CreateAppDatabase.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/CreateDataSource.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/adapters/DialogStateAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/adapters/UserIdAdapter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/repository/UserDialogStateRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/sqldelight/ru/spbstu/preaccelerator/data/UserDialogState.sq" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/entities/state/DialogState.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/PreacceleratorModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/PreacceleratorModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/StateMachine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/StateMachine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/StateMachine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/StateMachine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/adapters/DialogStateAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/data/adapters/DialogStateAdapter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/entities/Role.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/domain/entities/Role.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/entities/state/DialogState.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/entities/state/StartFlowState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/entities/state/StartFlowState.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/flows/CancelCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/CancelCommand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/flows/Fallback.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/Fallback.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/flows/StartFlow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/flows/StartFlow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/repository/UserDialogStateRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/repository/UserDialogStateRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/resources/strings/ButtonStrings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/resources/strings/ButtonStrings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/resources/strings/HelpStrings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/resources/strings/HelpStrings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/resources/strings/MessageStrings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator/telegram/resources/strings/MessageStrings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/sqldelight/ru/spbstu/preaccelerator/data/UserDialogState.sq" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/sqldelight/ru/spbstu/preaccelerator/data/UserDialogState.sq" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,9 +75,9 @@
         <option value="Kotlin Enum" />
         <option value="Kotlin Sealed Interface" />
         <option value="SqlDelight Table" />
-        <option value="Kotlin File" />
         <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -86,7 +90,6 @@
   <component name="ProjectId" id="2DkrAgMdpnjMTHr4SNi70YYaFVP" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
@@ -109,6 +112,8 @@
       <recent name="$PROJECT_DIR$/src/main/kotlin/ru/spbstu/preaccelerator" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="ru.spbstu.preaccelerator.telegram.entities.state" />
+      <recent name="ru.spbstu.preaccelerator.domain.entities" />
       <recent name="ru.spbstu.preaccelerator.flows" />
       <recent name="ru.spbstu.preaccelerator.entities" />
     </key>
@@ -183,7 +188,7 @@
       <updated>1661253781278</updated>
       <workItem from="1661253782379" duration="3768000" />
       <workItem from="1661257569000" duration="8282000" />
-      <workItem from="1661267224848" duration="5871000" />
+      <workItem from="1661267224848" duration="7471000" />
     </task>
     <servers />
   </component>

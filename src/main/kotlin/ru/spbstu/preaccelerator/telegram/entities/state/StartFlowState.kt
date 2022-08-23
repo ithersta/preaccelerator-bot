@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.entities.state
+package ru.spbstu.preaccelerator.telegram.entities.state
 
 import kotlinx.serialization.Serializable
 

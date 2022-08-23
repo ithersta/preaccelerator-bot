@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.flows
+package ru.spbstu.preaccelerator.telegram.flows
 
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
@@ -7,13 +7,13 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import ru.spbstu.preaccelerator.entities.Role
-import ru.spbstu.preaccelerator.entities.state.DialogState
-import ru.spbstu.preaccelerator.entities.state.EmptyState
-import ru.spbstu.preaccelerator.entities.state.StartFlowState
-import ru.spbstu.preaccelerator.resources.strings.ButtonStrings
-import ru.spbstu.preaccelerator.resources.strings.HelpStrings
-import ru.spbstu.preaccelerator.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.domain.entities.Role
+import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
+import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 fun RoleFilterBuilder<Role, DialogState>.startFlow() {
     state<EmptyState> {

@@ -1,4 +1,4 @@
-import ru.spbstu.preaccelerator.entities.state.DialogState;
+import ru.spbstu.preaccelerator.telegram.entities.state.DialogState;
 import dev.inmo.tgbotapi.types.UserId;
 
 CREATE TABLE UserDialogState (

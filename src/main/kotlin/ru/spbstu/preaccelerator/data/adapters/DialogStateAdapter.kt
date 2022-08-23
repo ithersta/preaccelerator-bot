@@ -5,8 +5,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
-import ru.spbstu.preaccelerator.entities.state.DialogState
-import ru.spbstu.preaccelerator.entities.state.EmptyState
+import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 
 @OptIn(ExperimentalSerializationApi::class)
 object DialogStateAdapter : ColumnAdapter<DialogState, ByteArray> {
