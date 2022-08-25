@@ -1,0 +1,17 @@
+import ru.spbstu.preaccelerator.domain.entities.PhoneNumber;
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker;
+
+CREATE TABLE Tracker (
+  id BIGINT AS Tracker.Id PRIMARY KEY,
+  phoneNumber TEXT AS PhoneNumber NOT NULL
+);
+
+CREATE UNIQUE INDEX tracker_phone_number_index ON Tracker(phoneNumber);
+
+get:
+SELECT * FROM Tracker
+WHERE id = :id;
+
+getByPhoneNumber:
+SELECT * FROM Tracker
+WHERE phoneNumber = :phoneNumber;

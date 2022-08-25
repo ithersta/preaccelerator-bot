@@ -1,17 +1,20 @@
 package ru.spbstu.preaccelerator
 
-import com.ithersta.tgbotapi.fsm.repository.StateRepository
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.dsl.module
+import org.koin.ksp.generated.module
 import ru.spbstu.preaccelerator.data.createAppDatabase
 import ru.spbstu.preaccelerator.data.createDataSource
 import ru.spbstu.preaccelerator.telegram.createStateMachine
-import ru.spbstu.preaccelerator.telegram.repository.UserDialogStateRepository
 
 val preacceleratorModule = module(createdAtStart = true) {
+    includes(ComponentScanModule().module)
     single { createDataSource() }
     single { createAppDatabase(get()) }
     single { createStateMachine(get()) }
-    singleOf(::UserDialogStateRepository) bind StateRepository::class
 }
+
+@Module
+@ComponentScan
+class ComponentScanModule

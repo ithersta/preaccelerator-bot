@@ -14,4 +14,8 @@ object MessageStrings {
     object Fallback {
         const val NoSuchCommand = "Нет такой команды"
     }
+
+    object Error {
+        fun internal(message: String?) = "Произошла внутренняя ошибка: $message"
+    }
 }

@@ -1,0 +1,19 @@
+import ru.spbstu.preaccelerator.domain.entities.Team;
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker;
+
+CREATE TABLE Team (
+  id BIGINT AS Team.Id PRIMARY KEY,
+  name TEXT NOT NULL,
+  trackerId BIGINT AS Tracker.Id NOT NULL,
+  FOREIGN KEY(trackerId) REFERENCES Tracker(id)
+);
+
+CREATE INDEX team_tracker_id_index ON Team(trackerId);
+
+get:
+SELECT * FROM Team
+WHERE id = :id;
+
+getByTrackerId:
+SELECT * FROM Team
+WHERE trackerId = :trackerId;
