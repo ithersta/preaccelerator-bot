@@ -35,6 +35,8 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
     ).also {
         runCatching {
             AppDatabase.Schema.create(driver)
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 }

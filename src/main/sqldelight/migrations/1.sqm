@@ -1,0 +1,9 @@
+ALTER TABLE Member
+ADD CONSTRAINT fk_member_team_id
+FOREIGN KEY (teamId)
+REFERENCES Team(id);
+
+ALTER TABLE Team
+ADD CONSTRAINT fk_team_tracker_id
+FOREIGN KEY (trackerId)
+REFERENCES Tracker(id);

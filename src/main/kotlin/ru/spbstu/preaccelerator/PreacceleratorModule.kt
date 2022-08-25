@@ -12,7 +12,7 @@ val preacceleratorModule = module(createdAtStart = true) {
     includes(ComponentScanModule().module)
     single { createDataSource() }
     single { createAppDatabase(get()) }
-    single { createStateMachine(get()) }
+    single { createStateMachine(get(), get()) }
 }
 
 @Module

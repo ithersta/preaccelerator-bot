@@ -5,12 +5,14 @@ import ru.spbstu.preaccelerator.domain.entities.user.Member;
 CREATE TABLE Member (
   id BIGINT AS Member.Id PRIMARY KEY,
   phoneNumber TEXT AS PhoneNumber NOT NULL,
-  teamId BIGINT AS Team.Id NOT NULL,
-  FOREIGN KEY(teamId) REFERENCES Team(id)
+  teamId BIGINT AS Team.Id NOT NULL
 );
 
-CREATE UNIQUE INDEX member_phone_number_index ON Member(phoneNumber);
-CREATE INDEX member_team_id ON Member(teamId);
+CREATE UNIQUE INDEX member_phone_number_index
+ON Member(phoneNumber);
+
+CREATE INDEX member_team_id
+ON Member(teamId);
 
 getByPhoneNumber:
 SELECT * FROM Member

@@ -7,12 +7,13 @@ import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.repository.StateRepository
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
-import ru.spbstu.preaccelerator.domain.entities.user.*
+import ru.spbstu.preaccelerator.domain.entities.user.Curator
+import ru.spbstu.preaccelerator.domain.entities.user.Member
+import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker
+import ru.spbstu.preaccelerator.domain.repository.UserRepository
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-import ru.spbstu.preaccelerator.telegram.flows.cancelCommand
-import ru.spbstu.preaccelerator.telegram.flows.fallback
-import ru.spbstu.preaccelerator.telegram.flows.startFlow
-import ru.spbstu.preaccelerator.telegram.flows.stateCommand
+import ru.spbstu.preaccelerator.telegram.flows.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 typealias StateMachineBuilder = StateMachineBuilder<DialogState, PreacceleratorUser, UserId>
@@ -20,12 +21,20 @@ typealias RoleFilterBuilder<U> = RoleFilterBuilder<DialogState, PreacceleratorUs
 typealias StateFilterBuilder<S, U> = StateFilterBuilder<DialogState, PreacceleratorUser, S, U, UserId>
 
 fun createStateMachine(
-    stateRepository: StateRepository<UserId, DialogState>
-) = stateMachine<_, PreacceleratorUser>({ EmptyUser }, stateRepository) {
+    stateRepository: StateRepository<UserId, DialogState>,
+    userRepository: UserRepository
+) = stateMachine(userRepository::get, stateRepository) {
     onException { userId, throwable ->
         sendTextMessage(userId, MessageStrings.Error.internal(throwable.message))
     }
     includeHelp()
+    anyRole {
+        anyState {
+            cancelCommand()
+            whoCommand()
+            stateCommand()
+        }
+    }
     startFlow()
     role<Curator> {
 
@@ -36,11 +45,5 @@ fun createStateMachine(
     role<Member> {
 
     }
-    anyRole {
-        anyState {
-            cancelCommand()
-            stateCommand()
-            fallback()
-        }
-    }
+    fallback()
 }

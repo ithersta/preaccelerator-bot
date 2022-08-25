@@ -14,4 +14,6 @@ WHERE userId = :userId;
 
 add:
 INSERT INTO UserPhoneNumber
-VALUES(:userId, :phoneNumber);
+VALUES(:userId, :phoneNumber)
+ON CONFLICT(userId)
+DO UPDATE SET phoneNumber = :phoneNumber;

@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
 import ru.spbstu.preaccelerator.domain.entities.user.Member
@@ -30,37 +31,31 @@ fun StateMachineBuilder.startFlow() {
                 sendTextMessage(
                     it,
                     MessageStrings.Start.AskContact,
-                    replyMarkup = flatReplyKeyboard(resizeKeyboard = true) {
+                    replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         requestContactButton(ButtonStrings.Start.SendContact)
                     }
                 )
             }
-            onContact {
-                val contact = it.content.contact
-                require(contact.userId == it.chat.id)
+            onContact { message ->
+                val contact = message.content.contact
+                require(contact.userId == message.chat.id)
+                user.setPhoneNumber(PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!)
                 setState(StartFlowState.AfterRegistering)
             }
         }
+    }
+    anyRole {
         state<StartFlowState.AfterRegistering> {
             onTransition {
-                sendTextMessage(it, MessageStrings.Start.NoRoleAssigned, replyMarkup = ReplyKeyboardRemove())
+                val text = when (val user = user) {
+                    is EmptyUser -> MessageStrings.Start.NoRoleAssigned
+                    is Curator -> MessageStrings.Start.WelcomeCurator
+                    is Member -> MessageStrings.Start.welcomeMember(user.loadTeam())
+                    is Tracker -> MessageStrings.Start.welcomeTracker(user.id)
+                }
+                sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
                 setState(EmptyState)
             }
-        }
-    }
-    role<Curator> {
-        state<StartFlowState.AfterRegistering> {
-            onTransition { }
-        }
-    }
-    role<Tracker> {
-        state<StartFlowState.AfterRegistering> {
-            onTransition { }
-        }
-    }
-    role<Member> {
-        state<StartFlowState.AfterRegistering> {
-            onTransition { }
         }
     }
 }
