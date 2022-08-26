@@ -9,7 +9,7 @@ import kotlin.time.toJavaDuration
 @Single
 class IsSeasonActiveUseCase(
     private val seasonStartRepository: SeasonStartRepository,
-    private val stepConfig: StepConfig
+    private val stepConfig: StepConfig<*>
 ) {
     operator fun invoke(at: OffsetDateTime): Boolean {
         val start = seasonStartRepository.get() ?: return false

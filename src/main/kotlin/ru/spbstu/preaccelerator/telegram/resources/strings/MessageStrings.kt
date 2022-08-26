@@ -7,7 +7,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
-        const val NoRoleAssigned = "Твоего номера нет в базе"
+        const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
         fun welcomeTracker(id: Tracker.Id) = "Добро пожаловать! Вы трекер #${id.value}."
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
