@@ -7,5 +7,5 @@ object StartFlowState {
     object WaitingForContact : DialogState
 
     @Serializable
-    object AfterRegistering : DialogState
+    object AfterAuthenticating : DialogState
 }

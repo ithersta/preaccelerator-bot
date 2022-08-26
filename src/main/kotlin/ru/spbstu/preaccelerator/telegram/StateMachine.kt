@@ -11,7 +11,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.repository.UserRepository
+import ru.spbstu.preaccelerator.domain.usecases.GetUserUseCase
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.flows.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -22,8 +22,8 @@ typealias StateFilterBuilder<S, U> = StateFilterBuilder<DialogState, Preaccelera
 
 fun createStateMachine(
     stateRepository: StateRepository<UserId, DialogState>,
-    userRepository: UserRepository
-) = stateMachine(userRepository::get, stateRepository) {
+    getUserUseCase: GetUserUseCase
+) = stateMachine(getUserUseCase::invoke, stateRepository) {
     onException { userId, throwable ->
         sendTextMessage(userId, MessageStrings.Error.internal(throwable.message))
     }

@@ -5,8 +5,7 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 
 class Tracker(
     val id: Id,
-    val phoneNumber: PhoneNumber,
-    val loadTeams: () -> List<Team>
+    val phoneNumber: PhoneNumber
 ) : PreacceleratorUser {
     @JvmInline
     value class Id(val value: Long)

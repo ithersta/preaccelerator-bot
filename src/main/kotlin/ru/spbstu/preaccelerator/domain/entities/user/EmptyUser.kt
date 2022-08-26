@@ -1,7 +1,7 @@
 package ru.spbstu.preaccelerator.domain.entities.user
 
-import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
+import dev.inmo.tgbotapi.types.UserId
 
 class EmptyUser(
-    val setPhoneNumber: (PhoneNumber) -> Unit
+    val userId: UserId
 ) : PreacceleratorUser

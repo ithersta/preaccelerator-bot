@@ -1,0 +1,9 @@
+import ru.spbstu.preaccelerator.domain.entities.Meeting;
+import ru.spbstu.preaccelerator.domain.entities.Team;
+
+CREATE TABLE Meeting (
+  id BIGSERIAL AS Meeting.Id PRIMARY KEY,
+  teamId BIGINT AS Team.Id NOT NULL,
+  url TEXT NOT NULL,
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL
+);

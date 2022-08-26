@@ -15,6 +15,8 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
+import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
+import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -40,17 +42,17 @@ fun StateMachineBuilder.startFlow() {
                 val contact = message.content.contact
                 require(contact.userId == message.chat.id)
                 user.setPhoneNumber(PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!)
-                setState(StartFlowState.AfterRegistering)
+                setState(StartFlowState.AfterAuthenticating)
             }
         }
     }
     anyRole {
-        state<StartFlowState.AfterRegistering> {
+        state<StartFlowState.AfterAuthenticating> {
             onTransition {
                 val text = when (val user = user) {
                     is EmptyUser -> MessageStrings.Start.NoRoleAssigned
                     is Curator -> MessageStrings.Start.WelcomeCurator
-                    is Member -> MessageStrings.Start.welcomeMember(user.loadTeam())
+                    is Member -> MessageStrings.Start.welcomeMember(user.team)
                     is Tracker -> MessageStrings.Start.welcomeTracker(user.id)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())

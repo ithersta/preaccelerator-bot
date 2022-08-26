@@ -3,16 +3,16 @@ import ru.spbstu.preaccelerator.domain.entities.Team;
 import ru.spbstu.preaccelerator.domain.entities.user.Member;
 
 CREATE TABLE Member (
-  id BIGINT AS Member.Id PRIMARY KEY,
-  phoneNumber TEXT AS PhoneNumber NOT NULL,
+  id BIGSERIAL AS Member.Id PRIMARY KEY,
+  phoneNumber TEXT AS PhoneNumber UNIQUE NOT NULL,
   teamId BIGINT AS Team.Id NOT NULL
 );
 
-CREATE UNIQUE INDEX member_phone_number_index
-ON Member(phoneNumber);
+CREATE INDEX member_team_id ON Member(teamId);
 
-CREATE INDEX member_team_id
-ON Member(teamId);
+get:
+SELECT * FROM Member
+WHERE id = :id;
 
 getByPhoneNumber:
 SELECT * FROM Member
@@ -21,3 +21,10 @@ WHERE phoneNumber = :phoneNumber;
 getByTeamId:
 SELECT * FROM Member
 WHERE teamId = :teamId;
+
+add:
+INSERT INTO Member(phoneNumber, teamId)
+VALUES(:phoneNumber, :teamId)
+ON CONFLICT (phoneNumber)
+DO UPDATE SET teamId = :teamId
+RETURNING id;
