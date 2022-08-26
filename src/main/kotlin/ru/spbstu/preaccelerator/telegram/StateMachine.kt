@@ -15,6 +15,7 @@ import ru.spbstu.preaccelerator.domain.usecases.GetUserUseCase
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.flows.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import java.time.OffsetDateTime
 
 typealias StateMachineBuilder = StateMachineBuilder<DialogState, PreacceleratorUser, UserId>
 typealias RoleFilterBuilder<U> = RoleFilterBuilder<DialogState, PreacceleratorUser, U, UserId>
@@ -22,8 +23,8 @@ typealias StateFilterBuilder<S, U> = StateFilterBuilder<DialogState, Preaccelera
 
 fun createStateMachine(
     stateRepository: StateRepository<UserId, DialogState>,
-    getUserUseCase: GetUserUseCase
-) = stateMachine(getUserUseCase::invoke, stateRepository) {
+    getUser: GetUserUseCase
+) = stateMachine({ getUser(it, OffsetDateTime.now()) }, stateRepository) {
     onException { userId, throwable ->
         sendTextMessage(userId, MessageStrings.Error.internal(throwable.message))
     }
