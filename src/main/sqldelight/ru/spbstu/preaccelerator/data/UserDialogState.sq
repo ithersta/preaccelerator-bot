@@ -2,17 +2,16 @@ import ru.spbstu.preaccelerator.telegram.entities.state.DialogState;
 import dev.inmo.tgbotapi.types.UserId;
 
 CREATE TABLE UserDialogState (
-    userId BIGINT AS UserId PRIMARY KEY,
-    state BYTEA AS DialogState NOT NULL
+  userId BIGINT AS UserId PRIMARY KEY,
+  state BYTEA AS DialogState NOT NULL
 );
 
 get:
-SELECT * FROM UserDialogState
+SELECT state FROM UserDialogState
 WHERE userId = :userId;
 
 set:
 INSERT INTO UserDialogState
 VALUES(:userId, :state)
 ON CONFLICT (userId)
-DO UPDATE
-SET state = :state;
+DO UPDATE SET state = :state;

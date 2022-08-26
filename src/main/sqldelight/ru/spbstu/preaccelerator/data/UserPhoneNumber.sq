@@ -1,0 +1,19 @@
+import dev.inmo.tgbotapi.types.UserId;
+import ru.spbstu.preaccelerator.domain.entities.PhoneNumber;
+
+CREATE TABLE UserPhoneNumber (
+  userId BIGINT AS UserId PRIMARY KEY,
+  phoneNumber TEXT AS PhoneNumber NOT NULL
+);
+
+CREATE UNIQUE INDEX user_phone_number_index ON UserPhoneNumber(phoneNumber);
+
+get:
+SELECT phoneNumber FROM UserPhoneNumber
+WHERE userId = :userId;
+
+add:
+INSERT INTO UserPhoneNumber
+VALUES(:userId, :phoneNumber)
+ON CONFLICT(userId)
+DO UPDATE SET phoneNumber = :phoneNumber;

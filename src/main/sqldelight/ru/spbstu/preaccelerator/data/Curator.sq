@@ -1,0 +1,15 @@
+import dev.inmo.tgbotapi.types.UserId;
+
+CREATE TABLE Curator (
+  userId BIGINT AS UserId PRIMARY KEY
+);
+
+get:
+SELECT * FROM Curator
+WHERE userId = :userId;
+
+add:
+INSERT INTO Curator
+VALUES(:userId)
+ON CONFLICT(userId)
+DO NOTHING;

@@ -1,0 +1,25 @@
+import ru.spbstu.preaccelerator.domain.entities.Team;
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker;
+
+CREATE TABLE Team (
+  id BIGSERIAL AS Team.Id PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  trackerId BIGINT AS Tracker.Id NOT NULL
+);
+
+CREATE INDEX team_tracker_id_index ON Team(trackerId);
+
+get:
+SELECT * FROM Team
+WHERE id = :id;
+
+getByTrackerId:
+SELECT * FROM Team
+WHERE trackerId = :trackerId;
+
+add:
+INSERT INTO Team(name, trackerId)
+VALUES(:name, :trackerId)
+ON CONFLICT (name)
+DO UPDATE SET trackerId = :trackerId
+RETURNING id;

@@ -1,0 +1,22 @@
+import ru.spbstu.preaccelerator.domain.entities.PhoneNumber;
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker;
+
+CREATE TABLE Tracker (
+  id BIGSERIAL AS Tracker.Id PRIMARY KEY,
+  phoneNumber TEXT AS PhoneNumber UNIQUE NOT NULL
+);
+
+get:
+SELECT * FROM Tracker
+WHERE id = :id;
+
+getByPhoneNumber:
+SELECT * FROM Tracker
+WHERE phoneNumber = :phoneNumber;
+
+add:
+INSERT INTO Tracker(phoneNumber)
+VALUES(:phoneNumber)
+ON CONFLICT (phoneNumber)
+DO NOTHING
+RETURNING id;

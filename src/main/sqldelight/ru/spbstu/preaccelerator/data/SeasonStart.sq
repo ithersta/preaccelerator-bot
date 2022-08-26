@@ -1,0 +1,13 @@
+CREATE TABLE SeasonStart (
+  id INT PRIMARY KEY,
+  start TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+get:
+SELECT start FROM SeasonStart;
+
+set:
+INSERT INTO SeasonStart
+VALUES(0, :start)
+ON CONFLICT (id)
+DO UPDATE SET start = :start;
