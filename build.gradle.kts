@@ -20,7 +20,7 @@ dependencies {
     implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.8.0")
     implementation("dev.inmo:tgbotapi:3.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
-    implementation("org.postgresql:postgresql:42.4.2")
+    implementation("org.postgresql:postgresql:42.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("app.cash.sqldelight:jdbc-driver:2.0.0-alpha03")
     implementation("io.insert-koin:koin-core:3.2.0")
