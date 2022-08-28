@@ -30,6 +30,7 @@ fun StateMachineBuilder.startFlow() {
         }
         state<StartFlowState.WaitingForContact> {
             onTransition {
+                refreshCommands()
                 sendTextMessage(
                     it,
                     MessageStrings.Start.AskContact,
@@ -58,6 +59,11 @@ fun StateMachineBuilder.startFlow() {
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
                 setState(EmptyState)
+            }
+        }
+        state<EmptyState> {
+            onCommand("start", description = null) {
+                setState(StartFlowState.AfterAuthenticating)
             }
         }
     }
