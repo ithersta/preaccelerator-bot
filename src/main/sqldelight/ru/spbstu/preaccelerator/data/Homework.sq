@@ -5,5 +5,6 @@ CREATE TABLE Homework (
   id BIGSERIAL AS Homework.Id PRIMARY KEY,
   teamId BIGINT AS Team.Id NOT NULL,
   stepNumber INT NOT NULL,
-  url TEXT NOT NULL
+  url TEXT NOT NULL,
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
