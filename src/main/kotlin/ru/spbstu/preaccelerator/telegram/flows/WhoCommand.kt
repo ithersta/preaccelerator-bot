@@ -13,6 +13,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 fun StateFilterBuilder<DialogState, PreacceleratorUser>.whoCommand() {
     onCommand("who", HelpStrings.Who) {
+        refreshCommands()
         val text = when (val user = user) {
             is EmptyUser -> MessageStrings.Who.Empty
             is Curator -> MessageStrings.Who.Curator

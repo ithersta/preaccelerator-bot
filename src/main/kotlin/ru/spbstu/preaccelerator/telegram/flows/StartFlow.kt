@@ -49,6 +49,7 @@ fun StateMachineBuilder.startFlow() {
     anyRole {
         state<StartFlowState.AfterAuthenticating> {
             onTransition {
+                refreshCommands()
                 val text = when (val user = user) {
                     is EmptyUser -> MessageStrings.Start.NoRoleAssigned
                     is Curator -> MessageStrings.Start.WelcomeCurator
