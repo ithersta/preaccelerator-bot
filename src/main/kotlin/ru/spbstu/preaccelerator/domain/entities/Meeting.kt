@@ -1,11 +1,11 @@
 package ru.spbstu.preaccelerator.domain.entities
 
-import java.time.Instant
+import java.time.OffsetDateTime
 
 class Meeting(
     val id: Id,
     val teamId: Team.Id,
-    val timestamp: Instant,
+    val timestamp: OffsetDateTime,
     val url: String
 ) {
     @JvmInline
