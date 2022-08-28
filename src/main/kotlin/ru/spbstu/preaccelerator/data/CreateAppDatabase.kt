@@ -1,8 +1,11 @@
 package ru.spbstu.preaccelerator.data
 
 import app.cash.sqldelight.driver.jdbc.asJdbcDriver
+import mu.KotlinLogging
 import ru.spbstu.preaccelerator.data.adapters.*
 import javax.sql.DataSource
+
+private val logger = KotlinLogging.logger {}
 
 fun createAppDatabase(dataSource: DataSource): AppDatabase {
     val driver = dataSource.asJdbcDriver()
@@ -37,7 +40,7 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
             AppDatabase.Schema.create(driver)
             AppDatabase.Schema.migrate(driver, 1, 2)
         }.onFailure {
-            it.printStackTrace()
+            logger.info("Database schema wasn't created")
         }
     }
 }
