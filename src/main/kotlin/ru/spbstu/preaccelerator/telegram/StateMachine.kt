@@ -41,11 +41,11 @@ fun createStateMachine(
         }
     }
     startFlow()
+    button()
     role<Curator> {
 
     }
     role<Tracker> {
-
     }
     role<Member> {
 

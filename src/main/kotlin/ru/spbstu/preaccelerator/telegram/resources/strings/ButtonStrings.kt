@@ -1,6 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 object ButtonStrings {
+    const val ChooseStep = "Выберите модуль"
+
     object Start {
         const val SendContact = "Отправить мой номер телефона"
     }
