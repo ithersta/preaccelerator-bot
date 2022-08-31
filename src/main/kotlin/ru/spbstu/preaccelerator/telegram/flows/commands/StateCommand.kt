@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows
+package ru.spbstu.preaccelerator.telegram.flows.commands
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage

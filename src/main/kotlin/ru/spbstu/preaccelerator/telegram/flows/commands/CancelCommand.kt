@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows
+package ru.spbstu.preaccelerator.telegram.flows.commands
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -12,7 +12,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 fun StateFilterBuilder<DialogState, PreacceleratorUser>.cancelCommand() {
     onCommand("cancel", HelpStrings.Cancel) {
-        setState(EmptyState)
         sendTextMessage(
             it.chat,
             text = if (state == EmptyState) {
@@ -22,5 +21,6 @@ fun StateFilterBuilder<DialogState, PreacceleratorUser>.cancelCommand() {
             },
             replyMarkup = ReplyKeyboardRemove()
         )
+        setState(EmptyState)
     }
 }

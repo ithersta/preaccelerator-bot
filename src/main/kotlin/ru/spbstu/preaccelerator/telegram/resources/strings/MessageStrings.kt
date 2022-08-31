@@ -27,6 +27,7 @@ object MessageStrings {
 
     object Fallback {
         const val NoSuchCommand = "Нет такой команды или она сейчас недоступна"
+        const val NotImplemented = "Эта функция не реализована"
     }
 
     object Error {
