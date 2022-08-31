@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 
 object MenuStrings {
-    const val Back = "Назад"
+    const val Back = "⬅️ Назад"
 
     object Curator {
         const val Message = "Меню куратора"
