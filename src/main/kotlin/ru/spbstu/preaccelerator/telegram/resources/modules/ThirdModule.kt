@@ -1,0 +1,45 @@
+package ru.spbstu.preaccelerator.telegram.resources.modules
+
+import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
+import kotlin.time.Duration.Companion.days
+
+fun ModuleConfigBuilder.thirdModule() {
+    module("Анализ окружения", 7.days) {
+        lecture(
+            "Анализ рынка",
+            ModuleStrings.Speaker.IrinaShafr,
+            "https://drive.google.com/file/d/10VdEbgQhO4kPukgr3YxmqZJw3M_4xBox/view?usp=sharing",
+            "https://drive.google.com/file/d/17EKYh9orV7SLQQEMJvFeOyDSWbWWoOpF/view?usp=sharing"
+        )
+        additionalInfo(
+            "Оценить рынок стартапа за полчаса — метод TAM-SAM-SOM (https://vc.ru/finance/159115-ocenit-rynok-startapa-za-polchasa-metod-tam-sam-som)\n" +
+                    "Оценка объёма рынка. Кому надо и зачем? (https://vc.ru/marketing/63539-ocenka-obema-rynka-komu-nado-i-zachem)\n" +
+                    "Анализ рынка: обзор лучших практик (http://powerbranding.ru/rynok/plan-analiza/)\n" +
+                    "Как бесплатно провести исследование рынка в 2020 году: 35 авторитетных источников (https://vc.ru/services/141040-kak-besplatno-provesti-issledovanie-rynka-v-2020-godu-35-avtoritetnyh-istochnikov)\n" +
+                    "Как узнать за один вечер почти все о целевом рынке, не потратив ни рубля (https://zen.yandex.ru/media/id/5ad3807fdd2484cb62707d89/kak-uznat-za-odin-vecher-pochti-vse-o-celevom-rynke-ne-potrativ-ni-rublia-5b07eda555876b13d0c42fa6?utm_source=serp)"
+        )
+        task(
+            "Найдите экспертные оценки емкости рынка, на который вы планируете выходить.\n" +
+                    "Найдите данные о выручке нескольких игроков рынка, на который планируете выходить.\n" +
+                    "Оценить динамику рынка, на который вы планируете выходить, на основе поисковых запросов.\n" +
+                    "Проведите оценку рынка, на который вы планируете выходить, «снизу» и «сверху», используя Шаблон “Анализ рынка” (активная ссылка). \n" +
+                    "Сделайте сопоставление результатов\n"
+        )
+        lecture(
+            "Анализ конкурентов",
+            ModuleStrings.Speaker.IrinaShafr,
+            "https://drive.google.com/file/d/1BYPgMyM2eX9YvuYErJpubd_dAICCg55V/view?usp=sharing",
+            "https://drive.google.com/file/d/16Wp57AIrj3NjJEuPT1GeujGoQe9C4Xqn/view?usp=sharing"
+        )
+        additionalInfo(
+            "Анализ конкурентов на практике: 10 шагов (http://powerbranding.ru/competition/analiz-konkurentov-primer/)\n" +
+                    "2. Анализ конкурентов на практике: 10 шагов + шаблон (https://vc.ru/marketing/181297-analiz-konkurentov-na-praktike-10-shagov-shablon)\n"
+        )
+        task(
+            " Составьте список прямых и косвенных конкурентов своего продукта/ проекта / бизнеса.\n" +
+                    "2. Заполните таблицу конкурентного анализа для четырех ближайших конкурентов, используя Шаблон «Конкуренты» (активная ссылка)\n" +
+                    "3. Обоснуйте устойчивость и уникальность вашего конкурентного преимущества. Как оно связано с потребностями / выгодами / проблемами ваших клиентов.\n" +
+                    "4. Используйте как минимум 2 сервиса для проведения конкурентного анализа.\n"
+        )
+    }
+}

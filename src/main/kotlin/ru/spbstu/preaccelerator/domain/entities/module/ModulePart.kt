@@ -1,6 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.modules.entities
-
-import java.util.Optional
+package ru.spbstu.preaccelerator.domain.entities.module
 
 class ModulePart (
     val name: String,
