@@ -9,14 +9,14 @@ object MessageStrings {
         const val AskContact = "TODO"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
-        fun welcomeTracker(id: Tracker.Id) = "Добро пожаловать! Вы трекер #${id.value}."
+        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы треккер команд ${teams.joinToString { it.name }}"
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
     }
 
     object Who {
         const val Empty = "Твоего номера нет в базе"
         const val Curator = "Вы куратор"
-        fun tracker(id: Tracker.Id) = "Вы трекер #${id.value}"
+        fun tracker(teams: List<Team>) = "Вы треккер команд ${teams.joinToString { it.name }}"
         fun member(team: Team) = "Ты участник команды ${team.name}"
     }
 

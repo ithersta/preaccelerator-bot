@@ -17,6 +17,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -55,7 +56,7 @@ fun StateMachineBuilder.startFlow() {
                     is EmptyUser -> MessageStrings.Start.NoRoleAssigned
                     is Curator -> MessageStrings.Start.WelcomeCurator
                     is Member -> MessageStrings.Start.welcomeMember(user.team)
-                    is Tracker -> MessageStrings.Start.welcomeTracker(user.id)
+                    is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
                 setState(EmptyState)
