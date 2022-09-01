@@ -17,7 +17,7 @@ object ButtonStrings {
         const val Model7 = "Инвестиции"
         const val Model8 = "Оформление и презентация проекта"
     }
-
+    //TODO: map
     val listOfModels = listOf(
         Models.Model1,
         Models.Model2,
