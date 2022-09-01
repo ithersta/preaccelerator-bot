@@ -8,7 +8,8 @@ object ButtonStrings {
     }
 
     object Models {
-        const val Model1 = "Национальная технологическая инициатива. Жизненный цикл проекта. Команда проекта. Технологии."
+        const val Model1 =
+            "Национальная технологическая инициатива. Жизненный цикл проекта. Команда проекта. Технологии."
         const val Model2 = "Определение ключевой деятельности компании"
         const val Model3 = "Анализ окружения"
         const val Model4 = "Коммерциализация"
@@ -17,6 +18,7 @@ object ButtonStrings {
         const val Model7 = "Инвестиции"
         const val Model8 = "Оформление и презентация проекта"
     }
+
     //TODO: map
     val listOfModels = mapOf<Int, String>(
         1 to Models.Model1,

@@ -32,7 +32,7 @@ fun StateMachineBuilder.button() {
                 sendTextMessage(
                     it, ButtonStrings.ChooseStep,
                     replyMarkup = ReplyKeyboardMarkup(
-                        buttons = arrayOfSimpleKeyboardButtonsForArray(ButtonStrings.listOfModels.toTypedArray()),
+                        buttons = arrayOfSimpleKeyboardButtons(ButtonStrings.listOfModels),
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
                     )
