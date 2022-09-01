@@ -13,15 +13,20 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 private fun arrayOfSimpleKeyboardButtonsForArray(arr: Array<String>): Array<SimpleKeyboardButton> {
     return arr.map { SimpleKeyboardButton(it) }.toTypedArray()
 }
+// INT  - НОМЕР МОДУЛЯ  STRING - ИМЯ МОДУЛЯ
+private fun arrayOfSimpleKeyboardButtons(map: Map<Int, String>): Array<SimpleKeyboardButton> {
+    return map.map { SimpleKeyboardButton(it.value) }.toTypedArray()
+}
+//TODO:
+/*
+    ЕСЛИ КОМАНДА СДЕЛАЛА ДОМАШКУ ВОВРЕМЯ  ++ ТО ВСЕ УЧАСТНИКИ ПОЛУЧАЮТ ++ К НОМЕРУ МОДУЛЯ.
+    ПРЕДЛАГАЕТСЯ ПРОЙТИ ИТОГОВЫЙ ТЕСТ (ГУГЛ ФОРМА).
+    ЖДУТ ПОКА ОТКРОЕТСЯ НОВЫЙ МОДУЛЬ.
+*/
 
 fun StateMachineBuilder.button() {
     role<Tracker> {
-        state<StartFlowState.AfterAuthenticating> {
-            onCommand("modul", description = ButtonStrings.ChooseStep) {
-                setState(StartFlowState.AfterAuthenticating)
-            }
-        }
-        state<StartFlowState.AfterAuthenticating> {
+        state<EmptyState> {
             onTransition {
                 refreshCommands()
                 sendTextMessage(
@@ -31,7 +36,36 @@ fun StateMachineBuilder.button() {
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
                     )
-                ).text
+                )
+            }
+            onText { message ->
+                val model = message.content.text
+                when (model) {
+                    ButtonStrings.Models.Model1 -> {
+
+                    }
+                    ButtonStrings.Models.Model2 -> {
+
+                    }
+                    ButtonStrings.Models.Model3 -> {
+
+                    }
+                    ButtonStrings.Models.Model4 -> {
+
+                    }
+                    ButtonStrings.Models.Model5 -> {
+
+                    }
+                    ButtonStrings.Models.Model6 -> {
+
+                    }
+                    ButtonStrings.Models.Model7 -> {
+
+                    }
+                    ButtonStrings.Models.Model8 -> {
+
+                    }
+                }
             }
         }
     }
