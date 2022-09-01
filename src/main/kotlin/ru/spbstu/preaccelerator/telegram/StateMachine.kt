@@ -55,7 +55,9 @@ fun createStateMachine(
     }
     role<Member> {
         memberMenu()
+            ///doModuleFlow()
     }
+    doModuleFlow()
     fallback()
 }
 

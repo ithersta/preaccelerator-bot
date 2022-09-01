@@ -6,13 +6,13 @@ import kotlin.time.Duration.Companion.days
 fun ModuleConfigBuilder.fifthModule() {
     module("Экономика проекта", 7.days) {
         lecture(
-            "Финансовое моделирование (бюджет доходов и расходов)",
+            "Финансовое моделирование \\(бюджет доходов и расходов\\)",
             ModuleStrings.Speaker.KseniaShip,
             "https://drive.google.com/file/d/1UtnlaHgkHUG02uMjLl4W2KmPkSeGLF05/view?usp=sharing",
             "https://drive.google.com/file/d/1oael5D6wfLAA23wUkbOd0RDhJ72_USV8/view?usp=sharing"
         )
         lecture(
-            "Финансовое моделирование (бюджет движения денежных средств, финансовые показатели, оценка стоимости)",
+            "Финансовое моделирование \\(бюджет движения денежных средств, финансовые показатели, оценка стоимости\\)",
             ModuleStrings.Speaker.KseniaShip,
             "https://drive.google.com/file/d/1bd_8AlnUxz0dJn-kG4f29VkFINy7g0-W/view?usp=sharing",
             "https://drive.google.com/file/d/1Wd9N7sWnQmU5TWFlj_KNKot7C07j_csn/view?usp=sharing"

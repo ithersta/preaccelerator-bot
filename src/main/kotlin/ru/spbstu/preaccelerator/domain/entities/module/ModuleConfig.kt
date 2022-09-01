@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.domain.entities.module
 
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 class ModuleConfig(
@@ -16,5 +17,6 @@ class Module (
     val parts: List<ModulePart>
 ){
     @JvmInline
+    @Serializable
     value class Number(val value: Int)
 }
