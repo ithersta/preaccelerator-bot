@@ -18,12 +18,12 @@ fun ModuleConfigBuilder.fifthModule() {
             "https://drive.google.com/file/d/1Wd9N7sWnQmU5TWFlj_KNKot7C07j_csn/view?usp=sharing"
         )
         additionalInfo(
-             "Как построить финансовую модель вашего стартапа за 40 минут https://vc.ru/finance/137270-kak-postroit-finansovuyu-model-vashego-startapa-za-40-minut \n" +
-                     "Как составить финансовую модель: практическое руководство https://vc.ru/u/682577-oleg-evseenkov/193892-kak-sostavit-finansovuyu-model-prakticheskoe-rukovodstvo \n" +
-                     "Рассказ о компании языком цифр https://vc.ru/finance/186915-rasskaz-o-kompanii-yazykom-cifr \n" +
-                     "Пять ошибок в финмодели стартапа: как их заметить и избежать https://rb.ru/opinion/pyat-oshibok-finmodeli/ \n" )
+             "[Как построить финансовую модель вашего стартапа за 40 минут](https://vc.ru/finance/137270-kak-postroit-finansovuyu-model-vashego-startapa-za-40-minut)\n" +
+                     "[Как составить финансовую модель: практическое руководство](https://vc.ru/u/682577-oleg-evseenkov/193892-kak-sostavit-finansovuyu-model-prakticheskoe-rukovodstvo)\n" +
+                     "[Рассказ о компании языком цифр](https://vc.ru/finance/186915-rasskaz-o-kompanii-yazykom-cifr)\n" +
+                     "[Пять ошибок в финмодели стартапа: как их заметить и избежать](https://rb.ru/opinion/pyat-oshibok-finmodeli/)\n" )
         task(
-             "Постройте финансовую модель вашего стартапа и показатели эффективности, используя Шаблон «Финмодель»"
+             "Постройте финансовую модель вашего стартапа и показатели эффективности, используя [Шаблон «Финмодель»](https://docs.google.com/spreadsheets/d/1V5BTZN37LA6Bbfzq6EcbZI_WNnv9KWmd/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)"
         )
     }
 }
