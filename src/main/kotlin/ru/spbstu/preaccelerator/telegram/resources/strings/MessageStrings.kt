@@ -29,6 +29,16 @@ object MessageStrings {
         const val NoSuchCommand = "Нет такой команды или она сейчас недоступна"
     }
 
+    object LoadListOfUsers{
+        const val LoadList = "загрузите xlsx таблицу со списками пользователей"
+        const val InvalidFile = "Файл поврежден или не является xlsx таблицей"
+        const val BadFormatMembers = "Неправильный формат таблицы участников в строках: "
+        const val BadFormatTrackers = "Неправильный формат таблицы команд в строках: "
+        const val OkAddMembers = "Добавлено участников курсов: "
+        const val OkAddTeams = "Добавлено команд курсов: "
+        const val NotFindTeam = "Не найдены трекеры для команд(ы), поэтому участники записанные в них не добавлены: "
+    }
+
     object Error {
         fun internal(message: String?) = "Произошла внутренняя ошибка: $message"
     }
