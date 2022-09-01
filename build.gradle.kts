@@ -27,7 +27,6 @@ dependencies {
     implementation("io.insert-koin:koin-annotations:1.0.1")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
-    implementation("com.lordcodes.turtle:turtle:0.7.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.0.1")
     testImplementation(kotlin("test"))
 }
