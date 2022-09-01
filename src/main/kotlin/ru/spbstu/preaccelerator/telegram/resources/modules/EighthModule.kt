@@ -27,8 +27,8 @@ fun ModuleConfigBuilder.eighthModule() {
                      "[Любовь с первого питча: как сразу понравиться инвестору](https://rb.ru/opinion/lyubov-s-pervogo-pitcha/)\n"
         )
         task(
-            "Используя шаблон [«Питч проекта»](https://docs.google.com/presentation/d/1CSDks96aAE6jc5RFIhcZa2J8-hYE7xrv/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true), оформите презентацию вашего стартапа для демо-дня акселератора.\n" +
-                    "Отрепетируйте несколько раз вашу речь для выступления.\n"
+            "1. Используя шаблон [«Питч проекта»](https://docs.google.com/presentation/d/1CSDks96aAE6jc5RFIhcZa2J8-hYE7xrv/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true), оформите презентацию вашего стартапа для демо-дня акселератора.\n" +
+                    "2. Отрепетируйте несколько раз вашу речь для выступления.\n"
         )
     }
 }

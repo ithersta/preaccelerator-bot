@@ -40,7 +40,7 @@ fun ModuleConfigBuilder.firstModule() {
                     "[Матрица НТИ 2.0](https://drive.google.com/file/d/1nrt2XbG1FW4Jd9l9-gkA1m3ecVgRlvgJ/view?usp=sharing)\n" +
                     "[Дорожная карта Реализации НТИ в Пермском крае](https://docs.google.com/document/d/1h79Enk6kRGDT7fPsAF74eh7LyYbOPg1r/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n" +
                     "[Критерии компаний НТИ](https://drive.google.com/file/d/1Pm1kROlOMfi23oCqzJRgZf1SWpxn6etO/view?usp=sharing)\n"
-        )//TODO:добавить ссылки
+        )
         task(
             "1. Проанализируйте ваш проект и его соответствие одному из рынков НТИ\n" +
                     "2. Проанализируйте технологию (ии) в основе вашего проекта и ее (их) соответствие сквозным технологиям НТИ.\n" +
@@ -56,7 +56,7 @@ fun ModuleConfigBuilder.firstModule() {
             "1. Проанализируйте ваш продукт и ответьте на вопрос: для чего он нужен?\n" +
                     "2. Сформулируйте основные сценарии использования вашего продукта (1-3 сценария)\n" +
                     "3. Выделите все технологии используемые в вашем продукте и разделите на 3 группы: критические, ключевые и все остальные технологии. \n" +
-                    "Заполните предложенный шаблон [«Продукт-сценарии-технологии»](https://docs.google.com/document/d/1UBemwOQYH1-rC_hNUL-FAGSlmKtEBu5dBi2b1bNU1Fw/edit?usp=sharing)\n"
+                    "4. Заполните предложенный шаблон [«Продукт-сценарии-технологии»](https://docs.google.com/document/d/1UBemwOQYH1-rC_hNUL-FAGSlmKtEBu5dBi2b1bNU1Fw/edit?usp=sharing)\n"
         )
         lecture(
             "Конкурентный анализ технологий",
@@ -66,7 +66,7 @@ fun ModuleConfigBuilder.firstModule() {
         )
         task(
             "1. Проанализируйте ваш проект и проведите самодиагностику готовности вашего продукта: технологическая готовность (TRL), производственная готовность (MRL), рыночная готовность (CRL)\n" +
-                    "Заполните предложенный шаблон [«Готовность продукта TRL-MRL-CRL»](https://docs.google.com/document/d/19RI4Zu5uHBaa-j1w9o97MxsFNGc85_fU1WdBMs5gjQ8/edit?usp=sharing)\n"
+                    "2. Заполните предложенный шаблон [«Готовность продукта TRL-MRL-CRL»](https://docs.google.com/document/d/19RI4Zu5uHBaa-j1w9o97MxsFNGc85_fU1WdBMs5gjQ8/edit?usp=sharing)\n"
         )
     }
 }
