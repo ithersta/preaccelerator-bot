@@ -29,11 +29,30 @@ object MessageStrings {
         const val NoSuchCommand = "Нет такой команды или она сейчас недоступна"
     }
 
-    object LoadListOfUsers{
+    object LoadListOfUsers {
         const val LoadList = "загрузите xlsx таблицу со списками пользователей"
         const val InvalidFile = "Файл поврежден или не является xlsx таблицей"
-        const val BadFormatMembers = "Неправильный формат таблицы участников в строках: "
-        const val BadFormatTrackers = "Неправильный формат таблицы команд в строках: "
+        fun badFormat(members: List<Int>?, teams: List<Int>?): String {
+            return if (members != null) {
+                "Неправильный формат таблицы участников в строках: " + if (members.size <= 5) {
+                    members.map { it.toString() }.joinToString { it }
+                } else {
+                    members.subList(0, 5).map { it.toString() }
+                        .joinToString { it } + " и так далее. \n"
+                }
+            } else {
+                ""
+            } + if (teams != null) {
+                "Неправильный формат таблицы команд в строках: " + if (teams.size <= 5) {
+                    teams.map { it.toString() }.joinToString { it }
+                } else {
+                    teams.subList(0, 5).map { it.toString() }
+                        .joinToString { it } + " и так далее."
+                }
+            } else {
+                ""
+            }
+        }
         const val OkAddMembers = "Добавлено участников курсов: "
         const val OkAddTeams = "Добавлено команд курсов: "
         const val NotFindTeam = "Не найдены трекеры для команд(ы), поэтому участники записанные в них не добавлены: "

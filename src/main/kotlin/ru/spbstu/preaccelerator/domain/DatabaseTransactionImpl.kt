@@ -1,6 +1,7 @@
-package ru.spbstu.preaccelerator.data
+package ru.spbstu.preaccelerator.domain
 
 import org.koin.core.annotation.Single
+import ru.spbstu.preaccelerator.data.AppDatabase
 
 @Single
 class DatabaseTransactionImpl(private val appDatabase: AppDatabase) : DatabaseTransaction {

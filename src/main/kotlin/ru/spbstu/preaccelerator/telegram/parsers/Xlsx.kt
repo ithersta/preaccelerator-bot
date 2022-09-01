@@ -49,7 +49,7 @@ object Xlsx {
         }
     }
 
-    fun parseXlsxTrackers(inputStream: InputStream):
+    fun parseXlsxTeams(inputStream: InputStream):
             Result<Map<PhoneNumber, String>> {
         try {
             val trackers = XSSFWorkbook(inputStream)

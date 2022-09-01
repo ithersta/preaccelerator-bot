@@ -11,8 +11,7 @@ import org.apache.logging.log4j.Logger
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.koin.core.context.GlobalContext
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
-import ru.spbstu.preaccelerator.domain.usecases.AddMembersUseCase
-import ru.spbstu.preaccelerator.domain.usecases.actions.AddTrackerAndTeamUseCase
+import ru.spbstu.preaccelerator.domain.usecases.actions.AddTrackerTeamAndMemberUseCase
 import ru.spbstu.preaccelerator.domain.usecases.actions.MemberActions
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
@@ -21,10 +20,9 @@ import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
-private val addTrackerAndTeamUseCase: AddTrackerAndTeamUseCase by GlobalContext.get().inject()
-private val addMembersUseCase: AddMembersUseCase by GlobalContext.get().inject()
+private val addTrackerTeamAndMemberUseCase: AddTrackerTeamAndMemberUseCase by GlobalContext.get().inject()
 
-fun StateMachineBuilder.LoadMembersAndTrackers() {
+fun StateMachineBuilder.loadMembersAndTrackers() {
     role<Curator> {
         state<EmptyState> {
             onCommand("load", HelpStrings.Load) {
@@ -40,36 +38,30 @@ fun StateMachineBuilder.LoadMembersAndTrackers() {
             }
             onDocument { message ->
                 val file = downloadFile(message.content.media)
-                val teams = Xlsx.parseXlsxTrackers(file.inputStream())
+                val teams = Xlsx.parseXlsxTeams(file.inputStream())
                 val members = Xlsx.parseXlsxMembers(file.inputStream())
                 when (teams) {
                     is Xlsx.Result.OK -> {
                         when (members) {
                             is Xlsx.Result.OK -> {
-                                addTrackerAndTeamUseCase(teams.value)
-                                val resMembers = addMembersUseCase(members.value)
-                                if (resMembers != null) {
+                                val resMembers = addTrackerTeamAndMemberUseCase(teams.value, members.value)
+                                if (resMembers.isNotEmpty()) {
                                     sendTextMessage(message.chat.id, MessageStrings.LoadListOfUsers.NotFindTeam
-                                            + resMembers.reduce { acc, s -> "$acc, $s" })
+                                            + resMembers.joinToString { it })
                                 } else {
                                     sendTextMessage(
-                                        message.chat.id, MessageStrings.LoadListOfUsers.OkAddTeams
-                                                + teams.value.size + ";\n"
-                                                + MessageStrings.LoadListOfUsers.OkAddMembers
-                                                + members.value.size
+                                        message.chat.id,
+                                        "${MessageStrings.LoadListOfUsers.OkAddTeams} ${teams.value.size};\n"
+                                                + "${MessageStrings.LoadListOfUsers.OkAddMembers}${members.value.size}"
                                     )
                                 }
                             }
 
                             is Xlsx.Result.BadFormat -> {
-                                val ans =
-                                    MessageStrings.LoadListOfUsers.BadFormatMembers + if (members.errorRows.size <= 5) {
-                                        members.errorRows.map { it.toString() }.reduce { f, s -> "$f, $s" }
-                                    } else {
-                                        members.errorRows.subList(0, 5).map { it.toString() }
-                                            .reduce { f, s -> "$f, $s" } + " и так далее."
-                                    }
-                                sendTextMessage(message.chat.id, ans)
+                                sendTextMessage(
+                                    message.chat.id,
+                                    MessageStrings.LoadListOfUsers.badFormat(members.errorRows, null)
+                                )
                             }
 
                             else -> {}
@@ -84,30 +76,17 @@ fun StateMachineBuilder.LoadMembersAndTrackers() {
                     is Xlsx.Result.BadFormat -> {
                         when (members) {
                             is Xlsx.Result.BadFormat -> {
-                                val ans =
-                                    MessageStrings.LoadListOfUsers.BadFormatMembers + if (members.errorRows.size <= 5) {
-                                        members.errorRows.map { it.toString() }.reduce { f, s -> "$f, $s" }
-                                    } else {
-                                        members.errorRows.subList(0, 5).map { it.toString() }
-                                            .reduce { f, s -> "$f, $s" } + " и так далее. \n"
-                                    } + MessageStrings.LoadListOfUsers.BadFormatTrackers + if (teams.errorRows.size <= 5) {
-                                        teams.errorRows.map { it.toString() }.reduce { f, s -> "$f, $s" }
-                                    } else {
-                                        teams.errorRows.subList(0, 5).map { it.toString() }
-                                            .reduce { f, s -> "$f, $s" } + " и так далее."
-                                    }
-                                sendTextMessage(message.chat.id, ans)
+                                sendTextMessage(
+                                    message.chat.id,
+                                    MessageStrings.LoadListOfUsers.badFormat(members.errorRows, teams.errorRows)
+                                )
                             }
 
                             else -> {
-                                val ans =
-                                    MessageStrings.LoadListOfUsers.BadFormatTrackers + if (teams.errorRows.size <= 5) {
-                                        teams.errorRows.map { it.toString() }.reduce { f, s -> "$f, $s" }
-                                    } else {
-                                        teams.errorRows.subList(0, 5).map { it.toString() }
-                                            .reduce { f, s -> "$f, $s" } + " и так далее."
-                                    }
-                                sendTextMessage(message.chat.id, ans)
+                                sendTextMessage(
+                                    message.chat.id,
+                                    MessageStrings.LoadListOfUsers.badFormat(null, teams.errorRows)
+                                )
                             }
                         }
                     }

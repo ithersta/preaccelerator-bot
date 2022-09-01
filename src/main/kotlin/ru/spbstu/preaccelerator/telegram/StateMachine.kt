@@ -50,6 +50,6 @@ fun createStateMachine(
     role<Member> {
 
     }
-    LoadMembersAndTrackers()
+    loadMembersAndTrackers()
     fallback()
 }
