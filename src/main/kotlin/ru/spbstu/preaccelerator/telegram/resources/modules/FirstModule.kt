@@ -36,10 +36,10 @@ fun ModuleConfigBuilder.firstModule() {
             "https://drive.google.com/file/d/1cGkWRTE6dcg99MKTiaixUlCoENkZmzKJ/view?usp=sharing"
         )
         additionalInfo(
-            "•[Вызов и цель НТИ](https://docs.google.com/presentation/d/1W-zetEnA6PfRRksG384_MRZVc12vg7IY/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n" +
-                    "•[Матрица НТИ 2\\.0](https://drive.google.com/file/d/1nrt2XbG1FW4Jd9l9-gkA1m3ecVgRlvgJ/view?usp=sharing)\n" +
-                    "•[Дорожная карта Реализации НТИ в Пермском крае](https://docs.google.com/document/d/1h79Enk6kRGDT7fPsAF74eh7LyYbOPg1r/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n" +
-                    "•[Критерии компаний НТИ](https://drive.google.com/file/d/1Pm1kROlOMfi23oCqzJRgZf1SWpxn6etO/view?usp=sharing)\n"
+            "• [Вызов и цель НТИ](https://docs.google.com/presentation/d/1W-zetEnA6PfRRksG384_MRZVc12vg7IY/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n" +
+                    "• [Матрица НТИ 2\\.0](https://drive.google.com/file/d/1nrt2XbG1FW4Jd9l9-gkA1m3ecVgRlvgJ/view?usp=sharing)\n" +
+                    "• [Дорожная карта Реализации НТИ в Пермском крае](https://docs.google.com/document/d/1h79Enk6kRGDT7fPsAF74eh7LyYbOPg1r/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n" +
+                    "• [Критерии компаний НТИ](https://drive.google.com/file/d/1Pm1kROlOMfi23oCqzJRgZf1SWpxn6etO/view?usp=sharing)\n"
         )
         task(
             "1\\. Проанализируйте ваш проект и его соответствие одному из рынков НТИ\n" +
