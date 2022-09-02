@@ -10,23 +10,29 @@ import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.*
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.AddInfoWord
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.AdditionalInfoString
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.DoTest
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.GetFinalTestUrl
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.GoodByeModule
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.LectureString
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NameOfLectureWord
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NextModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SpeakerWord
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.TaskNumber
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.TaskString
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.WelcomeModule
 
 
 fun StateMachineBuilder.doModuleFlow() {
-
     val moduleConfig: ModuleConfig by inject()
 
     role<Member> {
         state<StartModule> {
             onTransition {
-                val firstModule = moduleConfig.modules[0] ////потом вместо этого выбор модуля из доступных кнопок
+                val moduleNumb = 0////потом вместо нуля выбор номера из доступных кнопок
+                val firstModule = moduleConfig.modules[moduleNumb]
                 val startModule = ModuleState(firstModule.number, 0)
                 setState(startModule)
             }
@@ -34,13 +40,19 @@ fun StateMachineBuilder.doModuleFlow() {
         state<ModuleState> {
             onTransition {
                 val currModule = moduleConfig.modules[state.moduleNumber.value]
+                if (state.partIndex == 0) {
+                    sendTextMessage(
+                        it,
+                        WelcomeModule(currModule),
+                        parseMode = MarkdownV2
+                    )
+                }
                 val part = currModule.parts[state.partIndex]
                 when (part) {
                     is Lecture -> {
-                        val text = NameOfLectureWord + part.name + "\n" + SpeakerWord + part.speaker
                         sendTextMessage(
                             it,
-                            text,
+                            LectureString(part),
                             parseMode = MarkdownV2,
                             replyMarkup = inlineKeyboard {
                                 row {
@@ -53,10 +65,10 @@ fun StateMachineBuilder.doModuleFlow() {
                                         part.presentationUrl
                                     )
                                 }
-                                row{
+                                row {
                                     dataButton(
                                         NextPart,
-                                        "next"
+                                        "nextPart"
                                     )
                                 }
                             }
@@ -65,13 +77,13 @@ fun StateMachineBuilder.doModuleFlow() {
 
                     is AdditionalInfo -> sendTextMessage(
                         it,
-                        AddInfoWord + part.text,
+                        AdditionalInfoString(part),
                         parseMode = MarkdownV2,
                         replyMarkup = inlineKeyboard {
                             row {
                                 dataButton(
                                     NextPart,
-                                    "next"
+                                    "nextPart"
                                 )
                             }
                         }
@@ -80,31 +92,54 @@ fun StateMachineBuilder.doModuleFlow() {
                     is Task -> {
                         sendTextMessage(
                             it,
-                            TaskNumber + (part.number.value + 1) + "\n\n" + part.description,
+                            TaskString(part),
                             parseMode = MarkdownV2,///после этого ждать документ с заполненным шаблоном и отправлять дз треккеру
                             replyMarkup = inlineKeyboard {
                                 row {
                                     dataButton(
                                         NextPart,
-                                        "next"
+                                        "nextPart"
                                     )
                                 }
                             }
                         )
                     }
                 }
-                onDataCallbackQuery(Regex("next")) {
-                    var newState = ModuleState(state.moduleNumber, state.partIndex + 1)
-                    val maxPart = currModule.parts.lastIndex
-                    val maxModule = moduleConfig.modules.size
-                    if (state.partIndex == maxPart) {
-                        newState = ModuleState(moduleConfig.modules[state.moduleNumber.value + 1].number, 0)
-                    }
-                    if (state.moduleNumber.value + 1 == maxModule) {
-                        setState(StartModule)
-                    }
+            }
+            onDataCallbackQuery(Regex("nextPart")) {
+                val newState = ModuleState(state.moduleNumber, state.partIndex + 1)
+                val maxPart = moduleConfig.modules[state.moduleNumber.value].parts.lastIndex
+                val maxModule = moduleConfig.modules.lastIndex
+                if (state.partIndex == maxPart) {
+                    sendTextMessage(
+                        it.from,
+                        GoodByeModule(state.moduleNumber),
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(
+                                    DoTest,
+                                    GetFinalTestUrl(state.moduleNumber)!!
+                                )
+                                if (state.moduleNumber.value != maxModule){
+                                dataButton(
+                                    NextModule(state.moduleNumber),
+                                    "nextModule"
+                                )}
+                            }
+                        }
+                    )
+                }
+                else {
                     setState(newState)
                 }
+            }
+            onDataCallbackQuery(Regex("nextModule")){
+                val maxModule = moduleConfig.modules.lastIndex
+                if (state.moduleNumber.value == maxModule) {
+                    setState(StartModule) //// изменить на состояние выбора номера модуля
+                }
+                setState(ModuleState(moduleConfig.modules[state.moduleNumber.value + 1].number, 0))
             }
         }
     }

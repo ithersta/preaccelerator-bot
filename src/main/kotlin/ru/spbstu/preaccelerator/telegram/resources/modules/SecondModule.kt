@@ -6,7 +6,7 @@ import kotlin.time.Duration.Companion.days
 fun ModuleConfigBuilder.secondModule() {
     module("Определение ключевой деятельности компании", 7.days) {
         lecture(
-            "Идея \\– Проблема \\- Решение",
+            "Идея \\- Проблема \\- Решение",
             ModuleStrings.Speaker.AnastasiaRyl,
             "https://drive.google.com/file/d/1MME7LtJ22Gj5_uLoLFVHWi-aqbk9TMMf/view?usp=sharing",
             "https://drive.google.com/file/d/1D_i31Z6jwEAWp4lFZvOqjYdmwQiHDtZI/view?usp=sharing"
