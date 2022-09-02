@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.message.MarkdownV2
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
@@ -35,6 +36,7 @@ fun StateMachineBuilder.startFlow() {
                 sendTextMessage(
                     it,
                     MessageStrings.Start.AskContact,
+                    parseMode = MarkdownV2,
                     replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         requestContactButton(ButtonStrings.Start.SendContact)
                     }

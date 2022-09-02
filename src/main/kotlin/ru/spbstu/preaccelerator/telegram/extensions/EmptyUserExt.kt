@@ -6,7 +6,7 @@ import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
 import ru.spbstu.preaccelerator.domain.usecases.actions.EmptyUserActions
 
-object EmptyUserExt: KoinComponent {
+object EmptyUserExt : KoinComponent {
     private val emptyUserActions: EmptyUserActions by inject()
 
     fun EmptyUser.setPhoneNumber(phoneNumber: PhoneNumber) = with(emptyUserActions) {
