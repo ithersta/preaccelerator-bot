@@ -30,5 +30,5 @@ class ModuleBuilder(
         parts.add(AdditionalInfo(text))
     }
 
-    fun build() = Module(number, name, duration,finalTestUrl, parts)
+    fun build() = Module(number, name, duration, finalTestUrl, parts)
 }

@@ -7,16 +7,16 @@ class Lecture(
     val speaker: String,
     val url: String,
     val presentationUrl: String,
-): ModulePart
+) : ModulePart
 
 class Task(
     val number: Number,
     val description: String
-): ModulePart {
+) : ModulePart {
     @JvmInline
     value class Number(val value: Int)
 }
 
 class AdditionalInfo(
     val text: String
-): ModulePart
+) : ModulePart

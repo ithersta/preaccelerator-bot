@@ -1,7 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import ru.spbstu.preaccelerator.domain.entities.Team
-import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 
 // TODO: Всё переписать
 object MessageStrings {
@@ -9,14 +8,14 @@ object MessageStrings {
         const val AskContact = "TODO"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
-        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы треккер команд ${teams.joinToString { it.name }}"
+        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}"
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
     }
 
     object Who {
         const val Empty = "Твоего номера нет в базе"
         const val Curator = "Вы куратор"
-        fun tracker(teams: List<Team>) = "Вы треккер команд ${teams.joinToString { it.name }}"
+        fun tracker(teams: List<Team>) = "Вы трекер команд ${teams.joinToString { it.name }}"
         fun member(team: Team) = "Ты участник команды ${team.name}"
     }
 

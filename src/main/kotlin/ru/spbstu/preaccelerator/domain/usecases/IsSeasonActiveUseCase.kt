@@ -1,7 +1,6 @@
 package ru.spbstu.preaccelerator.domain.usecases
 
 import org.koin.core.annotation.Single
-//import ru.spbstu.preaccelerator.domain.entities.StepConfig
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.repository.SeasonStartRepository
 import java.time.OffsetDateTime

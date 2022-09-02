@@ -1,6 +1,5 @@
 package ru.spbstu.preaccelerator.domain.entities
 
-import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 
 class Team(

@@ -10,13 +10,13 @@ class ModuleConfig(
     val fullDuration = modules.fold(Duration.ZERO) { acc, module -> acc + module.duration }
 }
 
-class Module (
+class Module(
     val number: Number,
     val name: String,
     val duration: Duration,
     val finalTestUrl: String,
     val parts: List<ModulePart>
-){
+) {
     @JvmInline
     @Serializable
     value class Number(val value: Int)

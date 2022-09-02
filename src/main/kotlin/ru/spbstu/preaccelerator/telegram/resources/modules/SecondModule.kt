@@ -4,7 +4,8 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.secondModule() {
-    module("Определение ключевой деятельности компании", 7.days,
+    module(
+        "Определение ключевой деятельности компании", 7.days,
         "https://docs.google.com/forms/d/e/1FAIpQLSdmePLdpDhublloE7rn0K1hwuqwf4uMTwBBfi2XWehrOBwqfQ/viewform?usp=sf_link"
     ) {
         lecture(
@@ -75,7 +76,7 @@ fun ModuleConfigBuilder.secondModule() {
                     "3\\. Определитесь какой минимальный функционал необходим\n" +
                     "4\\. Определитесь будете ли вы использовать существующие сервисы/готовые решения для вашего MVP\n" +
                     "5\\. Решите какой тип MVP больше всего подходит для вашего продукта\n" +
-                    "6\\. Вы можете использовать шаблон [\\“MVP продукта\\”](https://docs.google.com/document/d/1Buk73Q5Sni-0INC1WltR1feZS7MiqWjp/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n"
+                    "6\\. Вы можете использовать шаблон [“MVP продукта”](https://docs.google.com/document/d/1Buk73Q5Sni-0INC1WltR1feZS7MiqWjp/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)\n"
         )
     }
 }

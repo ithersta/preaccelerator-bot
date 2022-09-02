@@ -1,8 +1,5 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import kotlinx.serialization.Serializable
-import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-
 object MenuStrings {
     const val Back = "⬅️ Назад"
 
@@ -13,7 +10,7 @@ object MenuStrings {
             const val Button = "Разослать информацию"
             const val Message = "Выберите получателей"
             const val ToAll = "Все"
-            const val ToTrackers = "Треккеры"
+            const val ToTrackers = "Трекеры"
             const val ToSelectTeams = "Выбрать отдельные команды"
         }
 
@@ -21,13 +18,13 @@ object MenuStrings {
             const val Button = "Получить статистику"
             const val Message = "Выберите, какую статистику выгрузить"
             const val Teams = "Выгрузить прогресс команд"
-            const val Trackers = "Выгрузить прогресс треккеров"
+            const val Trackers = "Выгрузить прогресс трекеров"
         }
 
         object AddUsers {
             const val Button = "Дополнить базу пользователей"
             const val Message = "Выберите, кого добавить"
-            const val MembersAndTrackers = "Добавить участников и треккеров"
+            const val MembersAndTrackers = "Добавить участников и трекеров"
             const val Curator = "Добавить куратора"
         }
 
@@ -35,7 +32,7 @@ object MenuStrings {
     }
 
     object Tracker {
-        const val Message = "Меню треккера"
+        const val Message = "Меню трекера"
 
         object Meetings {
             const val Button = "Встречи"
