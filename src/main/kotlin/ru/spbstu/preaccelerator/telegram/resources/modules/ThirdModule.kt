@@ -12,11 +12,11 @@ fun ModuleConfigBuilder.thirdModule() {
             "https://drive.google.com/file/d/17EKYh9orV7SLQQEMJvFeOyDSWbWWoOpF/view?usp=sharing"
         )
         additionalInfo(
-            "[Оценить рынок стартапа за полчаса \\— метод TAM\\-SAM\\-SOM](https://vc.ru/finance/159115-ocenit-rynok-startapa-za-polchasa-metod-tam-sam-som)\n" +
-                    "[Оценка объёма рынка\\. Кому надо и зачем?](https://vc.ru/marketing/63539-ocenka-obema-rynka-komu-nado-i-zachem)\n" +
-                    "[Анализ рынка: обзор лучших практик](http://powerbranding.ru/rynok/plan-analiza/)\n" +
-                    "[Как бесплатно провести исследование рынка в 2020 году: 35 авторитетных источников](https://vc.ru/services/141040-kak-besplatno-provesti-issledovanie-rynka-v-2020-godu-35-avtoritetnyh-istochnikov)\n" +
-                    "[Как узнать за один вечер почти все о целевом рынке, не потратив ни рубля](https://zen.yandex.ru/media/id/5ad3807fdd2484cb62707d89/kak-uznat-za-odin-vecher-pochti-vse-o-celevom-rynke-ne-potrativ-ni-rublia-5b07eda555876b13d0c42fa6?utm_source=serp)"
+            "•[Оценить рынок стартапа за полчаса \\- метод TAM\\-SAM\\-SOM](https://vc.ru/finance/159115-ocenit-rynok-startapa-za-polchasa-metod-tam-sam-som)\n" +
+                    "•[Оценка объёма рынка\\. Кому надо и зачем?](https://vc.ru/marketing/63539-ocenka-obema-rynka-komu-nado-i-zachem)\n" +
+                    "•[Анализ рынка: обзор лучших практик](http://powerbranding.ru/rynok/plan-analiza/)\n" +
+                    "•[Как бесплатно провести исследование рынка в 2020 году: 35 авторитетных источников](https://vc.ru/services/141040-kak-besplatno-provesti-issledovanie-rynka-v-2020-godu-35-avtoritetnyh-istochnikov)\n" +
+                    "•[Как узнать за один вечер почти все о целевом рынке, не потратив ни рубля](https://zen.yandex.ru/media/id/5ad3807fdd2484cb62707d89/kak-uznat-za-odin-vecher-pochti-vse-o-celevom-rynke-ne-potrativ-ni-rublia-5b07eda555876b13d0c42fa6?utm_source=serp)"
         )
         task(
             "1\\. Найдите экспертные оценки емкости рынка, на который вы планируете выходить\\.\n" +
@@ -32,8 +32,8 @@ fun ModuleConfigBuilder.thirdModule() {
             "https://drive.google.com/file/d/16Wp57AIrj3NjJEuPT1GeujGoQe9C4Xqn/view?usp=sharing"
         )
         additionalInfo(
-            "[Анализ конкурентов на практике: 10 шагов](http://powerbranding.ru/competition/analiz-konkurentov-primer/)\n" +
-                    "[Анализ конкурентов на практике: 10 шагов \\+ шаблон](https://vc.ru/marketing/181297-analiz-konkurentov-na-praktike-10-shagov-shablon)\n"
+            "•[Анализ конкурентов на практике: 10 шагов](http://powerbranding.ru/competition/analiz-konkurentov-primer/)\n" +
+                    "•[Анализ конкурентов на практике: 10 шагов \\+ шаблон](https://vc.ru/marketing/181297-analiz-konkurentov-na-praktike-10-shagov-shablon)\n"
         )
         task(
             "1\\. Составьте список прямых и косвенных конкурентов своего продукта/ проекта / бизнеса\\.\n" +

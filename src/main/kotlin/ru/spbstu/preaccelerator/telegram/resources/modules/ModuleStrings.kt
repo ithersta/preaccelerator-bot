@@ -41,7 +41,7 @@ object ModuleStrings {
     const val NameOfLectureWord = "*Тема лекции*: "
     const val WatchLecture = "Запись лекции"
     const val ShowPresentation = "Презентация"
-    const val AddInfoWord = "*Дополнительная информация*:\n "
+    const val AddInfoWord = "*Дополнительная информация*:\n"
     const val SpeakerWord = "*Спикер*: "
     const val NextPart = "Продолжить обучение"
     const val DoTest = "Пройти тест"
@@ -49,8 +49,8 @@ object ModuleStrings {
         "Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть\\-чуть… \n" +
                 "Отрепетируйте ваш питч и до встречи на демо\\-дне\\!\n"
 
-    fun WelcomeModule(module: Module) = "Модуль ${module.number.value + 1}\n" +
-            "Название: *${module.name}*"
+    fun WelcomeModule(module: Module) = "*Модуль ${module.number.value + 1}*\n" +
+            "*Название*: ${module.name}"
 
     fun NextModule(number: Module.Number) = "Модуль ${number.value + 2}"
     fun GoodByeModule(number: Module.Number) = "Вы закончили изучать материалы Модуля ${number.value + 1}\\. \n" +
@@ -62,8 +62,8 @@ object ModuleStrings {
 
     fun GetFinalTestUrl(number: Module.Number) = ModuleNumberToFinalTestUrl[number.value + 1]
 
-    fun LectureString(lect: Lecture) = NameOfLectureWord + lect.name + "\n" + SpeakerWord + lect.speaker
-    fun AdditionalInfoString(addInf: AdditionalInfo) = AddInfoWord + addInf.text
+    fun LectureString(lect: Lecture) = NameOfLectureWord + lect.name + "\n\n" + SpeakerWord + lect.speaker
+    fun AdditionalInfoString(addInf: AdditionalInfo) = AddInfoWord + "\n" + addInf.text
 
     fun TaskString(task: Task) = TaskNumberWord + (task.number.value + 1) + "\n\n" + task.description
 

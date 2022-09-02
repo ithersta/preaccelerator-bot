@@ -23,19 +23,19 @@ fun ModuleConfigBuilder.secondModule() {
             "https://drive.google.com/file/d/19GloXpaj_7BAnYcoFk4IeGZxLTpCFXni/view?usp=sharing"
         )
         additionalInfo(
-            "[Как составить портрет целевой аудитории и внедрить его в работу: готовый пример с job story](https://vc.ru/marketing/227648-kak-sostavit-portret-celevoy-auditorii-i-vnedrit-ego-v-rabotu-gotovyy-primer-s-job-story)\n" +
-                    "[Целевая аудитория в промышленном маркетинге и где её искать в Интернете?](https://vc.ru/marketing/209401-celevaya-auditoriya-v-promyshlennom-marketinge-i-gde-ee-iskat-v-internete)\n" +
-                    "[Как составить портрет клиента \\(целевой аудитории\\): инструкция с примерами](https://vc.ru/marketing/156147-kak-sostavit-portret-klienta-celevoy-auditorii-instrukciya-s-primerami)\n"
+            "•[Как составить портрет целевой аудитории и внедрить его в работу: готовый пример с job story](https://vc.ru/marketing/227648-kak-sostavit-portret-celevoy-auditorii-i-vnedrit-ego-v-rabotu-gotovyy-primer-s-job-story)\n" +
+                    "•[Целевая аудитория в промышленном маркетинге и где её искать в Интернете?](https://vc.ru/marketing/209401-celevaya-auditoriya-v-promyshlennom-marketinge-i-gde-ee-iskat-v-internete)\n" +
+                    "•[Как составить портрет клиента \\(целевой аудитории\\): инструкция с примерами](https://vc.ru/marketing/156147-kak-sostavit-portret-klienta-celevoy-auditorii-instrukciya-s-primerami)\n"
         )
         lecture(
-            "Разработка ценностного предложения\n",
+            "Разработка ценностного предложения",
             ModuleStrings.Speaker.AnastasiaOrz,
             "https://drive.google.com/file/d/1fueTQvK9ObtBuzaEXkERH6lRTl8ZeUZW/view?usp=sharing",
             "https://drive.google.com/drive/folders/1rwIBSEApQ3JvXpdo48mIAb3AH9hFmFMY"
         )
         additionalInfo(
-            "[Как создать ценностное предложение в b2b и привлечь покупателей\\. Принципы, методы, инструменты](https://vc.ru/marketing/178634-kak-sozdat-cennostnoe-predlozhenie-v-b2b-i-privlech-pokupateley-principy-metody-instrumenty)\n" +
-                    "[Как выявить потребности целевой аудитории и не придумать «коней в вакууме»](https://vc.ru/marketing/137965-kak-vyyavit-potrebnosti-celevoy-auditorii-i-ne-pridumat-koney-v-vakuume)\n"
+            "[•Как создать ценностное предложение в b2b и привлечь покупателей\\. Принципы, методы, инструменты](https://vc.ru/marketing/178634-kak-sozdat-cennostnoe-predlozhenie-v-b2b-i-privlech-pokupateley-principy-metody-instrumenty)\n" +
+                    "[•Как выявить потребности целевой аудитории и не придумать «коней в вакууме»](https://vc.ru/marketing/137965-kak-vyyavit-potrebnosti-celevoy-auditorii-i-ne-pridumat-koney-v-vakuume)\n"
         )
         task(
             "1\\. Проанализируйте свой продукт/проект и подумайте кто может быть целевой аудиторией? Какие потребности у этих людей? На каком рынке вы будете работать? B2B \\(вы будете продавать компаниям?\\) или B2C \\(вы будете продавать конечным потребителям физическим лицам?\\)\n" +
@@ -50,13 +50,13 @@ fun ModuleConfigBuilder.secondModule() {
             "https://drive.google.com/file/d/1XUmL42JJq-hC0RiQWInnLn64n2CdE9-4/view?usp=sharinghttps://drive.google.com/file/d/1XUmL42JJq-hC0RiQWInnLn64n2CdE9-4/view?usp=sharing"
         )
         additionalInfo(
-            "[Как проверять гипотезы с помощью проблемных интервью: пошаговая инструкция](https://vc.ru/marketing/156573-kak-proveryat-gipotezy-s-pomoshchyu-problemnyh-intervyu-poshagovaya-instrukciya)\n" +
-                    "[CustDev: способ узнать истинные потребности аудитории](https://vc.ru/u/431111-denis-smirnov/147643-custdev-sposob-uznat-istinnye-potrebnosti-auditorii)\n" +
-                    "[Секрет успешных стартапов\\. Minimum Viable Product: что это, и как его создают](https://vc.ru/marketing/139040-sekret-uspeshnyh-startapov-minimum-viable-product-chto-eto-i-kak-ego-sozdayut)\n" +
-                    "[Что такое MVP? Зачем он нужен и как его правильно создать?](https://spark.ru/startup/platpick/blog/55354/chto-takoe-mvp-zachem-on-nuzhen-i-kak-ego-pravilno-sozdat)\n" +
-                    "[StartTrack: проект Healbe \\- история успеха и опыт создателей](https://www.youtube.com/watch?v=6m92yJoaAgw&feature=emb_logo)\n" +
-                    "[Promobot: как российские роботы покорили целый мир](https://www.youtube.com/watch?v=jVuW06R7KS0&feature=emb_logo)\n" +
-                    "[Видео\\-ролик с MVP от Dropbox](https://www.youtube.com/watch?v=7QmCUDHpNzE&feature=emb_logo)"
+            "•[Как проверять гипотезы с помощью проблемных интервью: пошаговая инструкция](https://vc.ru/marketing/156573-kak-proveryat-gipotezy-s-pomoshchyu-problemnyh-intervyu-poshagovaya-instrukciya)\n" +
+                    "•[CustDev: способ узнать истинные потребности аудитории](https://vc.ru/u/431111-denis-smirnov/147643-custdev-sposob-uznat-istinnye-potrebnosti-auditorii)\n" +
+                    "•[Секрет успешных стартапов\\. Minimum Viable Product: что это, и как его создают](https://vc.ru/marketing/139040-sekret-uspeshnyh-startapov-minimum-viable-product-chto-eto-i-kak-ego-sozdayut)\n" +
+                    "•[Что такое MVP? Зачем он нужен и как его правильно создать?](https://spark.ru/startup/platpick/blog/55354/chto-takoe-mvp-zachem-on-nuzhen-i-kak-ego-pravilno-sozdat)\n" +
+                    "•[StartTrack: проект Healbe \\- история успеха и опыт создателей](https://www.youtube.com/watch?v=6m92yJoaAgw&feature=emb_logo)\n" +
+                    "•[Promobot: как российские роботы покорили целый мир](https://www.youtube.com/watch?v=jVuW06R7KS0&feature=emb_logo)\n" +
+                    "•[Видео\\-ролик с MVP от Dropbox](https://www.youtube.com/watch?v=7QmCUDHpNzE&feature=emb_logo)"
         )
         task(
            "1\\. Все, что вы написали в Задании 2 \\(используя шаблон “Портрет целевой аудитории”\\) \\-\\ это ваши гипотезы\n" +
