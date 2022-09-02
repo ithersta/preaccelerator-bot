@@ -15,7 +15,8 @@ class Module(
     val name: String,
     val duration: Duration,
     val finalTestUrl: String,
-    val parts: List<ModulePart>
+    val parts: List<ModulePart>,
+    val tasks: List<Task>
 ) {
     @JvmInline
     @Serializable
