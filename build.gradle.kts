@@ -17,7 +17,8 @@ repositories {
 }
 
 dependencies {
-    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.9.0")
+    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.10.1")
+    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.9.0")
     implementation("dev.inmo:tgbotapi:3.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
     implementation("org.postgresql:postgresql:42.5.0")
@@ -25,7 +26,7 @@ dependencies {
     implementation("app.cash.sqldelight:jdbc-driver:2.0.0-alpha03")
     implementation("io.insert-koin:koin-core:3.2.0")
     implementation("io.insert-koin:koin-annotations:1.0.1")
-    implementation("org.slf4j:slf4j-simple:1.7.36")
+    implementation("org.slf4j:slf4j-simple:2.0.0")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     implementation("org.apache.poi:poi:5.2.2")
     implementation("org.apache.poi:poi-ooxml:5.2.2")

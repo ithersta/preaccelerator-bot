@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.message.MarkdownV2
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
@@ -17,6 +18,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -34,6 +36,7 @@ fun StateMachineBuilder.startFlow() {
                 sendTextMessage(
                     it,
                     MessageStrings.Start.AskContact,
+                    parseMode = MarkdownV2,
                     replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         requestContactButton(ButtonStrings.Start.SendContact)
                     }
@@ -55,7 +58,7 @@ fun StateMachineBuilder.startFlow() {
                     is EmptyUser -> MessageStrings.Start.NoRoleAssigned
                     is Curator -> MessageStrings.Start.WelcomeCurator
                     is Member -> MessageStrings.Start.welcomeMember(user.team)
-                    is Tracker -> MessageStrings.Start.welcomeTracker(user.id)
+                    is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
                 setState(EmptyState)
