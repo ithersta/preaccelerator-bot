@@ -15,25 +15,20 @@ class AddTrackerTeamAndMemberUseCase(
     private val transactionWithResult: DatabaseTransactionWithResult
 ) {
     operator fun invoke(mapOfTeams: Map<PhoneNumber, String>, mapOfMembers: Map<PhoneNumber, String>) = transactionWithResult {
-        mapOfTeams.forEach { pair ->
-            val tracker = trackerRepository.get(pair.key)
-            val trackerId = if (tracker != null) {
-                tracker.id
-            } else {
-                trackerRepository.add(pair.key)
-            }
-            teamRepository.add(pair.value, trackerId)
+        mapOfTeams.forEach { (trackerPhoneNumber, teamName) ->
+            val trackerId = trackerRepository.add(trackerPhoneNumber)
+            teamRepository.add(teamName, trackerId)
         }
-        val setOfNotFindTeams = mutableSetOf<String>()
-        mapOfMembers.forEach { pair ->
-            val team = teamRepository.get(pair.value)
+        val notFoundTeams = mutableSetOf<String>()
+        mapOfMembers.forEach { (memberPhoneNumber, teamName) ->
+            val team = teamRepository.get(teamName)
             if (team == null) {
-                setOfNotFindTeams.add(pair.value)
+                notFoundTeams.add(teamName)
             } else {
-                memberRepository.add(pair.key, team.id)
+                memberRepository.add(memberPhoneNumber, team.id)
             }
         }
-        return@transactionWithResult setOfNotFindTeams
+        return@transactionWithResult notFoundTeams
     }
 
 }

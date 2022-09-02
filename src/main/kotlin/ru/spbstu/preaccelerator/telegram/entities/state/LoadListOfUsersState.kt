@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 object LoadListOfUsersState {
     @Serializable
-    object WaitingForLoadListOfUsers: DialogState
+    object WaitingForDocument: DialogState
 }

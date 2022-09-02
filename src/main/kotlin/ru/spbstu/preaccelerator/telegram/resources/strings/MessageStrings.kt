@@ -30,31 +30,26 @@ object MessageStrings {
     }
 
     object LoadListOfUsers {
-        const val LoadList = "загрузите xlsx таблицу со списками пользователей"
+        const val WaitDocument = "загрузите xlsx таблицу со списками пользователей"
         const val InvalidFile = "Файл поврежден или не является xlsx таблицей"
         fun badFormat(members: List<Int>?, teams: List<Int>?): String {
-            return if (members != null) {
-                "Неправильный формат таблицы участников в строках: " + if (members.size <= 5) {
-                    members.map { it.toString() }.joinToString { it }
+            return "${
+                if (members != null) {
+                    "Неправильный формат таблицы участников в строках: ${enumerationOfLimitedList(members, 5)}"
                 } else {
-                    members.subList(0, 5).map { it.toString() }
-                        .joinToString { it } + " и так далее. \n"
+                    ""
                 }
-            } else {
-                ""
-            } + if (teams != null) {
-                "Неправильный формат таблицы команд в строках: " + if (teams.size <= 5) {
-                    teams.map { it.toString() }.joinToString { it }
+            } ${
+                if (teams != null) {
+                    "Неправильный формат таблицы команд в строках: ${enumerationOfLimitedList(teams, 5)}"
                 } else {
-                    teams.subList(0, 5).map { it.toString() }
-                        .joinToString { it } + " и так далее."
+                    ""
                 }
-            } else {
-                ""
-            }
+            }"
         }
-        const val OkAddMembers = "Добавлено участников курсов: "
-        const val OkAddTeams = "Добавлено команд курсов: "
+
+        fun OkAddMembers(count: Int) = "Добавлено участников курсов: $count"
+        fun OkAddTeams(count: Int) = "Добавлено команд курсов: $count"
         const val NotFindTeam = "Не найдены трекеры для команд(ы), поэтому участники записанные в них не добавлены: "
     }
 
