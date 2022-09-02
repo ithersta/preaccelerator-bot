@@ -14,6 +14,7 @@ class Module (
     val number: Number,
     val name: String,
     val duration: Duration,
+    val finalTestUrl: String,
     val parts: List<ModulePart>
 ){
     @JvmInline

@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.seventhModule() {
-    module("Инвестиции", 7.days) {
+    module("Инвестиции", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLScltP7Wly_DFocPfPkoJG4utBcgFfAiqqwbFumh0kN4FJKKtg/viewform?usp=sf_link"
+    ) {
         lecture(
             "Инструменты привлечения государственного финансирования",
             ModuleStrings.Speaker.KseniaShip,

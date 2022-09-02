@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.fifthModule() {
-    module("Экономика проекта", 7.days) {
+    module("Экономика проекта", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLScmxyMXsFBoW5mMGoWsOD3Ckzy2vn-5JpI1QVToK_-hGNhvoA/viewform?usp=sf_link"
+    ) {
         lecture(
             "Финансовое моделирование \\(бюджет доходов и расходов\\)",
             ModuleStrings.Speaker.KseniaShip,

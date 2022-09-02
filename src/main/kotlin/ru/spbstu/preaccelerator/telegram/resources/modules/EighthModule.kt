@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.eighthModule() {
-    module("Оформление и презентация проекта", 7.days) {
+    module("Оформление и презентация проекта", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLSfw4SQ5WBqe2f8WcifHZGTNm181xVIq9U98kdurX-t_B1uv3g/viewform?usp=sf_link"
+    ) {
         lecture(
             "Структура и составляющие презентации для разных видов аудитории",
             ModuleStrings.Speaker.AnastasiaRyl,

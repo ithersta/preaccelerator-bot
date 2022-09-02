@@ -12,14 +12,11 @@ import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.AdditionalInfoString
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.DoTest
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.GetFinalTestUrl
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.GoodByeModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.LectureString
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NameOfLectureWord
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NextModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.ShowPresentation
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SpeakerWord
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.TaskString
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.WelcomeModule
@@ -113,13 +110,13 @@ fun StateMachineBuilder.doModuleFlow() {
                 if (state.partIndex == maxPart) {
                     sendTextMessage(
                         it.from,
-                        GoodByeModule(state.moduleNumber),
+                        GoodByeModule(moduleConfig, state.moduleNumber),
                         parseMode = MarkdownV2,
                         replyMarkup = inlineKeyboard {
                             row {
                                 urlButton(
                                     DoTest,
-                                    GetFinalTestUrl(state.moduleNumber)!!
+                                    moduleConfig.modules[state.moduleNumber.value].finalTestUrl
                                 )
                                 if (state.moduleNumber.value != maxModule){
                                 dataButton(

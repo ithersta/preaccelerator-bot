@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.thirdModule() {
-    module("Анализ окружения", 7.days) {
+    module("Анализ окружения", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLSeXkoD0ClGzamFBaJXyQWvYg7LKZuop2_1BL_L30jZ9mDOkfg/viewform?usp=sf_link"
+    ) {
         lecture(
             "Анализ рынка",
             ModuleStrings.Speaker.IrinaShafr,

@@ -9,9 +9,10 @@ class ModuleConfigBuilder {
     fun module(
         name: String,
         duration: Duration,
+        finalTestUrl: String,
         block: ModuleBuilder.() -> Unit
     ){
-        modules.add(ModuleBuilder(Module.Number(modules.size), name, duration, tasks).apply(block).build())
+        modules.add(ModuleBuilder(Module.Number(modules.size), name, duration, finalTestUrl, tasks).apply(block).build())
     }
 
     fun build() = ModuleConfig(modules, tasks)

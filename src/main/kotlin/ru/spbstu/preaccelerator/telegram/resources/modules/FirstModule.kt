@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.firstModule() {
-    module("Национальная технологическая инициатива\\. Жизненный цикл проекта\\. Команда проекта\\. Технологии", 7.days) {
+    module("Национальная технологическая инициатива\\. Жизненный цикл проекта\\. Команда проекта\\. Технологии", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLScRzZ51ctdots21Bu6GgaBrasioxQtiRdkFxr633515Nii6xA/viewform?usp=sf_link"
+    ) {
         lecture(
             "Введение: что такое стартап и зачем он нужен?",
             ModuleStrings.Speaker.AlenaFranc,

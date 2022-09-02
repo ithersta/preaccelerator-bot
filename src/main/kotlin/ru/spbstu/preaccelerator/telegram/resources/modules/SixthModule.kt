@@ -4,7 +4,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.sixthModule() {
-    module("Юридические основы\\. Управление проектами\\.", 7.days) {
+    module("Юридические основы\\. Управление проектами\\.", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLScL-gqj7sasamzgQ1lKPo1VXC2rwuRle0TlyNTgk8SE6BuVFg/viewform?usp=sf_link"
+    ) {
         lecture(
             "Как защитить интеллектуальную собственность?",
             ModuleStrings.Speaker.DaryaZern,

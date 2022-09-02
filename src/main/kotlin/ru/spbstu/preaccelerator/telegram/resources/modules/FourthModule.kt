@@ -4,7 +4,10 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfigBuilder
 import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.fourthModule() {
-    module("Коммерциализация", 7.days) {
+    module(
+        "Коммерциализация", 7.days,
+        "https://docs.google.com/forms/d/e/1FAIpQLSdimYv8sKlNjPZB7ZqNGZ2qJfDAuXocEFHfChAdDzQbCUoCaw/viewform?usp=sf_link"
+    ) {
         lecture(
             "Бизнес\\-модель проекта и модели монетизации",
             ModuleStrings.Speaker.AlexanderMalecev,
