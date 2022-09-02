@@ -34,6 +34,10 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
         TrackerAdapter = Tracker.Adapter(
             idAdapter = TrackerIdAdapter,
             phoneNumberAdapter = PhoneNumberAdapter
+        ),
+        HomeworkAdapter = Homework.Adapter(
+            teamIdAdapter = TeamIdAdapter,
+            taskNumberAdapter = TaskNumberAdapter
         )
     ).also {
         runCatching {
