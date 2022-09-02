@@ -22,7 +22,7 @@ object ModuleStrings {
         val KseniaShip =
             "Ксения Шипулина, Руководитель направления привлечения инвесторов Агентство инвестиционного развития Пермского края"
         val RustamBag = "Рустам Багизов, Тренер по публичным выступлениям, речи, работе в кадре;\n" +
-                "Cпикер Деловой Среды СБЕРА; Шеф-редактор РБК\\-Пермь"
+                "Cпикер Деловой Среды СБЕРА; Шеф\\-редактор РБК\\-Пермь"
 
     }
 
@@ -39,21 +39,28 @@ object ModuleStrings {
 
     const val TaskNumberWord = "Пришло время выполнить задание №"
     const val NameOfLectureWord = "*Тема лекции*: "
-    const val WatchLecture = "Перейти к просмотру лекции"
-    const val ShowPresentation = "Посмотреть презентацию"
+    const val WatchLecture = "Запись лекции"
+    const val ShowPresentation = "Презентация"
     const val AddInfoWord = "*Дополнительная информация*:\n "
     const val SpeakerWord = "*Спикер*: "
     const val NextPart = "Продолжить обучение"
     const val DoTest = "Пройти тест"
+    const val Congrats =
+        "Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть\\-чуть… \n" +
+                "Отрепетируйте ваш питч и до встречи на демо\\-дне\\!\n"
 
-    fun WelcomeModule(module: Module) = "Модуль ${module.number.value+1}\n" +
+    fun WelcomeModule(module: Module) = "Модуль ${module.number.value + 1}\n" +
             "Название: *${module.name}*"
 
     fun NextModule(number: Module.Number) = "Модуль ${number.value + 2}"
-    fun GoodByeModule(number: Module.Number) = "Вы закончили изучать материалы Модуля ${number.value+1}\\. \n" +
-            "Пройдите  короткий тест и приступайте к изучению Модуля ${number.value + 2}\\! \n"
+    fun GoodByeModule(number: Module.Number) = "Вы закончили изучать материалы Модуля ${number.value + 1}\\. \n" +
+            if (number.value != 7) {
+                "Пройдите  короткий тест и приступайте к изучению Модуля ${number.value + 2}\\! \n"
+            } else {
+                Congrats
+            }
 
-    fun GetFinalTestUrl(number: Module.Number) = ModuleNumberToFinalTestUrl[number.value+1]
+    fun GetFinalTestUrl(number: Module.Number) = ModuleNumberToFinalTestUrl[number.value + 1]
 
     fun LectureString(lect: Lecture) = NameOfLectureWord + lect.name + "\n" + SpeakerWord + lect.speaker
     fun AdditionalInfoString(addInf: AdditionalInfo) = AddInfoWord + addInf.text
