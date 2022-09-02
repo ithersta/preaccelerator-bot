@@ -1,7 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
 import kotlinx.serialization.Serializable
-import ru.spbstu.preaccelerator.domain.entities.module.Module
 
 object MenuState {
     object Curator {
