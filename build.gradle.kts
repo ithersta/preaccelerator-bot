@@ -26,7 +26,7 @@ dependencies {
     implementation("app.cash.sqldelight:jdbc-driver:2.0.0-alpha03")
     implementation("io.insert-koin:koin-core:3.2.0")
     implementation("io.insert-koin:koin-annotations:1.0.1")
-    implementation("org.slf4j:slf4j-simple:1.7.36")
+    implementation("org.slf4j:slf4j-simple:2.0.0")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     ksp("io.insert-koin:koin-ksp-compiler:1.0.1")
     testImplementation(kotlin("test"))
