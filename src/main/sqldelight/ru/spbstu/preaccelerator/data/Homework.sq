@@ -12,6 +12,8 @@ CREATE TABLE Homework (
 add:
 INSERT INTO Homework
 VALUES(:teamId, :taskNumber, :url, :timestamp)
+ON CONFLICT(teamId, taskNumber)
+DO NOTHING
 RETURNING 1;
 
 getByTeamId:

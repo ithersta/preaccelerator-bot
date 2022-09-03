@@ -1,8 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
-import dev.inmo.tgbotapi.types.MessageIdentifier
 import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.module.Module
+import ru.spbstu.preaccelerator.domain.entities.module.Task
 
 @Serializable
 class ModuleState(
@@ -15,7 +15,6 @@ object StartModule : DialogState
 
 @Serializable
 class WaitingForHomework(
-    val moduleNumber: Module.Number,
-    val partIndex: Int,
-    val messageId: MessageIdentifier
+    val returnTo: ModuleState,
+    val taskNumber: Task.Number
 ) : DialogState

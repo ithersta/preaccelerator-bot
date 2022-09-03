@@ -4,12 +4,12 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.answers.answer
-import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
-import dev.inmo.tgbotapi.utils.PreviewFeature
+import io.ktor.http.*
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
@@ -20,7 +20,9 @@ import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
-import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.isHomeworkDone
+import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
+import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.module
+import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
@@ -35,9 +37,8 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import java.net.URL
 
-
-@OptIn(PreviewFeature::class)
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
 
@@ -52,17 +53,16 @@ fun StateMachineBuilder.doModuleFlow() {
         }
         state<ModuleState> {
             onTransition {
-                val currentModule = moduleConfig.modules[state.moduleNumber.value]
-                require(currentModule in user.team.availableModules)
+                require(state.module in user.team.availableModules)
                 if (state.partIndex == 0) {
                     sendTextMessage(
                         it,
-                        welcomeModule(currentModule),
+                        welcomeModule(state.module),
                         parseMode = MarkdownV2,
                         replyMarkup = ReplyKeyboardRemove()
                     )
                 }
-                when (val part = currentModule.parts[state.partIndex]) {
+                when (val part = state.part) {
                     is Lecture -> {
                         sendTextMessage(
                             it,
@@ -104,11 +104,11 @@ fun StateMachineBuilder.doModuleFlow() {
                     )
 
                     is Task -> {
-                        if (user.team.isHomeworkDone(part.number)) {
+                        val homework = user.team.getHomework(part.number)
+                        if (homework != null) {
                             sendTextMessage(
                                 it,
-                                doneTaskMessage(part),
-                                parseMode = MarkdownV2,
+                                doneTaskMessage(part, homework.url),
                                 replyMarkup = inlineKeyboard {
                                     row {
                                         dataButton(
@@ -133,7 +133,7 @@ fun StateMachineBuilder.doModuleFlow() {
                                     row {
                                         dataButton(
                                             ButtonStrings.Module.SendHomework,
-                                            "send"
+                                            "send ${part.number.value}"
                                         )
                                     }
                                 }
@@ -184,50 +184,55 @@ fun StateMachineBuilder.doModuleFlow() {
                 setState(ModuleState(moduleNumber, 0))
             }
             onDataCallbackQuery(Regex("done")) {
-                setState(state)
+                val task = state.part as? Task ?: return@onDataCallbackQuery
+                val homework = user.team.getHomework(task.number)
+                if (homework != null) {
+                    setState(state)
+                    answer(it)
+                } else {
+                    answer(it, showAlert = true, text = ModuleStrings.HomeworkNotSentAlert)
+                }
             }
-            onDataCallbackQuery(Regex("send")) {
-                val message = sendTextMessage(
-                    it.from,
-                    SendHomework,
-                    replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
-                        simpleButton(ButtonStrings.ChangedMyMind)
-                    }
-                )
-                setState(WaitingForHomework(state.moduleNumber, state.partIndex, message.messageId))
+            onDataCallbackQuery(Regex("send \\d+")) {
+                answer(it)
+                val taskNumber = Task.Number(it.data.split(' ').last().toInt())
+                setState(WaitingForHomework(state, taskNumber))
             }
         }
         state<WaitingForHomework> {
-            onText(ButtonStrings.ChangedMyMind) {
-                setState(ModuleState(state.moduleNumber, state.partIndex))
+            onTransition {
+                sendTextMessage(
+                    it,
+                    SendHomework,
+                    replyMarkup = flatInlineKeyboard {
+                        dataButton(ButtonStrings.ChangedMyMind, "cancel")
+                    }
+                )
             }
-            onText {
-                val currentModule = moduleConfig.modules[state.moduleNumber.value]
-                val part = currentModule.parts[state.partIndex]
-                if (part !is Task) {
-                    setState(ModuleState(state.moduleNumber, state.partIndex))
+            onDataCallbackQuery(Regex("cancel")) {
+                setState(state.returnTo)
+            }
+            onText { message ->
+                val task = moduleConfig.tasks.first { it.number == state.taskNumber }
+                val url = runCatching { URL(message.content.text) }.getOrElse {
+                    sendTextMessage(message.chat, ModuleStrings.Error.MalformedHomeworkUrl)
                     return@onText
                 }
-                val url = it.content.text
-                if (!url.startsWith("https://")) {
-                    sendTextMessage(it.chat, ModuleStrings.Error.MalformedHomeworkUrl)
-                    return@onText
-                }
-                if (user.team.addHomework(part.number, url)) {
+                if (!user.team.addHomework(task.number, url.toString())) {
                     sendTextMessage(
-                        chat = it.chat,
-                        text = ModuleStrings.homeworkAdded(part, url),
-                        replyMarkup = ReplyKeyboardRemove()
-                    )
-                } else {
-                    sendTextMessage(
-                        chat = it.chat,
-                        text = ModuleStrings.Error.HomeworkWasAlreadyAdded,
-                        replyMarkup = ReplyKeyboardRemove()
+                        chat = message.chat,
+                        text = ModuleStrings.Error.HomeworkWasAlreadyAdded
                     )
                 }
-                setState(ModuleState(state.moduleNumber, state.partIndex))
+                setState(state.returnTo)
             }
         }
     }
+}
+
+object ModuleStateExt : KoinComponent {
+    private val moduleConfig: ModuleConfig by inject()
+
+    val ModuleState.module get() = moduleConfig.modules[moduleNumber.value]
+    val ModuleState.part get() = module.parts[partIndex]
 }

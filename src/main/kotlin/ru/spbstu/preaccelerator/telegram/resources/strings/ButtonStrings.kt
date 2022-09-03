@@ -10,7 +10,7 @@ object ButtonStrings {
         const val ShowPresentation = "Презентация"
         const val NextPart = "Продолжить обучение"
         const val DoTest = "Пройти тест"
-        const val HomeworkAlreadyDone = "Другой участник уже отправил его"
+        const val HomeworkAlreadyDone = "Уже отправлено другим участником"
         const val SendHomework = "Отправить домашнее задание"
     }
 

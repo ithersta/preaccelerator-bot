@@ -27,12 +27,13 @@ object ModuleStrings {
         const val HomeworkWasAlreadyAdded = "Ваша команда уже выполнила это задание"
     }
 
+    const val SendHomework = "Пришлите ссылку на выполненное задание в чат"
+    const val HomeworkNotSentAlert = "Ваша команда ещё не отправила это задание"
+
     private val Congrats = """
         |Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть\-чуть…
         |Отрепетируйте ваш питч и до встречи на демо\-дне\!
     """.trimMargin()
-
-    const val SendHomework = "Пришлите ссылку на выполненное задание в чат"
 
     fun welcomeModule(module: Module) = """
         |*Модуль ${module.number.value + 1}*
@@ -70,14 +71,8 @@ object ModuleStrings {
         |${task.description}
     """.trimMargin()
 
-    fun doneTaskMessage(task: Task) = """
-        |✅ Ваша команда выполнила задание №${task.number.value + 1}
-        |
-        |${task.description}
-    """.trimMargin()
-
-    fun homeworkAdded(task: Task, url: String) = """
-        |Вы добавили ссылку на выполненное задание №${task.number.value + 1}:
+    fun doneTaskMessage(task: Task, url: String) = """
+        |✅ Ваша команда отправила ответ на задание №${task.number.value + 1}:
         |$url
     """.trimMargin()
 }

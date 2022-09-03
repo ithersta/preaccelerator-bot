@@ -20,6 +20,6 @@ class TeamActions(
     fun Team.addHomework(taskNumber: Task.Number, url: String, at: OffsetDateTime) =
         homeworkRepository.add(id, taskNumber, url, at)
 
-    fun Team.isHomeworkDone(taskNumber: Task.Number) =
-        homeworkRepository.get(id, taskNumber) != null
+    fun Team.getHomework(taskNumber: Task.Number) =
+        homeworkRepository.get(id, taskNumber)
 }

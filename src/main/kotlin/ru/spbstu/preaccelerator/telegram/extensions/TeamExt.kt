@@ -15,6 +15,6 @@ object TeamExt : KoinComponent {
     fun Team.addHomework(taskNumber: Task.Number, url: String) =
         with(actions) { addHomework(taskNumber, url, OffsetDateTime.now()) }
 
-    fun Team.isHomeworkDone(taskNumber: Task.Number) =
-        with(actions) { isHomeworkDone(taskNumber) }
+    fun Team.getHomework(taskNumber: Task.Number) =
+        with(actions) { getHomework(taskNumber) }
 }
