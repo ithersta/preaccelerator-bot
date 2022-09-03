@@ -8,7 +8,6 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
-import io.ktor.http.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
@@ -205,7 +204,7 @@ fun StateMachineBuilder.doModuleFlow() {
                     it,
                     SendHomework,
                     replyMarkup = flatInlineKeyboard {
-                        dataButton(ButtonStrings.ChangedMyMind, "cancel")
+                        dataButton(ButtonStrings.Cancel, "cancel")
                     }
                 )
             }
@@ -230,7 +229,7 @@ fun StateMachineBuilder.doModuleFlow() {
     }
 }
 
-object ModuleStateExt : KoinComponent {
+private object ModuleStateExt : KoinComponent {
     private val moduleConfig: ModuleConfig by inject()
 
     val ModuleState.module get() = moduleConfig.modules[moduleNumber.value]
