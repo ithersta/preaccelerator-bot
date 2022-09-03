@@ -1,10 +1,25 @@
-import ru.spbstu.preaccelerator.domain.entities.Homework;
+import ru.spbstu.preaccelerator.domain.entities.module.Task;
 import ru.spbstu.preaccelerator.domain.entities.Team;
 
 CREATE TABLE Homework (
-  id BIGSERIAL AS Homework.Id PRIMARY KEY,
   teamId BIGINT AS Team.Id NOT NULL,
-  stepNumber INT NOT NULL,
+  taskNumber INT AS Task.Number NOT NULL,
   url TEXT NOT NULL,
-  timestamp TIMESTAMP WITH TIME ZONE NOT NULL
+  timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+  PRIMARY KEY(teamId, taskNumber)
 );
+
+add:
+INSERT INTO Homework
+VALUES(:teamId, :taskNumber, :url, :timestamp)
+ON CONFLICT(teamId, taskNumber)
+DO NOTHING
+RETURNING 1;
+
+getByTeamId:
+SELECT * FROM Homework
+WHERE teamId = :teamId;
+
+get:
+SELECT * FROM Homework
+WHERE teamId = :teamId AND taskNumber = :taskNumber;
