@@ -22,6 +22,14 @@ object ModuleStrings {
                 "Cпикер Деловой Среды СБЕРА; Шеф\\-редактор РБК\\-Пермь"
     }
 
+    object Error {
+        const val MalformedHomeworkUrl = "Отправьте ссылку на задание"
+        const val HomeworkWasAlreadyAdded = "Ваша команда уже выполнила это задание"
+    }
+
+    const val SendHomework = "Пришлите ссылку на выполненное задание в чат"
+    const val HomeworkNotSentAlert = "Ваша команда ещё не отправила это задание"
+
     private val Congrats = """
         |Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть\-чуть…
         |Отрепетируйте ваш питч и до встречи на демо\-дне\!
@@ -61,5 +69,10 @@ object ModuleStrings {
         |Пришло время выполнить задание №${task.number.value + 1}
         |
         |${task.description}
+    """.trimMargin()
+
+    fun doneTaskMessage(task: Task, url: String) = """
+        |✅ Ваша команда отправила ответ на задание №${task.number.value + 1}:
+        |$url
     """.trimMargin()
 }

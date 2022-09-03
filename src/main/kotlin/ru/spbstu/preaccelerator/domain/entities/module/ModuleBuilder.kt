@@ -7,13 +7,13 @@ class ModuleBuilder(
     private val name: String,
     private val duration: Duration,
     private val finalTestUrl: String,
-    private val tasks: MutableList<Task>
+    private val allTasks: MutableList<Task>
 ) {
     private val parts = mutableListOf<ModulePart>()
 
     fun task(description: String) {
-        val task = Task(Task.Number(tasks.size), description)
-        tasks.add(task)
+        val task = Task(Task.Number(allTasks.size), description)
+        allTasks.add(task)
         parts.add(task)
     }
 
@@ -30,5 +30,5 @@ class ModuleBuilder(
         parts.add(AdditionalInfo(text))
     }
 
-    fun build() = Module(number, name, duration, finalTestUrl, parts)
+    fun build() = Module(number, name, duration, finalTestUrl, parts, parts.filterIsInstance<Task>())
 }
