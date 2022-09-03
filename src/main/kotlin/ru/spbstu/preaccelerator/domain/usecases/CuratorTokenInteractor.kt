@@ -1,7 +1,6 @@
 package ru.spbstu.preaccelerator.domain.usecases
 
 import dev.inmo.tgbotapi.types.UserId
-import mu.KotlinLogging
 import org.koin.core.annotation.Single
 import ru.spbstu.preaccelerator.domain.repository.CuratorRepository
 import java.security.SecureRandom
