@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.buttons.SimpleKeyboardButton
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -38,10 +39,14 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import java.net.URL
 
+private fun arrayOfSimpleKeyboardButtons(map: Map<String, Int>): Array<SimpleKeyboardButton> {
+    return map.map { SimpleKeyboardButton(it.key) }.toTypedArray()
+}
+
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
-
     role<Member> {
+        var number  = 0
         state<StartModule> {
             onTransition {
                 sendTextMessage(

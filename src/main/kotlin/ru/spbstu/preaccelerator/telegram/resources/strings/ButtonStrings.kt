@@ -19,16 +19,15 @@ object ButtonStrings {
         const val Model8 = "Оформление и презентация проекта"
     }
 
-    //TODO: map
-    val listOfModels = mapOf<Int, String>(
-        1 to Models.Model1,
-        2 to Models.Model2,
-        3 to Models.Model3,
-        4 to Models.Model4,
-        5 to Models.Model5,
-        6 to Models.Model6,
-        7 to Models.Model7,
-        8 to Models.Model8
+    val listOfModels = mapOf<String, Int>(
+        Models.Model1 to 0,
+        Models.Model2 to 1,
+        Models.Model3 to 2,
+        Models.Model4 to 3,
+        Models.Model5 to 4,
+        Models.Model6 to 5,
+        Models.Model7 to 6,
+        Models.Model8 to 7
     )
 
 
