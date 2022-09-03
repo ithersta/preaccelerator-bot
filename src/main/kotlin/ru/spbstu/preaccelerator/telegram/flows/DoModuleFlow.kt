@@ -44,12 +44,24 @@ fun StateMachineBuilder.doModuleFlow() {
     role<Member> {
         state<StartModule> {
             onTransition {
-                val moduleNumb = 0////потом вместо нуля выбор номера из доступных кнопок
+                sendTextMessage(
+                    it, ButtonStrings.ChooseStep,
+                    replyMarkup = ReplyKeyboardMarkup(
+                        buttons = arrayOfSimpleKeyboardButtons(ButtonStrings.listOfModels),
+                        resizeKeyboard = true, oneTimeKeyboard = true
+                    )
+                )
+            }
+            onText { message ->
+                val model = message.content.text
+                number = ButtonStrings.listOfModels[model]!!
+                val moduleNumb = number
                 val firstModule = moduleConfig.modules[moduleNumb]
                 val startModule = ModuleState(firstModule.number, 0)
                 setState(startModule)
             }
         }
+
         state<ModuleState> {
             onTransition {
                 require(state.module in user.team.availableModules)

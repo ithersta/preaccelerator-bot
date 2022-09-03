@@ -17,3 +17,4 @@ fun RoleFilterBuilder<DialogState, PreacceleratorUser, Member, UserId>.memberMen
         button(MenuStrings.Member.GetRating, NotImplementedState)
     }
 }
+
