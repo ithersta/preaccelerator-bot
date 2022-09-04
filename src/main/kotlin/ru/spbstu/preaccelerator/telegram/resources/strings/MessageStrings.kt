@@ -30,8 +30,8 @@ object MessageStrings {
     }
 
     object LoadListOfUsers {
-        const val WaitDocument = "загрузите xlsx таблицу со списками пользователей"
-        const val InvalidFile = "Файл поврежден или не является xlsx таблицей"
+        const val WaitDocument = "Загрузите .xlsx таблицу со списками пользователей"
+        const val InvalidFile = "Файл поврежден или не является .xlsx таблицей"
         fun badFormat(members: List<Int>?, teams: List<Int>?): String {
             return "${
                 if (members != null) {
@@ -48,8 +48,8 @@ object MessageStrings {
             }"
         }
 
-        fun OkAddMembers(count: Int) = "Добавлено участников курсов: $count"
-        fun OkAddTeams(count: Int) = "Добавлено команд курсов: $count"
+        fun OkAddMembers(count: Int) = "Добавлено участников: $count"
+        fun OkAddTeams(count: Int) = "Добавлено команд: $count"
         const val NotFindTeam = "Не найдены трекеры для команд(ы), поэтому участники записанные в них не добавлены: "
     }
 
