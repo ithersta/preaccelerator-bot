@@ -33,9 +33,11 @@ object MessageStrings {
 
     object LoadListOfUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
-        const val InvalidFile = "Файл повреждён или не является xlsx таблицей"
+        const val InvalidFile = "Файл повреждён или не является .xlsx таблицей"
         fun badFormat(errors: List<Xlsx.TableErrors>) = errors.joinToString(separator = "\n") { tableErrors ->
-            "Неправильный формат на странице ${tableErrors.name} в строках ${enumerationOfLimitedList(tableErrors.rows, 5)}"
+            "Лист \"${tableErrors.name}\": неправильный формат ${
+                if (tableErrors.rows.size == 1) "строки" else "строк"
+            } ${enumerationOfLimitedList(tableErrors.rows, 5)}"
         }
 
         fun result(result: AddUsersUseCase.Result) = buildString {

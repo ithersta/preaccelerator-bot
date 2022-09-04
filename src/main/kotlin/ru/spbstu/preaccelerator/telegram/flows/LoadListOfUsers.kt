@@ -30,6 +30,7 @@ fun RoleFilterBuilder<Curator>.loadMembersAndTrackers() {
                     is Xlsx.Result.OK -> {
                         val result = addUsers(users.value.members, users.value.teams)
                         sendTextMessage(message.chat, MessageStrings.LoadListOfUsers.result(result))
+                        setState(EmptyState)
                     }
 
                     is Xlsx.Result.BadFormat -> sendTextMessage(
@@ -42,7 +43,6 @@ fun RoleFilterBuilder<Curator>.loadMembersAndTrackers() {
                         MessageStrings.LoadListOfUsers.InvalidFile
                     )
                 }
-                setState(EmptyState)
             }
         }
     }

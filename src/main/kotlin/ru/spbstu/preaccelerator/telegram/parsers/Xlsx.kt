@@ -33,15 +33,14 @@ object Xlsx {
                 parsePhonesWithTeam(workbook.getSheet(MEMBERS_SHEET_NAME)) to
                         parsePhonesWithTeam(workbook.getSheet(TEAMS_SHEET_NAME))
             }
-            val membersErrorRows = members.mapIndexedNotNull { index, pair -> index.takeIf { pair == null } }
-            val teamsErrorRows = teams.mapIndexedNotNull { index, pair -> index.takeIf { pair == null } }
-            if (membersErrorRows.isNotEmpty() || teamsErrorRows.isNotEmpty()) {
-                Result.BadFormat(
-                    listOf(
-                        TableErrors(MEMBERS_SHEET_NAME, membersErrorRows),
-                        TableErrors(TEAMS_SHEET_NAME, teamsErrorRows)
-                    )
-                )
+            val membersErrorRows = members.mapIndexedNotNull { index, pair -> (index + 2).takeIf { pair == null } }
+            val teamsErrorRows = teams.mapIndexedNotNull { index, pair -> (index + 2).takeIf { pair == null } }
+            val errors = listOf(
+                TableErrors(MEMBERS_SHEET_NAME, membersErrorRows),
+                TableErrors(TEAMS_SHEET_NAME, teamsErrorRows)
+            ).filter { it.rows.isNotEmpty() }
+            if (errors.isNotEmpty()) {
+                Result.BadFormat(errors)
             } else {
                 Result.OK(Users(members.requireNoNulls(), teams.requireNoNulls()))
             }
