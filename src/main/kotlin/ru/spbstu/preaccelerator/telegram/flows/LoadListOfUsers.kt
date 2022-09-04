@@ -14,13 +14,13 @@ import ru.spbstu.preaccelerator.telegram.entities.state.LoadListOfUsersState
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
-fun RoleFilterBuilder<Curator>.loadMembersAndTrackers() {
+fun RoleFilterBuilder<Curator>.addUsersFlow() {
     val addUsers: AddUsersUseCase by inject()
     state<LoadListOfUsersState.WaitingForDocument> {
         onTransition {
             sendTextMessage(
                 it,
-                MessageStrings.LoadListOfUsers.WaitDocument,
+                MessageStrings.AddUsers.WaitDocument,
                 replyMarkup = ReplyKeyboardRemove()
             )
         }
@@ -29,18 +29,18 @@ fun RoleFilterBuilder<Curator>.loadMembersAndTrackers() {
                 when (val users = Xlsx.parseUsers(inputStream)) {
                     is Xlsx.Result.OK -> {
                         val result = addUsers(users.value.members, users.value.teams)
-                        sendTextMessage(message.chat, MessageStrings.LoadListOfUsers.result(result))
+                        sendTextMessage(message.chat, MessageStrings.AddUsers.result(result))
                         setState(EmptyState)
                     }
 
                     is Xlsx.Result.BadFormat -> sendTextMessage(
                         message.chat,
-                        MessageStrings.LoadListOfUsers.badFormat(users.errors)
+                        MessageStrings.AddUsers.badFormat(users.errors)
                     )
 
                     is Xlsx.Result.InvalidFile -> sendTextMessage(
                         message.chat,
-                        MessageStrings.LoadListOfUsers.InvalidFile
+                        MessageStrings.AddUsers.InvalidFile
                     )
                 }
             }

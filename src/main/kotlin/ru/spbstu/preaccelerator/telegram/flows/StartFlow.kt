@@ -2,6 +2,7 @@ package ru.spbstu.preaccelerator.telegram.flows
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
+import com.ithersta.tgbotapi.fsm.entities.triggers.onDeepLink
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -17,6 +18,7 @@ import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
+import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.useCuratorToken
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
@@ -26,6 +28,13 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 fun StateMachineBuilder.startFlow() {
     role<EmptyUser> {
         state<EmptyState> {
+            onDeepLink { (message, token) ->
+                if (!user.useCuratorToken(token)) {
+                    sendTextMessage(message.chat, MessageStrings.Start.InvalidDeepLink)
+                } else {
+                    setState(StartFlowState.AfterAuthenticating)
+                }
+            }
             onCommand("start", description = HelpStrings.Start) {
                 setState(StartFlowState.WaitingForContact)
             }

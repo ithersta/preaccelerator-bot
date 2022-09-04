@@ -10,6 +10,14 @@ import ru.spbstu.preaccelerator.domain.repository.CuratorRepository
 class CuratorRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : CuratorRepository {
+    override fun isEmpty(): Boolean {
+        return appDatabase.curatorQueries.isEmpty().executeAsOne()
+    }
+
+    override fun add(userId: UserId) {
+        appDatabase.curatorQueries.add(userId)
+    }
+
     override fun get(userId: UserId): Curator? {
         return appDatabase.curatorQueries.get(userId).executeAsOneOrNull()?.toDomainModel()
     }
