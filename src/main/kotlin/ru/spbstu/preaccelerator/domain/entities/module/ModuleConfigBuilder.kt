@@ -23,4 +23,3 @@ class ModuleConfigBuilder {
 fun moduleConfig(block: ModuleConfigBuilder.() -> Unit): ModuleConfig {
     return ModuleConfigBuilder().apply(block).build()
 }
-
