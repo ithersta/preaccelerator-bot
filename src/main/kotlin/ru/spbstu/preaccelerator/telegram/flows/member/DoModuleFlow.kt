@@ -64,17 +64,21 @@ fun StateMachineBuilder.doModuleFlow() {
                     it,
                     MessageStrings.ChooseModuleAction.ChooseModuleAction,
                     parseMode = MarkdownV2,
-                    replyMarkup = replyKeyboard {
-                        row {
-                            simpleButton(ButtonStrings.ChooseModule.DoEntireModule)
-                        }
-                        row {
-                            simpleButton(ButtonStrings.ChooseModule.WatchLectures)
-                            simpleButton(ButtonStrings.ChooseModule.DoTest)
-                        }
-                    }
+                    replyMarkup = replyKeyboard(
+                        block = {
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.DoEntireModule)
+                            }
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.WatchLectures)
+                                simpleButton(ButtonStrings.ChooseModule.DoTest)
+                            }
+                        },
+                        resizeKeyboard = true
+                    )
                 )
             }
+
             onText { message ->
                 val moduleNumb = state.moduleNumber
                 val moduleNumbInt = moduleNumb.value
@@ -83,6 +87,7 @@ fun StateMachineBuilder.doModuleFlow() {
                     ButtonStrings.ChooseModule.DoEntireModule -> {
                         setState(ModuleState(moduleNumb, 0))
                     }
+
                     ButtonStrings.ChooseModule.WatchLectures -> {
                         sendTextMessage(
                             message.chat,
@@ -103,6 +108,7 @@ fun StateMachineBuilder.doModuleFlow() {
                         )
                         setState(EmptyState)
                     }
+
                     ButtonStrings.ChooseModule.DoTest -> {
                         sendTextMessage(
                             message.chat,
@@ -118,11 +124,13 @@ fun StateMachineBuilder.doModuleFlow() {
                             })
                         setState(EmptyState)
                     }
-                    else-> {
+
+                    else -> {
                         sendTextMessage(
                             message.chat,
-                             MessageStrings.ChooseModuleAction.Err,
-                            parseMode = MarkdownV2)
+                            MessageStrings.ChooseModuleAction.Err,
+                            parseMode = MarkdownV2
+                        )
                     }
                 }
             }

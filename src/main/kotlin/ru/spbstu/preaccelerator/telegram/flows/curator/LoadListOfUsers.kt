@@ -5,15 +5,9 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onDocument
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.files.downloadFile
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.requests.send.SendTextMessage
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.koin.core.component.inject
-import org.koin.core.context.GlobalContext
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.usecases.actions.AddTrackerTeamAndMemberUseCase
-import ru.spbstu.preaccelerator.domain.usecases.actions.MemberActions
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.LoadListOfUsersState
