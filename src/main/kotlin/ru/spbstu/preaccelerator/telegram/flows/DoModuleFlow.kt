@@ -54,14 +54,13 @@ fun StateMachineBuilder.doModuleFlow() {
                     )
                     {
                         val countOfModel = user.team.availableModules.size
-                        when (countOfModel) {
-                            1 -> {
+                            if (countOfModel == 1) {
                                 row {
                                     simpleButton(moduleConfig.modules[0].name)
                                 }
                             }
 
-                            2, 4, 6, 8 -> {
+                            else if (countOfModel % 2 == 0){
                                 for (i in 0 until countOfModel step 2) {
                                     row {
                                         simpleButton(moduleConfig.modules[i].name)
@@ -71,7 +70,7 @@ fun StateMachineBuilder.doModuleFlow() {
 
                             }
 
-                            3, 5, 7 -> {
+                            else if (countOfModel % 2 == 1){
                                 for (i in 0 until countOfModel-1 step 2) {
                                     row {
                                         simpleButton(moduleConfig.modules[i].name)
@@ -80,7 +79,6 @@ fun StateMachineBuilder.doModuleFlow() {
                                 }
                                 row { simpleButton(user.team.availableModules[countOfModel-1].name)  }
                             }
-                        }
                     }
                 )
             }
