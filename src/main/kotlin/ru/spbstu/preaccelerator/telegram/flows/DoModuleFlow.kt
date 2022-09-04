@@ -43,7 +43,6 @@ import java.net.URL
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
     role<Member> {
-        var number = 0
         state<StartModule> {
             onTransition {
                 sendTextMessage(
