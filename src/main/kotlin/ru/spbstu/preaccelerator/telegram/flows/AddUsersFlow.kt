@@ -3,24 +3,32 @@ package ru.spbstu.preaccelerator.telegram.flows
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDocument
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.files.downloadFile
+import dev.inmo.tgbotapi.extensions.api.send.media.sendDocument
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.requests.abstracts.InputFile
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import io.ktor.utils.io.streams.*
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.AddUsers
+import ru.spbstu.preaccelerator.telegram.entities.state.AddUsersState
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.AddUsers.TemplateFilename
 
 fun RoleFilterBuilder<Curator>.addUsersFlow() {
     val addUsers: AddUsersUseCase by inject()
-    state<AddUsers.WaitingForDocument> {
+    state<AddUsersState.WaitingForDocument> {
         onTransition {
-            sendTextMessage(
-                it,
-                MessageStrings.AddUsers.WaitDocument,
+            val document = InputFile.fromInput(
+                "$TemplateFilename.xlsx"
+            ) { this::class.java.getResourceAsStream("/users.xlsx")!!.asInput() }
+            sendDocument(
+                chatId = it,
+                text = MessageStrings.AddUsers.WaitDocument,
+                document = document,
                 replyMarkup = ReplyKeyboardRemove()
             )
         }
