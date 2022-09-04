@@ -11,7 +11,10 @@ class ModuleState(
 ) : DialogState
 
 @Serializable
-object StartModule : DialogState
+class ChooseModuleAction
+    (
+    val moduleNumber: Module.Number
+) : DialogState
 
 @Serializable
 class WaitingForHomework(

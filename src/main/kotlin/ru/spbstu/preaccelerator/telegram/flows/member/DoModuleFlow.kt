@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows
+package ru.spbstu.preaccelerator.telegram.flows.member
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -13,15 +13,13 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
-import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
-import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
+import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
-import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.module
-import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.part
+import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.module
+import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
@@ -42,14 +40,85 @@ fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
 
     role<Member> {
-        state<StartModule> {
+        state<EmptyState> {
             onTransition {
-                val moduleNumb = 0////потом вместо нуля выбор номера из доступных кнопок
-                val firstModule = moduleConfig.modules[moduleNumb]
-                val startModule = ModuleState(firstModule.number, 0)
-                setState(startModule)
+                sendTextMessage(
+                    it,
+                    ButtonStrings.ChooseModule.Button,
+                    parseMode = MarkdownV2
+                )
+                val number = 0
+                sendTextMessage(
+                    it,
+                    ButtonStrings.ChooseModule.Message,
+                    parseMode = MarkdownV2 ///здесь меню выбора номера модуля
+                )
+                ///присваиваем number значение в соответствии с выбранным модулем
+                setState(ChooseModuleAction(moduleConfig.modules[number].number))
             }
         }
+        state<ChooseModuleAction> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    ButtonStrings.ChooseModule.ChooseModuleAction,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard {
+                        row {
+                            simpleButton(ButtonStrings.ChooseModule.DoEntireModule)
+                        }
+                        row {
+                            simpleButton(ButtonStrings.ChooseModule.WatchLectures)
+                            simpleButton(ButtonStrings.ChooseModule.DoTest)
+                        }
+                    }
+                )
+            }
+            onText { message ->
+                val moduleNumb = state.moduleNumber
+                val moduleNumbInt = moduleNumb.value
+                val mess = message.content.text
+                if (mess == ButtonStrings.ChooseModule.DoEntireModule) {
+                    setState(ModuleState(moduleNumb, 0))
+                }
+                if (mess == ButtonStrings.ChooseModule.WatchLectures) {
+                    sendTextMessage(
+                        message.chat,
+                        ButtonStrings.ChooseModule.ModuleLectures,
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                if (part is Lecture) {
+                                    row {
+                                        urlButton(
+                                            part.name,
+                                            part.url
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
+                    setState(EmptyState)
+                }
+                if (mess == ButtonStrings.ChooseModule.DoTest) {
+                    sendTextMessage(
+                        message.chat,
+                        goodbyeModule(moduleConfig, state.moduleNumber),
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(
+                                    DoTest,
+                                    moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                )
+                            }
+                        })
+                    setState(EmptyState)
+                }
+            }
+        }
+
         state<ModuleState> {
             onTransition {
                 require(state.module in user.team.availableModules)
@@ -166,6 +235,8 @@ fun StateMachineBuilder.doModuleFlow() {
                                         nextModule(state.moduleNumber),
                                         "module ${state.moduleNumber.value + 1}"
                                     )
+                                } else {
+                                    setState(EmptyState)
                                 }
                             }
                         }
