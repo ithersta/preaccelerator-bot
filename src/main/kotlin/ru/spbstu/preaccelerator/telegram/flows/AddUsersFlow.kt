@@ -9,14 +9,14 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.AddUsers
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.LoadListOfUsersState
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 fun RoleFilterBuilder<Curator>.addUsersFlow() {
     val addUsers: AddUsersUseCase by inject()
-    state<LoadListOfUsersState.WaitingForDocument> {
+    state<AddUsers.WaitingForDocument> {
         onTransition {
             sendTextMessage(
                 it,

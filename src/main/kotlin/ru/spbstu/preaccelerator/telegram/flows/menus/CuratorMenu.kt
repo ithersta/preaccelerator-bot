@@ -34,7 +34,7 @@ fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorM
             backButton(MenuStrings.Back)
         }
         submenu(AddUsers.Button, AddUsers.Message, MenuState.Curator.AddUsers) {
-            button(AddUsers.MembersAndTrackers, LoadListOfUsersState.WaitingForDocument)
+            button(AddUsers.MembersAndTrackers, AddUsers.WaitingForDocument)
             button(AddUsers.Curator) { handleAddCurator(it) }
             backButton(MenuStrings.Back)
         }
