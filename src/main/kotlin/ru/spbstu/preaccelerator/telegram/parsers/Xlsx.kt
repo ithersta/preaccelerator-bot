@@ -1,7 +1,7 @@
 package ru.spbstu.preaccelerator.telegram.parsers
 
-import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
@@ -39,6 +39,7 @@ object Xlsx {
                 Result.OK(Users(members.first.requireNoNulls(), teams.first.requireNoNulls()))
             }
         }.getOrElse {
+            println(it)
             Result.InvalidFile()
         }
 
@@ -47,9 +48,9 @@ object Xlsx {
         sheetName: String
     ): Pair<List<Pair<PhoneNumber, String>?>, SheetErrors> {
         return workbook.getSheet(sheetName)
-            .map { it.getCell(0).getText() to it.getCell(1).getText() }
+            .map { it.getCellText(0) to it.getCellText(1) }
             .drop(1)
-            .dropLastWhile { it.first?.isBlank() == true }
+            .dropLastWhile { it.first.isNullOrBlank() && it.second.isNullOrBlank() }
             .map {
                 runCatching {
                     val phoneNumber = PhoneNumber.of(it.first!!.removePrefix("+"))!!
@@ -62,12 +63,13 @@ object Xlsx {
             }
     }
 
-    private fun Cell.getText(): String? {
-        return when (cellType) {
-            CellType.NUMERIC -> numericCellValue.toLong().toString()
-            CellType.STRING -> stringCellValue
+    private fun Row.getCellText(number: Int) = runCatching {
+        val cell = getCell(number)
+        when (cell.cellType) {
+            CellType.NUMERIC -> cell.numericCellValue.toLong().toString()
+            CellType.STRING -> cell.stringCellValue
             CellType.BLANK -> ""
             else -> null
         }
-    }
+    }.getOrNull()
 }
