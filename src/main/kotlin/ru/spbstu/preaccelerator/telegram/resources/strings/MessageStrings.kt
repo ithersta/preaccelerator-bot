@@ -29,30 +29,6 @@ object MessageStrings {
         const val NotImplemented = "Эта функция не реализована"
     }
 
-    object LoadListOfUsers {
-        const val WaitDocument = "загрузите xlsx таблицу со списками пользователей"
-        const val InvalidFile = "Файл поврежден или не является xlsx таблицей"
-        fun badFormat(members: List<Int>?, teams: List<Int>?): String {
-            return "${
-                if (members != null) {
-                    "Неправильный формат таблицы участников в строках: ${enumerationOfLimitedList(members, 5)}"
-                } else {
-                    ""
-                }
-            } ${
-                if (teams != null) {
-                    "Неправильный формат таблицы команд в строках: ${enumerationOfLimitedList(teams, 5)}"
-                } else {
-                    ""
-                }
-            }"
-        }
-
-        fun OkAddMembers(count: Int) = "Добавлено участников курсов: $count"
-        fun OkAddTeams(count: Int) = "Добавлено команд курсов: $count"
-        const val NotFindTeam = "Не найдены трекеры для команд(ы), поэтому участники записанные в них не добавлены: "
-    }
-
     object Error {
         fun internal(message: String?) = "Произошла внутренняя ошибка: $message"
     }
