@@ -37,33 +37,63 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import java.net.URL
-
-private fun arrayOfSimpleKeyboardButtons(map: Map<String, Int>): Array<SimpleKeyboardButton> {
-    return map.map { SimpleKeyboardButton(it.key) }.toTypedArray()
-}
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
     role<Member> {
-        var number  = 0
+        var number = 0
         state<StartModule> {
             onTransition {
                 sendTextMessage(
-                    it, ButtonStrings.ChooseStep,
-                    replyMarkup = ReplyKeyboardMarkup(
-                        buttons = arrayOfSimpleKeyboardButtons(ButtonStrings.listOfModels),
-                        resizeKeyboard = true, oneTimeKeyboard = true
+                    it, MenuStrings.Member.ChooseStep,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        resizeKeyboard=true,
+                        oneTimeKeyboard = true
                     )
+                    {
+                        val countOfModel = user.team.availableModules.size
+                        when (countOfModel) {
+                            1 -> {
+                                row {
+                                    simpleButton(moduleConfig.modules[0].name)
+                                }
+                            }
+
+                            2, 4, 6, 8 -> {
+                                for (i in 0 until countOfModel step 2) {
+                                    row {
+                                        simpleButton(moduleConfig.modules[i].name)
+                                        simpleButton(moduleConfig.modules[i + 1].name)
+                                    }
+                                }
+
+                            }
+
+                            3, 5, 7 -> {
+                                for (i in 0 until countOfModel-1 step 2) {
+                                    row {
+                                        simpleButton(moduleConfig.modules[i].name)
+                                        simpleButton(moduleConfig.modules[i + 1].name)
+                                    }
+                                }
+                                row { simpleButton(user.team.availableModules[countOfModel-1].name)  }
+                            }
+                        }
+                    }
                 )
             }
             onText { message ->
                 val model = message.content.text
-                number = ButtonStrings.listOfModels[model]!!
-                val moduleNumb = number
-                val firstModule = moduleConfig.modules[moduleNumb]
-                val startModule = ModuleState(firstModule.number, 0)
-                setState(startModule)
+                for (i in 0..7) {
+                    if (moduleConfig.modules[i].name == model) {
+                        val firstModule = moduleConfig.modules[i]
+                        val startModule = ModuleState(firstModule.number, 0)
+                        setState(startModule)
+                    }
+                }
             }
         }
 
