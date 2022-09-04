@@ -4,7 +4,6 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
-// TODO: Всё переписать
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
@@ -43,6 +42,13 @@ object MessageStrings {
         }
 
         fun result(result: AddUsersUseCase.Result) = buildString {
+            if (result.notFoundTeams.isNotEmpty()) {
+                appendLine(
+                    "Некоторые участники были пропущены, так как не ${
+                        if (result.notFoundTeams.size == 1) "найдена команда" else "найдены команды"
+                    } ${result.notFoundTeams.joinToString()}."
+                )
+            }
             appendLine(
                 "Добавлены ${result.membersCount} ${
                     pluralize(result.membersCount, "участник", "участника", "участников")
@@ -50,9 +56,6 @@ object MessageStrings {
                     pluralize(result.teamsCount, "команда", "команды", "команд")
                 }"
             )
-            if (result.notFoundTeams.isNotEmpty()) {
-                appendLine("Следующие команды не найдены: ${result.notFoundTeams.joinToString()}, поэтому связанные участники не были добавлены")
-            }
         }
     }
 
