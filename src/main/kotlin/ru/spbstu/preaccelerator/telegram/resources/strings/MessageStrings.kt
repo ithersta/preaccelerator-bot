@@ -36,7 +36,7 @@ object MessageStrings {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val TemplateFilename = "Шаблон"
         const val InvalidFile = "Файл повреждён или не является .xlsx таблицей"
-        fun badFormat(errors: List<Xlsx.TableErrors>) = errors.joinToString(separator = "\n") { tableErrors ->
+        fun badFormat(errors: List<Xlsx.SheetErrors>) = errors.joinToString(separator = "\n") { tableErrors ->
             "Лист \"${tableErrors.name}\": неправильный формат ${
                 if (tableErrors.rows.size == 1) "строки" else "строк"
             } ${enumerationOfLimitedList(tableErrors.rows, 5)}"
