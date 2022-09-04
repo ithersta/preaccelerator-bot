@@ -1,36 +1,21 @@
 package ru.spbstu.preaccelerator.telegram.flows
 
-import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDocument
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.files.downloadFile
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.requests.send.SendTextMessage
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.koin.core.component.inject
-import org.koin.core.context.GlobalContext
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
-import ru.spbstu.preaccelerator.domain.usecases.actions.AddTrackerTeamAndMemberUseCase
-import ru.spbstu.preaccelerator.domain.usecases.actions.MemberActions
+import ru.spbstu.preaccelerator.domain.usecases.AddTrackerTeamAndMemberUseCase
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.LoadListOfUsersState
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
-import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-
-
 
 fun StateMachineBuilder.loadMembersAndTrackers() {
     val addTrackerTeamAndMemberUseCase: AddTrackerTeamAndMemberUseCase by inject()
     role<Curator> {
-        state<EmptyState> {
-            onCommand("load", HelpStrings.Load) {
-                setState(LoadListOfUsersState.WaitingForDocument)
-            }
-        }
         state<LoadListOfUsersState.WaitingForDocument> {
             onTransition {
                 sendTextMessage(
@@ -47,14 +32,19 @@ fun StateMachineBuilder.loadMembersAndTrackers() {
                         is Xlsx.Result.OK -> {
                             when (members) {
                                 is Xlsx.Result.OK -> {
-                                    val resMembers = addTrackerTeamAndMemberUseCase(teams.value, members.value)
-                                    if (resMembers.isNotEmpty()) {
-                                        sendTextMessage(message.chat.id, "${MessageStrings.LoadListOfUsers.NotFindTeam}${resMembers.joinToString { it }}")
+                                    val notFoundTeams = addTrackerTeamAndMemberUseCase(teams.value, members.value)
+                                    if (notFoundTeams.isNotEmpty()) {
+                                        sendTextMessage(
+                                            message.chat.id,
+                                            MessageStrings.LoadListOfUsers.notFoundTeams(notFoundTeams.toList())
+                                        )
                                     } else {
                                         sendTextMessage(
                                             message.chat.id,
-                                            """${MessageStrings.LoadListOfUsers.OkAddTeams(teams.value.size)};
-                                                     ${MessageStrings.LoadListOfUsers.OkAddMembers(members.value.size)}""".trimIndent()
+                                            MessageStrings.LoadListOfUsers.success(
+                                                membersCount = members.value.size,
+                                                teamsCount = teams.value.size
+                                            )
                                         )
                                     }
                                 }
@@ -79,7 +69,7 @@ fun StateMachineBuilder.loadMembersAndTrackers() {
                         )
 
                         is Xlsx.Result.BadFormat -> {
-                            if (members is Xlsx.Result.BadFormat){
+                            if (members is Xlsx.Result.BadFormat) {
                                 sendTextMessage(
                                     message.chat.id,
                                     MessageStrings.LoadListOfUsers.badFormat(members.errorRows, teams.errorRows)

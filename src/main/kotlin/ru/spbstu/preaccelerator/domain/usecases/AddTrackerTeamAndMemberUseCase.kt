@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.domain.usecases.actions
+package ru.spbstu.preaccelerator.domain.usecases
 
 import org.koin.core.annotation.Single
 import ru.spbstu.preaccelerator.domain.DatabaseTransactionWithResult
@@ -14,21 +14,22 @@ class AddTrackerTeamAndMemberUseCase(
     private val teamRepository: TeamRepository,
     private val transactionWithResult: DatabaseTransactionWithResult
 ) {
-    operator fun invoke(mapOfTeams: Map<PhoneNumber, String>, mapOfMembers: Map<PhoneNumber, String>) = transactionWithResult {
-        mapOfTeams.forEach { (trackerPhoneNumber, teamName) ->
-            val trackerId = trackerRepository.add(trackerPhoneNumber)
-            teamRepository.add(teamName, trackerId)
-        }
-        val notFoundTeams = mutableSetOf<String>()
-        mapOfMembers.forEach { (memberPhoneNumber, teamName) ->
-            val team = teamRepository.get(teamName)
-            if (team == null) {
-                notFoundTeams.add(teamName)
-            } else {
-                memberRepository.add(memberPhoneNumber, team.id)
+    operator fun invoke(teams: List<Pair<PhoneNumber, String>>, members: List<Pair<PhoneNumber, String>>) =
+        transactionWithResult<Set<String>> {
+            teams.forEach { (trackerPhoneNumber, teamName) ->
+                val trackerId = trackerRepository.add(trackerPhoneNumber)
+                teamRepository.add(teamName, trackerId)
             }
+            val notFoundTeams = mutableSetOf<String>()
+            members.forEach { (memberPhoneNumber, teamName) ->
+                val team = teamRepository.get(teamName)
+                if (team == null) {
+                    notFoundTeams.add(teamName)
+                } else {
+                    memberRepository.add(memberPhoneNumber, team.id)
+                }
+            }
+            return@transactionWithResult notFoundTeams
         }
-        return@transactionWithResult notFoundTeams
-    }
 
 }
