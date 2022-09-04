@@ -1,6 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
+import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
 // TODO: Всё переписать
 object MessageStrings {
@@ -32,22 +34,22 @@ object MessageStrings {
     object LoadListOfUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val InvalidFile = "Файл повреждён или не является xlsx таблицей"
-        fun badFormat(members: List<Int>?, teams: List<Int>?) = buildString {
-            if (members != null) {
-                appendLine("Неправильный формат таблицы участников в строках: ${enumerationOfLimitedList(members, 5)}")
-            }
-            if (teams != null) {
-                appendLine("Неправильный формат таблицы команд в строках: ${enumerationOfLimitedList(teams, 5)}")
-            }
+        fun badFormat(errors: List<Xlsx.TableErrors>) = errors.joinToString(separator = "\n") { tableErrors ->
+            "Неправильный формат на странице ${tableErrors.name} в строках ${enumerationOfLimitedList(tableErrors.rows, 5)}"
         }
 
-        fun success(membersCount: Int, teamsCount: Int) = "Добавлены $membersCount ${
-            pluralize(membersCount, "участник", "участника", "участников")
-        } и $teamsCount ${
-            pluralize(teamsCount, "команда", "команды", "команд")
-        }"
-
-        fun notFoundTeams(teams: List<String>) = "Следующие команды не найдены: ${teams.joinToString()}"
+        fun result(result: AddUsersUseCase.Result) = buildString {
+            appendLine(
+                "Добавлены ${result.membersCount} ${
+                    pluralize(result.membersCount, "участник", "участника", "участников")
+                } и ${result.teamsCount} ${
+                    pluralize(result.teamsCount, "команда", "команды", "команд")
+                }"
+            )
+            if (result.notFoundTeams.isNotEmpty()) {
+                appendLine("Следующие команды не найдены: ${result.notFoundTeams.joinToString()}, поэтому связанные участники не были добавлены")
+            }
+        }
     }
 
     object Error {

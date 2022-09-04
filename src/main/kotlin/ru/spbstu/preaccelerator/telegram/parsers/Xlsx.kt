@@ -1,49 +1,76 @@
 package ru.spbstu.preaccelerator.telegram.parsers
 
+import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import java.io.InputStream
 
+const val MEMBERS_SHEET_NAME = "Участники"
+const val TEAMS_SHEET_NAME = "Команды"
+
 object Xlsx {
     sealed interface Result<T> {
         class OK<T>(val value: T) : Result<T>
-        class BadFormat<T>(val errorRows: List<Int>) : Result<T>
+        class BadFormat<T>(val errors: List<TableErrors>) : Result<T>
         class InvalidFile<T> : Result<T>
     }
 
-    fun parseXlsxTeams(inputStream: InputStream, sheetNumber: Int): Result<List<Pair<PhoneNumber, String>>> =
+    class TableErrors(
+        val name: String,
+        val rows: List<Int>
+    )
+
+    class Users(
+        val members: List<Pair<PhoneNumber, String>>,
+        val teams: List<Pair<PhoneNumber, String>>
+    )
+
+    fun parseUsers(inputStream: InputStream): Result<Users> =
         runCatching {
-            val trackers = XSSFWorkbook(inputStream).use { workbook ->
-                workbook.getSheetAt(sheetNumber).map { row ->
-                    try {
-                        val cell = row.getCell(0)
-                        val phoneNumber = when (cell.cellType) {
-                            CellType.NUMERIC -> cell.numericCellValue.toLong().toString()
-                            CellType.STRING -> cell.stringCellValue
-                            else -> throw IllegalStateException()
-                        }.removePrefix("+")
-                        Pair<PhoneNumber?, String>(
-                            PhoneNumber.of(phoneNumber),
-                            row.getCell(1).stringCellValue
-                        )
-                    } catch (ignore: IllegalStateException) {
-                        Pair<PhoneNumber?, String>(null, "")
-                    }
-                }.drop(1).dropLastWhile { it.first == null }
+            val (members, teams) = XSSFWorkbook(inputStream).use { workbook ->
+                parsePhonesWithTeam(workbook.getSheet(MEMBERS_SHEET_NAME)) to
+                        parsePhonesWithTeam(workbook.getSheet(TEAMS_SHEET_NAME))
             }
-            return if (trackers.any { it.first == null }) {
-                Result.BadFormat(trackers.mapIndexedNotNull { index, pair ->
-                    if (pair.first == null) {
-                        index
-                    } else {
-                        null
-                    }
-                })
+            val membersErrorRows = members.mapIndexedNotNull { index, pair -> index.takeIf { pair == null } }
+            val teamsErrorRows = teams.mapIndexedNotNull { index, pair -> index.takeIf { pair == null } }
+            if (membersErrorRows.isNotEmpty() || teamsErrorRows.isNotEmpty()) {
+                Result.BadFormat(
+                    listOf(
+                        TableErrors(MEMBERS_SHEET_NAME, membersErrorRows),
+                        TableErrors(TEAMS_SHEET_NAME, teamsErrorRows)
+                    )
+                )
             } else {
-                Result.OK(trackers.map { it.first!! to it.second })
+                Result.OK(Users(members.requireNoNulls(), teams.requireNoNulls()))
             }
         }.getOrElse {
             Result.InvalidFile()
         }
+
+    private fun parsePhonesWithTeam(sheet: XSSFSheet): List<Pair<PhoneNumber, String>?> {
+        return sheet
+            .map { it.getCell(0).getText() to it.getCell(1).getText() }
+            .drop(1)
+            .dropLastWhile { it.first?.isBlank() == true }
+            .map {
+                runCatching {
+                    val phoneNumber = PhoneNumber.of(it.first!!.removePrefix("+"))!!
+                    val teamName = it.second!!
+                    phoneNumber to teamName
+                }.getOrElse {
+                    null
+                }
+            }
+    }
+
+    private fun Cell.getText(): String? {
+        return when (cellType) {
+            CellType.NUMERIC -> numericCellValue.toLong().toString()
+            CellType.STRING -> stringCellValue
+            CellType.BLANK -> ""
+            else -> null
+        }
+    }
 }
