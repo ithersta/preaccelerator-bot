@@ -29,6 +29,13 @@ object MessageStrings {
         const val NotImplemented = "Эта функция не реализована"
     }
 
+    object ChooseModuleAction{
+        const val Message = "Нажмите на кнопку, соответствующую модулю"
+        const val ChooseModuleAction = "Выберите желаемое действие"
+        const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
+        const val Err ="Выберите действие из кнопочного меню"
+    }
+
     object LoadListOfUsers {
         const val WaitDocument = "Загрузите .xlsx таблицу со списками пользователей"
         const val InvalidFile = "Файл поврежден или не является .xlsx таблицей"

@@ -34,6 +34,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
@@ -50,7 +51,7 @@ fun StateMachineBuilder.doModuleFlow() {
                 val number = 0
                 sendTextMessage(
                     it,
-                    ButtonStrings.ChooseModule.Message,
+                    MessageStrings.ChooseModuleAction.Message,
                     parseMode = MarkdownV2 ///здесь меню выбора номера модуля
                 )
                 ///присваиваем number значение в соответствии с выбранным модулем
@@ -61,7 +62,7 @@ fun StateMachineBuilder.doModuleFlow() {
             onTransition {
                 sendTextMessage(
                     it,
-                    ButtonStrings.ChooseModule.ChooseModuleAction,
+                    MessageStrings.ChooseModuleAction.ChooseModuleAction,
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard {
                         row {
@@ -78,43 +79,51 @@ fun StateMachineBuilder.doModuleFlow() {
                 val moduleNumb = state.moduleNumber
                 val moduleNumbInt = moduleNumb.value
                 val mess = message.content.text
-                if (mess == ButtonStrings.ChooseModule.DoEntireModule) {
-                    setState(ModuleState(moduleNumb, 0))
-                }
-                if (mess == ButtonStrings.ChooseModule.WatchLectures) {
-                    sendTextMessage(
-                        message.chat,
-                        ButtonStrings.ChooseModule.ModuleLectures,
-                        parseMode = MarkdownV2,
-                        replyMarkup = inlineKeyboard {
-                            moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
-                                if (part is Lecture) {
-                                    row {
-                                        urlButton(
-                                            part.name,
-                                            part.url
-                                        )
+                when (mess) {
+                    ButtonStrings.ChooseModule.DoEntireModule -> {
+                        setState(ModuleState(moduleNumb, 0))
+                    }
+                    ButtonStrings.ChooseModule.WatchLectures -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.ModuleLectures,
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                    if (part is Lecture) {
+                                        row {
+                                            urlButton(
+                                                part.name,
+                                                part.url
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                    )
-                    setState(EmptyState)
-                }
-                if (mess == ButtonStrings.ChooseModule.DoTest) {
-                    sendTextMessage(
-                        message.chat,
-                        goodbyeModule(moduleConfig, state.moduleNumber),
-                        parseMode = MarkdownV2,
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                urlButton(
-                                    DoTest,
-                                    moduleConfig.modules[state.moduleNumber.value].finalTestUrl
-                                )
-                            }
-                        })
-                    setState(EmptyState)
+                        )
+                        setState(EmptyState)
+                    }
+                    ButtonStrings.ChooseModule.DoTest -> {
+                        sendTextMessage(
+                            message.chat,
+                            goodbyeModule(moduleConfig, state.moduleNumber),
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                row {
+                                    urlButton(
+                                        DoTest,
+                                        moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                    )
+                                }
+                            })
+                        setState(EmptyState)
+                    }
+                    else-> {
+                        sendTextMessage(
+                            message.chat,
+                             MessageStrings.ChooseModuleAction.Err,
+                            parseMode = MarkdownV2)
+                    }
                 }
             }
         }

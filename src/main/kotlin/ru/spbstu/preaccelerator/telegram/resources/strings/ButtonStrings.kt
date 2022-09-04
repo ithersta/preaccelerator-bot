@@ -16,12 +16,9 @@ object ButtonStrings {
 
     object ChooseModule{
         const val Button = "Выбрать модуль"
-        const val Message = "Нажмите на кнопку, соответствующую модулю"
-        const val ChooseModuleAction = "Выберите желаемое действие"
         const val DoEntireModule = "Пройти модуль полностью"
         const val DoTest = "Пройти тест"
         const val WatchLectures = "Смотреть лекции"
-        const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую вас\\."
     }
 
     const val Cancel = "Отменить"

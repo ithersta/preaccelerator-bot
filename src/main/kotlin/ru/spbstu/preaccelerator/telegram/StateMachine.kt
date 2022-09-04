@@ -54,9 +54,6 @@ fun createStateMachine(
     role<Tracker> {
         trackerMenu()
     }
-//    role<Member> {
-//        memberMenu()
-//    }
 
     loadMembersAndTrackers()
     doModuleFlow()
