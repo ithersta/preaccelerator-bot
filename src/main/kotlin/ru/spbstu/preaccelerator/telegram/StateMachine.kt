@@ -58,6 +58,7 @@ fun createStateMachine(
     role<Member> {
         memberMenu()
     }
+    loadMembersAndTrackers()
     doModuleFlow()
     fallback()
 }
