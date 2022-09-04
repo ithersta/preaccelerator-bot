@@ -4,6 +4,9 @@ CREATE TABLE Curator (
   userId BIGINT AS UserId PRIMARY KEY
 );
 
+isEmpty:
+SELECT NOT EXISTS (SELECT * FROM Curator);
+
 get:
 SELECT * FROM Curator
 WHERE userId = :userId;
