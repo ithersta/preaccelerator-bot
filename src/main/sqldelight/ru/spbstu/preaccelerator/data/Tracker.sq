@@ -18,5 +18,5 @@ add:
 INSERT INTO Tracker(phoneNumber)
 VALUES(:phoneNumber)
 ON CONFLICT (phoneNumber)
-DO NOTHING
+DO UPDATE SET phoneNumber = :phoneNumber
 RETURNING id;
