@@ -58,9 +58,7 @@ object Xlsx {
                     val phoneNumber = PhoneNumber.of(it.first!!.removePrefix("+"))!!
                     val teamName = it.second!!
                     phoneNumber to teamName
-                }.getOrElse {
-                    null
-                }
+                }.getOrNull()
             }
     }
 
