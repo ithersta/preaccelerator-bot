@@ -1,5 +1,11 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import ru.spbstu.preaccelerator.domain.entities.Team
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
 object MenuStrings {
     const val Back = "⬅️ Назад"
 
@@ -47,6 +53,14 @@ object MenuStrings {
             const val GetHomework = "Выгрузить домашнее задание"
             const val GetStats = "Получить статистику по командам"
         }
+
+        object ScheduleMeetings {
+            const val ChooseCommand = "Выберите команду"
+            const val InputURL = "Введите ссылку на конференцию"
+            const val InputTime = "Введите время конференции"
+            const val Yes = "Да"
+            const val No = "Нет"
+        }
     }
 
     object Member {
@@ -54,4 +68,16 @@ object MenuStrings {
         const val SelectModule = "Выбрать модуль"
         const val GetRating = "Получить место в рейтинге"
     }
+
+    private val dateTimeFormatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withZone(ZoneId.systemDefault())
+
+    fun meetingCreationConfirmation (team: Team, time: OffsetDateTime, url: String) =
+        """|Запланировать встречу с командой ${team.name}
+           |на ${dateTimeFormatter.format(time)}
+           |ссылка на конференцию $url
+           |Все верно?
+        """.trimMargin()
+
 }
