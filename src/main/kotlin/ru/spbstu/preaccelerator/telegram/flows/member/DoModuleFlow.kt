@@ -13,9 +13,7 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
-import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
-import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
+import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
@@ -36,6 +34,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
@@ -43,10 +42,10 @@ fun StateMachineBuilder.doModuleFlow() {
 
     role<Member> {
         state<EmptyState> {
-            onTransition { chatId ->
+            onTransition {
                 sendTextMessage(
-                    chatId, MenuStrings.Member.SelectModule,
-                    parseMode = MarkdownV2,
+                    it,
+                    ButtonStrings.ChooseModule.Button,
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -58,17 +57,18 @@ fun StateMachineBuilder.doModuleFlow() {
                         }
                     }
                 )
+            }
             onText { message ->
                 val moduleName = message.content.text
                 val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ChooseModuleAction.Error,
+                        MessageStrings.ChooseModuleAction.Err,
                         parseMode = MarkdownV2
                     )
                     return@onText
                 }
-                setState(ModuleState(module.number, 0))
+                setState(ChooseModuleAction(module.number))
             }
         }
         state<ChooseModuleAction> {
@@ -149,36 +149,6 @@ fun StateMachineBuilder.doModuleFlow() {
             }
         }
 
-        state<StartModule> {
-            onTransition { chatId ->
-                sendTextMessage(
-                    chatId, MenuStrings.Member.SelectModule,
-                    parseMode = MarkdownV2,
-                    replyMarkup = replyKeyboard(
-                        resizeKeyboard = true,
-                        oneTimeKeyboard = true
-                    ) {
-                        user.team.availableModules.chunked(2).forEach {
-                            row {
-                                it.forEach { simpleButton(it.name) }
-                            }
-                        }
-                    }
-                )
-            }
-            onText { message ->
-                val moduleName = message.content.text
-                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
-                    sendTextMessage(
-                        message.chat,
-                        MessageStrings.ChooseModuleAction.Error,
-                        parseMode = MarkdownV2
-                    )
-                    return@onText
-                }
-                setState(ModuleState(module.number, 0))
-            }
-        }
 
         state<ModuleState> {
             onTransition {
@@ -360,6 +330,7 @@ fun StateMachineBuilder.doModuleFlow() {
         }
     }
 }
+
 
 private object ModuleStateExt : KoinComponent {
     private val moduleConfig: ModuleConfig by inject()
