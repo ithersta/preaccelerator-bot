@@ -53,32 +53,11 @@ fun StateMachineBuilder.doModuleFlow() {
                         oneTimeKeyboard = true
                     )
                     {
-                        val countOfModel = user.team.availableModules.size
-                            if (countOfModel == 1) {
-                                row {
-                                    simpleButton(moduleConfig.modules[0].name)
-                                }
-                            }
-
-                            else if (countOfModel % 2 == 0){
-                                for (i in 0 until countOfModel step 2) {
-                                    row {
-                                        simpleButton(moduleConfig.modules[i].name)
-                                        simpleButton(moduleConfig.modules[i + 1].name)
-                                    }
-                                }
-
-                            }
-
-                            else if (countOfModel % 2 == 1){
-                                for (i in 0 until countOfModel-1 step 2) {
-                                    row {
-                                        simpleButton(moduleConfig.modules[i].name)
-                                        simpleButton(moduleConfig.modules[i + 1].name)
-                                    }
-                                }
-                                row { simpleButton(user.team.availableModules[countOfModel-1].name)  }
-                            }
+                       moduleConfig.modules.take(user.team.availableModules.size).chunked(2).forEach{
+                           row{
+                               it.forEach{ simpleButton(it.name)}
+                           }
+                       }
                     }
                 )
             }
