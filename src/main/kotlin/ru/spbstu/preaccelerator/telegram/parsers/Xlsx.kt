@@ -1,58 +1,75 @@
 package ru.spbstu.preaccelerator.telegram.parsers
 
-import org.apache.logging.log4j.simple.SimpleLogger
 import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import java.io.InputStream
-import java.util.logging.Logger
+
+const val MEMBERS_SHEET_NAME = "Участники"
+const val TEAMS_SHEET_NAME = "Команды"
 
 object Xlsx {
     sealed interface Result<T> {
         class OK<T>(val value: T) : Result<T>
-        class BadFormat<T>(val errorRows: List<Int>) : Result<T>
+        class BadFormat<T>(val errors: List<SheetErrors>) : Result<T>
         class InvalidFile<T> : Result<T>
     }
-    fun parseXlsxTeams(inputStream: InputStream, sheetNumber: Int):
-            Result<Map<PhoneNumber, String>> {
-        try {
-            val trackers = XSSFWorkbook(inputStream).use {
-                it.getSheetAt(sheetNumber).map { row ->
-                    try {
-                        val cell = row.getCell(0)
-                        val rawPhoneNumber = when(cell.cellType){
-                            CellType.NUMERIC -> cell.numericCellValue.toLong().toString()
-                            CellType.STRING -> cell.stringCellValue
-                            else -> throw IllegalStateException()
-                        }
-                        System.out.println(rawPhoneNumber)
-                        val phoneNumber = if (rawPhoneNumber[0] == '+') {
-                            rawPhoneNumber.substring(1)
-                        } else {
-                            rawPhoneNumber
-                        }
-                        Pair<PhoneNumber?, String>(
-                            PhoneNumber.of(phoneNumber),
-                            row.getCell(1).stringCellValue
-                        )
-                    } catch (ignore: IllegalStateException) {
-                        Pair<PhoneNumber?, String>(null, "")
-                    }
-                }.drop(1).dropLastWhile { it.first == null }
+
+    class SheetErrors(
+        val name: String,
+        val rows: List<Int>
+    )
+
+    class Users(
+        val members: List<Pair<PhoneNumber, String>>,
+        val teams: List<Pair<PhoneNumber, String>>
+    )
+
+    fun parseUsers(inputStream: InputStream): Result<Users> =
+        runCatching {
+            val (members, teams) = XSSFWorkbook(inputStream).use { workbook ->
+                parsePhonesWithTeam(workbook, MEMBERS_SHEET_NAME) to parsePhonesWithTeam(workbook, TEAMS_SHEET_NAME)
             }
-            return if (trackers.any { p -> p.first == null }) {
-                Result.BadFormat(trackers.mapIndexedNotNull { index, pair ->
-                    if (pair.first == null) {
-                        index
-                    } else {
-                        null
-                    }
-                })
+            val errors = listOf(members.second, teams.second).filter { it.rows.isNotEmpty() }
+            if (errors.isNotEmpty()) {
+                Result.BadFormat(errors)
             } else {
-                Result.OK(trackers.map { Pair(it.first!!, it.second) }.toMap())
+                Result.OK(Users(members.first.requireNoNulls(), teams.first.requireNoNulls()))
             }
-        } catch (e: Exception) {
-            return Result.InvalidFile()
+        }.getOrElse {
+            println(it)
+            Result.InvalidFile()
         }
+
+    private fun parsePhonesWithTeam(
+        workbook: Workbook,
+        sheetName: String
+    ): Pair<List<Pair<PhoneNumber, String>?>, SheetErrors> {
+        return workbook.getSheet(sheetName)
+            .map { it.getCellText(0) to it.getCellText(1) }
+            .drop(1)
+            .dropLastWhile { it.first.isNullOrBlank() && it.second.isNullOrBlank() }
+            .map {
+                runCatching {
+                    val phoneNumber = PhoneNumber.of(it.first!!.removePrefix("+"))!!
+                    val teamName = it.second!!
+                    phoneNumber to teamName
+                }.getOrNull()
+            }
+            .let {
+                it to SheetErrors(sheetName, it.mapIndexedNotNull { index, e -> (index + 2).takeIf { e == null } })
+            }
     }
+
+    private fun Row.getCellText(number: Int) = runCatching {
+        val cell = getCell(number)
+        when (cell.cellType) {
+            CellType.NUMERIC -> cell.numericCellValue.toLong().toString()
+            CellType.STRING -> cell.stringCellValue
+            CellType.BLANK -> ""
+            else -> null
+        }
+    }.getOrNull()
 }

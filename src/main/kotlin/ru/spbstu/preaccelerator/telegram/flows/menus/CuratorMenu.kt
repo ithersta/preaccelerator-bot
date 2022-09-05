@@ -1,15 +1,24 @@
 package ru.spbstu.preaccelerator.telegram.flows.menus
 
+import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.menu.menu
+import dev.inmo.tgbotapi.extensions.api.bot.getMe
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.formatting.makeDeepLink
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.extensions.CuratorExt.generateCuratorToken
+import ru.spbstu.preaccelerator.telegram.flows.addUsersFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.AddUsers
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.GetStats
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.SendInfo
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
     menu(MenuStrings.Curator.Message, EmptyState) {
@@ -25,10 +34,16 @@ fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorM
             backButton(MenuStrings.Back)
         }
         submenu(AddUsers.Button, AddUsers.Message, MenuState.Curator.AddUsers) {
-            button(AddUsers.MembersAndTrackers, LoadListOfUsersState.WaitingForDocument)
-            button(AddUsers.Curator, NotImplementedState)
+            button(AddUsers.MembersAndTrackers, AddUsersState.WaitingForDocument)
+            button(AddUsers.Curator) { handleAddCurator(it) }
             backButton(MenuStrings.Back)
         }
         button(MenuStrings.Curator.GetProtocols, NotImplementedState)
     }
+    addUsersFlow()
+}
+
+private suspend fun StatefulContext<DialogState, PreacceleratorUser, *, Curator>.handleAddCurator(message: CommonMessage<TextContent>) {
+    val deepLink = makeDeepLink(getMe().username, user.generateCuratorToken())
+    sendTextMessage(message.chat, MessageStrings.Curator.addCuratorDeepLink(deepLink))
 }

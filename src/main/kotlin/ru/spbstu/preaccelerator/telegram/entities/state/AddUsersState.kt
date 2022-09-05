@@ -2,7 +2,7 @@ package ru.spbstu.preaccelerator.telegram.entities.state
 
 import kotlinx.serialization.Serializable
 
-object LoadListOfUsersState {
+object AddUsersState {
     @Serializable
-    object WaitingForDocument: DialogState
+    object WaitingForDocument : DialogState
 }

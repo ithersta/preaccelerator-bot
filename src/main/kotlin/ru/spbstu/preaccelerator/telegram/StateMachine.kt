@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import mu.KotlinLogging
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
+import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.usecases.GetUserUseCase
@@ -16,10 +17,11 @@ import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.flows.commands.cancelCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.stateCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.whoCommand
-import ru.spbstu.preaccelerator.telegram.flows.member.doModuleFlow
+import ru.spbstu.preaccelerator.telegram.flows.doModuleFlow
 import ru.spbstu.preaccelerator.telegram.flows.fallback
 import ru.spbstu.preaccelerator.telegram.flows.loadMembersAndTrackers
 import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
+import ru.spbstu.preaccelerator.telegram.flows.menus.memberMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
 import ru.spbstu.preaccelerator.telegram.flows.startFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings

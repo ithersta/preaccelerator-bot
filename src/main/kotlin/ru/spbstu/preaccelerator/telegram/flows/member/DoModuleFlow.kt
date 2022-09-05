@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows.member
+package ru.spbstu.preaccelerator.telegram.flows
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -13,13 +13,15 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
+import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
+import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
-import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.module
-import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
+import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.module
+import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
@@ -34,7 +36,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
@@ -42,20 +43,32 @@ fun StateMachineBuilder.doModuleFlow() {
 
     role<Member> {
         state<EmptyState> {
-            onTransition {
+            onTransition { chatId ->
                 sendTextMessage(
-                    it,
-                    ButtonStrings.ChooseModule.Button,
-                    parseMode = MarkdownV2
+                    chatId, MenuStrings.Member.SelectModule,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        resizeKeyboard = true,
+                        oneTimeKeyboard = true
+                    ) {
+                        user.team.availableModules.chunked(2).forEach {
+                            row {
+                                it.forEach { simpleButton(it.name) }
+                            }
+                        }
+                    }
                 )
-                val number = 0
-                sendTextMessage(
-                    it,
-                    MessageStrings.ChooseModuleAction.Message,
-                    parseMode = MarkdownV2 ///здесь меню выбора номера модуля
-                )
-                ///присваиваем number значение в соответствии с выбранным модулем
-                setState(ChooseModuleAction(moduleConfig.modules[number].number))
+            onText { message ->
+                val moduleName = message.content.text
+                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ChooseModuleAction.Error,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
+                setState(ModuleState(module.number, 0))
             }
         }
         state<ChooseModuleAction> {
@@ -133,6 +146,37 @@ fun StateMachineBuilder.doModuleFlow() {
                         )
                     }
                 }
+            }
+        }
+
+        state<StartModule> {
+            onTransition { chatId ->
+                sendTextMessage(
+                    chatId, MenuStrings.Member.SelectModule,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        resizeKeyboard = true,
+                        oneTimeKeyboard = true
+                    ) {
+                        user.team.availableModules.chunked(2).forEach {
+                            row {
+                                it.forEach { simpleButton(it.name) }
+                            }
+                        }
+                    }
+                )
+            }
+            onText { message ->
+                val moduleName = message.content.text
+                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ChooseModuleAction.Error,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
+                setState(ModuleState(module.number, 0))
             }
         }
 
