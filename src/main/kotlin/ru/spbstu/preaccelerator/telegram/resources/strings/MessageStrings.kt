@@ -7,10 +7,10 @@ import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
+        const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
-        const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
-        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}"
+        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}."
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
     }
 
