@@ -31,6 +31,10 @@ object MessageStrings {
         const val NotImplemented = "Эта функция не реализована"
     }
 
+    object ChooseModuleAction {
+        const val Error = "Выберите действие из кнопочного меню"
+    }
+
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val TemplateFilename = "Шаблон"

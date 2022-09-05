@@ -36,20 +36,44 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
-
     role<Member> {
         state<StartModule> {
-            onTransition {
-                val moduleNumb = 0////потом вместо нуля выбор номера из доступных кнопок
-                val firstModule = moduleConfig.modules[moduleNumb]
-                val startModule = ModuleState(firstModule.number, 0)
-                setState(startModule)
+            onTransition { chatId ->
+                sendTextMessage(
+                    chatId, MenuStrings.Member.SelectModule,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        resizeKeyboard = true,
+                        oneTimeKeyboard = true
+                    ) {
+                        user.team.availableModules.chunked(2).forEach {
+                            row {
+                                it.forEach { simpleButton(it.name) }
+                            }
+                        }
+                    }
+                )
+            }
+            onText { message ->
+                val moduleName = message.content.text
+                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ChooseModuleAction.Error,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
+                setState(ModuleState(module.number, 0))
             }
         }
+
         state<ModuleState> {
             onTransition {
                 require(state.module in user.team.availableModules)
