@@ -63,13 +63,9 @@ fun StateMachineBuilder.doModuleFlow() {
             }
             onText { message ->
                 val model = message.content.text
-                for (i in 0..7) {
-                    if (moduleConfig.modules[i].name == model) {
-                        val firstModule = moduleConfig.modules[i]
-                        val startModule = ModuleState(firstModule.number, 0)
-                        setState(startModule)
-                    }
-                }
+                val firstModule = moduleConfig.modules.find{it.name == model}
+                val startModule = ModuleState(firstModule!!.number, 0)
+                setState(startModule)
             }
         }
 
