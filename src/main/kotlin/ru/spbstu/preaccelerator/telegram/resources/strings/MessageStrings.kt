@@ -28,6 +28,9 @@ object MessageStrings {
         const val NoSuchCommand = "Нет такой команды или она сейчас недоступна"
         const val NotImplemented = "Эта функция не реализована"
     }
+    object ChooseModuleAction{
+        const val Err ="Выберите действие из кнопочного меню"
+    }
 
     object Error {
         fun internal(message: String?) = "Произошла внутренняя ошибка: $message"

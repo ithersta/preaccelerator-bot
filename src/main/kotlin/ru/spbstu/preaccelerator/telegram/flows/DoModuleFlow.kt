@@ -38,6 +38,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
@@ -63,9 +64,18 @@ fun StateMachineBuilder.doModuleFlow() {
             }
             onText { message ->
                 val model = message.content.text
-                val firstModule = moduleConfig.modules.find{it.name == model}
-                val startModule = ModuleState(firstModule!!.number, 0)
-                setState(startModule)
+                try {
+                    val firstModule = moduleConfig.modules.find { it.name == model }
+                    val startModule = ModuleState(firstModule!!.number, 0)
+                    setState(startModule)
+                }
+                catch (e: Exception){
+                    sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.Err,
+                            parseMode = MarkdownV2
+                        )
+                }
             }
         }
 
