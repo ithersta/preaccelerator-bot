@@ -53,7 +53,7 @@ fun StateMachineBuilder.doModuleFlow() {
                         oneTimeKeyboard = true
                     )
                     {
-                       moduleConfig.modules.take(user.team.availableModules.size).chunked(2).forEach{
+                       user.team.availableModules.chunked(2).forEach{
                            row{
                                it.forEach{ simpleButton(it.name)}
                            }
