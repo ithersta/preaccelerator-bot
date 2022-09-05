@@ -28,8 +28,9 @@ object MessageStrings {
         const val NoSuchCommand = "Нет такой команды или она сейчас недоступна"
         const val NotImplemented = "Эта функция не реализована"
     }
-    object ChooseModuleAction{
-        const val Err ="Выберите действие из кнопочного меню"
+
+    object ChooseModuleAction {
+        const val Error = "Выберите действие из кнопочного меню"
     }
 
     object Error {

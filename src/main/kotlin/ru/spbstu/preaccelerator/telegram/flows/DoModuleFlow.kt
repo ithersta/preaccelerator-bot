@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.types.buttons.SimpleKeyboardButton
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -45,35 +44,33 @@ fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
     role<Member> {
         state<StartModule> {
-            onTransition {
+            onTransition { chatId ->
                 sendTextMessage(
-                    it, MenuStrings.Member.SelectModule,
+                    chatId, MenuStrings.Member.SelectModule,
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(
-                        resizeKeyboard=true,
+                        resizeKeyboard = true,
                         oneTimeKeyboard = true
-                    )
-                    {
-                       user.team.availableModules.chunked(2).forEach{
-                           row{
-                               it.forEach{ simpleButton(it.name)}
-                           }
-                       }
+                    ) {
+                        user.team.availableModules.chunked(2).forEach {
+                            row {
+                                it.forEach { simpleButton(it.name) }
+                            }
+                        }
                     }
                 )
             }
             onText { message ->
-                val model = message.content.text
-                    val firstModule = moduleConfig.modules.find { it.name == model } ?: run {
-                        sendTextMessage(
-                            message.chat,
-                            MessageStrings.ChooseModuleAction.Err,
-                            parseMode = MarkdownV2
-                        )
-                        return@onText
-                    }
-                    val startModule = ModuleState(firstModule!!.number, 0)
-                    setState(startModule)
+                val moduleName = message.content.text
+                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ChooseModuleAction.Error,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
+                setState(ModuleState(module.number, 0))
             }
         }
 
