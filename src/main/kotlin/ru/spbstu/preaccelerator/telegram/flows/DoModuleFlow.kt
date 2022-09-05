@@ -46,7 +46,7 @@ fun StateMachineBuilder.doModuleFlow() {
         state<StartModule> {
             onTransition {
                 sendTextMessage(
-                    it, MenuStrings.Member.ChooseStep,
+                    it, MenuStrings.Member.SelectModule,
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(
                         resizeKeyboard=true,

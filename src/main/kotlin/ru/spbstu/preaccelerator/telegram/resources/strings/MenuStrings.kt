@@ -52,7 +52,6 @@ object MenuStrings {
     object Member {
         const val Message = "Меню участника"
         const val SelectModule = "Выбрать модуль"
-        const val ChooseStep = "Выберите модуль"
         const val GetRating = "Получить место в рейтинге"
     }
 }
