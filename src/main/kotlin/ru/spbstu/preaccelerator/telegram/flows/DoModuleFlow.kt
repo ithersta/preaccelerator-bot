@@ -64,18 +64,16 @@ fun StateMachineBuilder.doModuleFlow() {
             }
             onText { message ->
                 val model = message.content.text
-                try {
-                    val firstModule = moduleConfig.modules.find { it.name == model }
-                    val startModule = ModuleState(firstModule!!.number, 0)
-                    setState(startModule)
-                }
-                catch (e: Exception){
-                    sendTextMessage(
+                    val firstModule = moduleConfig.modules.find { it.name == model } ?: run {
+                        sendTextMessage(
                             message.chat,
                             MessageStrings.ChooseModuleAction.Err,
                             parseMode = MarkdownV2
                         )
-                }
+                        return@onText
+                    }
+                    val startModule = ModuleState(firstModule!!.number, 0)
+                    setState(startModule)
             }
         }
 
