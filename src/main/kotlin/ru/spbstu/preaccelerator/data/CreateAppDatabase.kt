@@ -38,6 +38,10 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
         HomeworkAdapter = Homework.Adapter(
             teamIdAdapter = TeamIdAdapter,
             taskNumberAdapter = TaskNumberAdapter
+        ),
+        MeetingAdapter = Meeting.Adapter(
+            idAdapter = MeetingIdAdapter,
+            teamIdAdapter = TeamIdAdapter
         )
     ).also {
         runCatching {

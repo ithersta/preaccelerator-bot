@@ -7,3 +7,19 @@ CREATE TABLE Meeting (
   url TEXT NOT NULL,
   timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+get:
+SELECT * FROM Meeting
+WHERE id = :id;
+
+
+getByTeamId:
+SELECT * FROM Meeting
+WHERE teamId = :teamId;
+
+add:
+INSERT INTO Meeting(teamId, timestamp,url)
+VALUES(:teamId, :timestamp, :url)
+ON CONFLICT (teamId)
+DO UPDATE SET teamId = :teamId
+RETURNING id;

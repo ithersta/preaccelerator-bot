@@ -35,10 +35,17 @@ object MenuStrings {
         const val Message = "Меню трекера"
 
         object Meetings {
+            internal fun confirmationProtocol(teamName: String, time: String) =
+                "Всё верно?  Протокол встречи с $teamName командой, состоявшейся $time, оправлен куратору\\.".trimMargin()
+
             const val Button = "Встречи"
             const val Message = "Выберите действие"
             const val Schedule = "Запланировать новую встречу"
             const val SendProtocol = "Отправить протокол встречи"
+            const val chooseTeam = "Выберите команду"
+            const val chooseMeeting = "Выберите встречу"
+            const val inputGoogleDiskUrl = "Введите ссылку на google док с протоколом встречи"
+            const val sentCurator = "Протокол встречи оправлен куратору"
         }
 
         object Teams {
