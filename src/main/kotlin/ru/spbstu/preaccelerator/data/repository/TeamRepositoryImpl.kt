@@ -10,6 +10,10 @@ import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 class TeamRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : TeamRepository {
+    override fun getAll(): List<Team> {
+        return appDatabase.teamQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     override fun get(id: Team.Id): Team {
         return appDatabase.teamQueries.get(id).executeAsOne().toDomainModel()
     }
