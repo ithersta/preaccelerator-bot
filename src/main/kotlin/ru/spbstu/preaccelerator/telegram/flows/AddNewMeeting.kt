@@ -15,7 +15,6 @@ import ru.spbstu.preaccelerator.telegram.entities.state.URLMeeting
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import java.time.OffsetDateTime
 
 
 private var teamName = ""
@@ -68,6 +67,7 @@ fun StateMachineBuilder.addNewMeeting() {
             }
             onText { message ->
                 time = message.content.text
+                //TODO добавить перевод из String в OffsetDateTime
                 setState(CheckCorrect)
             }
         }
