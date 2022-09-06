@@ -32,10 +32,10 @@ object MessageStrings {
         const val NotImplemented = "Эта функция не реализована"
     }
 
-    object ChooseModuleAction{
+    object ChooseModuleAction {
         const val ChooseModuleAction = "Выберите желаемое действие"
         const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
-        const val Err ="Выберите действие из кнопочного меню"
+        const val Err = "Выберите действие из кнопочного меню"
     }
 
     object AddUsers {

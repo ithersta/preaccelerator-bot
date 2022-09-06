@@ -13,7 +13,10 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
+import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
+import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
