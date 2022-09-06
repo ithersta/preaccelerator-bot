@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeeting
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 
 fun StateMachineBuilder.addNewMeeting(){
@@ -17,20 +18,41 @@ fun StateMachineBuilder.addNewMeeting(){
             onTransition {
                 sendTextMessage(
                     it,
-                    MenuStrings.Tracker.ScheduleMeetings.ChooseCommand,
+                    MenuStrings.Tracker.ScheduleMeetings.ChooseTeam,
                     replyMarkup = replyKeyboard(
                         resizeKeyboard=true,
                         oneTimeKeyboard = true
                     )
                     {
-                        row {
-                            simpleButton("Тут будут команды")
+                        user.teams.chunked(2).forEach {
+                            row {
+                               it.forEach{ simpleButton(it.name)}
+                            }
                         }
                     }
-
                 )
             }
-            onText{message ->}
+            onText{message ->
+                var teamName = message.content.text
+            }
+//            onTransition {
+//                sendTextMessage(
+//                    it,
+//                    MenuStrings.Tracker.ScheduleMeetings.InputURL
+//                )
+//            }
+//            onText{message ->
+//                var url = message.content.text
+//            }
+//            onTransition {
+//                sendTextMessage(
+//                    it,
+//                    MenuStrings.Tracker.ScheduleMeetings.InputTime
+//                )
+//            }
+//            onText{message ->
+//                var time = message.content.text
+//            }
         }
     }
 }

@@ -55,11 +55,9 @@ object MenuStrings {
         }
 
         object ScheduleMeetings {
-            const val ChooseCommand = "Выберите команду"
+            const val ChooseTeam = "Выберите команду"
             const val InputURL = "Введите ссылку на конференцию"
-            const val InputTime = "Введите время конференции"
-            const val Yes = "Да"
-            const val No = "Нет"
+            const val InputTime = "Введите время конференции в формате дд.ММ.гггг чч:мм"
         }
     }
 

@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.types.buttons.SimpleKeyboardButton
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,7 +16,6 @@ import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
-import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
 import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
@@ -39,8 +37,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
