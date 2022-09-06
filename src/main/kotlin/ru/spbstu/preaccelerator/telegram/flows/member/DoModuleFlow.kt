@@ -269,6 +269,8 @@ fun StateMachineBuilder.doModuleFlow() {
                                         nextModule(state.moduleNumber),
                                         "module ${state.moduleNumber.value + 1}"
                                     )
+                                } else {
+                                    setState(EmptyState)
                                 }
                             }
                         }
