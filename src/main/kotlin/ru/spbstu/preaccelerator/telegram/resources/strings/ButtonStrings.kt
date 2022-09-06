@@ -15,5 +15,12 @@ object ButtonStrings {
         const val SendHomework = "Отправить домашнее задание"
     }
 
+    object ChooseModule {
+        const val Button = "Выбрать модуль"
+        const val DoEntireModule = "Пройти модуль полностью"
+        const val DoTest = "Пройти тест"
+        const val WatchLectures = "Смотреть лекции"
+    }
+
     const val Cancel = "Отменить"
 }

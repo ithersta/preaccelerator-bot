@@ -4,6 +4,7 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
+// TODO: Всё переписать
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
@@ -32,7 +33,9 @@ object MessageStrings {
     }
 
     object ChooseModuleAction {
-        const val Error = "Выберите действие из кнопочного меню"
+        const val ChooseModuleAction = "Выберите желаемое действие"
+        const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
+        const val Err = "Выберите действие из кнопочного меню"
     }
 
     object AddUsers {
