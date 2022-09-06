@@ -7,9 +7,11 @@ import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
 import ru.spbstu.preaccelerator.domain.usecases.actions.EmptyUserActions
 
 object EmptyUserExt : KoinComponent {
-    private val emptyUserActions: EmptyUserActions by inject()
+    private val actions: EmptyUserActions by inject()
 
-    fun EmptyUser.setPhoneNumber(phoneNumber: PhoneNumber) = with(emptyUserActions) {
-        setPhoneNumber(phoneNumber)
-    }
+    fun EmptyUser.setPhoneNumber(phoneNumber: PhoneNumber) =
+        with(actions) { setPhoneNumber(phoneNumber) }
+
+    fun EmptyUser.useCuratorToken(token: String) =
+        with(actions) { useCuratorToken(token) }
 }

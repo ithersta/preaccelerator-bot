@@ -17,6 +17,10 @@ getByTrackerId:
 SELECT * FROM Team
 WHERE trackerId = :trackerId;
 
+getByName:
+SELECT * FROM Team
+WHERE name = :name;
+
 add:
 INSERT INTO Team(name, trackerId)
 VALUES(:name, :trackerId)

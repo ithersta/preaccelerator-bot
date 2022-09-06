@@ -63,12 +63,6 @@ object MenuStrings {
         }
     }
 
-    object Member {
-        const val Message = "Меню участника"
-        const val SelectModule = "Выбрать модуль"
-        const val GetRating = "Получить место в рейтинге"
-    }
-
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(ZoneId.systemDefault())

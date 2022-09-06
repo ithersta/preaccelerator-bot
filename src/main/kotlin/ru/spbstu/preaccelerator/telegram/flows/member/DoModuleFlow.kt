@@ -14,6 +14,8 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
 import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
@@ -37,45 +39,123 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
+
     role<Member> {
-        state<StartModule> {
+        state<EmptyState> {
             onTransition {
                 sendTextMessage(
-                    it, MenuStrings.Member.SelectModule,
-                    parseMode = MarkdownV2,
+                    it,
+                    ButtonStrings.ChooseModule.Button,
                     replyMarkup = replyKeyboard(
-                        resizeKeyboard=true,
+                        resizeKeyboard = true,
                         oneTimeKeyboard = true
-                    )
-                    {
-                       user.team.availableModules.chunked(2).forEach{
-                           row{
-                               it.forEach{ simpleButton(it.name)}
-                           }
-                       }
+                    ) {
+                        user.team.availableModules.chunked(2).forEach {
+                            row {
+                                it.forEach { simpleButton(it.name) }
+                            }
+                        }
                     }
                 )
             }
             onText { message ->
-                val model = message.content.text
-                    val firstModule = moduleConfig.modules.find { it.name == model } ?: run {
+                val moduleName = message.content.text
+                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ChooseModuleAction.Err,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
+                setState(ChooseModuleAction(module.number))
+            }
+        }
+        state<ChooseModuleAction> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MessageStrings.ChooseModuleAction.ChooseModuleAction,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        block = {
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.DoEntireModule)
+                            }
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.WatchLectures)
+                                simpleButton(ButtonStrings.ChooseModule.DoTest)
+                            }
+                        },
+                        resizeKeyboard = true
+                    )
+                )
+            }
+
+            onText { message ->
+                val moduleNumb = state.moduleNumber
+                val moduleNumbInt = moduleNumb.value
+                val mess = message.content.text
+                when (mess) {
+                    ButtonStrings.ChooseModule.DoEntireModule -> {
+                        setState(ModuleState(moduleNumb, 0))
+                    }
+
+                    ButtonStrings.ChooseModule.WatchLectures -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.ModuleLectures,
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                    if (part is Lecture) {
+                                        row {
+                                            urlButton(
+                                                part.name,
+                                                part.url
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                        setState(EmptyState)
+                    }
+
+                    ButtonStrings.ChooseModule.DoTest -> {
+                        sendTextMessage(
+                            message.chat,
+                            goodbyeModule(moduleConfig, state.moduleNumber),
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                row {
+                                    urlButton(
+                                        DoTest,
+                                        moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                    )
+                                }
+                            })
+                        setState(EmptyState)
+                    }
+
+                    else -> {
                         sendTextMessage(
                             message.chat,
                             MessageStrings.ChooseModuleAction.Err,
                             parseMode = MarkdownV2
                         )
-                        return@onText
                     }
-                    val startModule = ModuleState(firstModule!!.number, 0)
-                    setState(startModule)
+                }
             }
         }
+
 
         state<ModuleState> {
             onTransition {

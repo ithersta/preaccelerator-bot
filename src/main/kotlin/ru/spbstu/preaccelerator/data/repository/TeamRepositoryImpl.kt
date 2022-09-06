@@ -18,6 +18,10 @@ class TeamRepositoryImpl(
         return appDatabase.teamQueries.getByTrackerId(trackerId).executeAsList().map { it.toDomainModel() }
     }
 
+    override fun get(name: String): Team? {
+        return appDatabase.teamQueries.getByName(name).executeAsOneOrNull()?.toDomainModel()
+    }
+
     override fun add(name: String, trackerId: Tracker.Id): Team.Id {
         return appDatabase.teamQueries.add(name, trackerId).executeAsOne()
     }
