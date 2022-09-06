@@ -13,8 +13,9 @@ import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
-import ru.spbstu.preaccelerator.telegram.entities.state.StartModule
 import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
@@ -36,18 +37,18 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
-import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
+
     role<Member> {
-        state<StartModule> {
-            onTransition { chatId ->
+        state<EmptyState> {
+            onTransition {
                 sendTextMessage(
-                    chatId, MenuStrings.Member.SelectModule,
-                    parseMode = MarkdownV2,
+                    it,
+                    ButtonStrings.ChooseModule.Button,
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -65,14 +66,92 @@ fun StateMachineBuilder.doModuleFlow() {
                 val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ChooseModuleAction.Error,
+                        MessageStrings.ChooseModuleAction.Err,
                         parseMode = MarkdownV2
                     )
                     return@onText
                 }
-                setState(ModuleState(module.number, 0))
+                setState(ChooseModuleAction(module.number))
             }
         }
+        state<ChooseModuleAction> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MessageStrings.ChooseModuleAction.ChooseModuleAction,
+                    parseMode = MarkdownV2,
+                    replyMarkup = replyKeyboard(
+                        block = {
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.DoEntireModule)
+                            }
+                            row {
+                                simpleButton(ButtonStrings.ChooseModule.WatchLectures)
+                                simpleButton(ButtonStrings.ChooseModule.DoTest)
+                            }
+                        },
+                        resizeKeyboard = true
+                    )
+                )
+            }
+
+            onText { message ->
+                val moduleNumb = state.moduleNumber
+                val moduleNumbInt = moduleNumb.value
+                val mess = message.content.text
+                when (mess) {
+                    ButtonStrings.ChooseModule.DoEntireModule -> {
+                        setState(ModuleState(moduleNumb, 0))
+                    }
+
+                    ButtonStrings.ChooseModule.WatchLectures -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.ModuleLectures,
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                    if (part is Lecture) {
+                                        row {
+                                            urlButton(
+                                                part.name,
+                                                part.url
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                        setState(EmptyState)
+                    }
+
+                    ButtonStrings.ChooseModule.DoTest -> {
+                        sendTextMessage(
+                            message.chat,
+                            goodbyeModule(moduleConfig, state.moduleNumber),
+                            parseMode = MarkdownV2,
+                            replyMarkup = inlineKeyboard {
+                                row {
+                                    urlButton(
+                                        DoTest,
+                                        moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                    )
+                                }
+                            })
+                        setState(EmptyState)
+                    }
+
+                    else -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.Err,
+                            parseMode = MarkdownV2
+                        )
+                    }
+                }
+            }
+        }
+
 
         state<ModuleState> {
             onTransition {
@@ -190,6 +269,8 @@ fun StateMachineBuilder.doModuleFlow() {
                                         nextModule(state.moduleNumber),
                                         "module ${state.moduleNumber.value + 1}"
                                     )
+                                } else {
+                                    setState(EmptyState)
                                 }
                             }
                         }
@@ -252,6 +333,7 @@ fun StateMachineBuilder.doModuleFlow() {
         }
     }
 }
+
 
 private object ModuleStateExt : KoinComponent {
     private val moduleConfig: ModuleConfig by inject()
