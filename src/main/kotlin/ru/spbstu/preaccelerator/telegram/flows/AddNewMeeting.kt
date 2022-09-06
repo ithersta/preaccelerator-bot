@@ -15,8 +15,14 @@ import ru.spbstu.preaccelerator.telegram.entities.state.URLMeeting
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import java.time.OffsetDateTime
 
-fun StateMachineBuilder.addNewMeeting(){
+
+private var teamName = ""
+private var url = ""
+private var time = ""
+
+fun StateMachineBuilder.addNewMeeting() {
     role<Tracker> {
         state<NewMeeting> {
             onTransition {
@@ -37,21 +43,21 @@ fun StateMachineBuilder.addNewMeeting(){
                 )
             }
             onText { message ->
-                var teamName = message.content.text
+                teamName = message.content.text
                 setState(URLMeeting)
             }
         }
         state<URLMeeting> {
-                onTransition {
-                    sendTextMessage(
-                        it,
-                        MenuStrings.Tracker.ScheduleMeetings.InputURL
-                    )
-                }
-                onText { message ->
-                    var url = message.content.text
-                    setState(TimeMeeting)
-                }
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MenuStrings.Tracker.ScheduleMeetings.InputURL
+                )
+            }
+            onText { message ->
+                url = message.content.text
+                setState(TimeMeeting)
+            }
         }
         state<TimeMeeting> {
             onTransition {
@@ -61,27 +67,28 @@ fun StateMachineBuilder.addNewMeeting(){
                 )
             }
             onText { message ->
-                var time = message.content.text
+                time = message.content.text
                 setState(CheckCorrect)
             }
         }
-//            onTransition {
-//                sendTextMessage(
-//                    it,
-//                    MenuStrings.meetingCreationConfirmation(teamName,time,url),
-//                    replyMarkup = replyKeyboard(
-//                        resizeKeyboard=true,
-//                        oneTimeKeyboard = true
-//                    )
-//                    {
-//                        row {
-//                            simpleButton(MessageStrings.Option.Yes)
-//                            simpleButton(MessageStrings.Option.No)
-//                        }
-//                    }
-//                )
-//            }
-
+        state<CheckCorrect> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MenuStrings.meetingCreationConfirmation(teamName, time, url),
+                    replyMarkup = replyKeyboard(
+                        resizeKeyboard = true,
+                        oneTimeKeyboard = true
+                    )
+                    {
+                        row {
+                            simpleButton(MessageStrings.Option.Yes)
+                            simpleButton(MessageStrings.Option.No)
+                        }
+                    }
+                )
+            }
         }
     }
+}
 
