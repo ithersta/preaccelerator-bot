@@ -65,8 +65,8 @@ object MenuStrings {
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(ZoneId.systemDefault())
 
-    fun meetingCreationConfirmation (team: Team, time: OffsetDateTime, url: String) =
-        """|Запланировать встречу с командой ${team.name}
+    fun meetingCreationConfirmation (teamName: String, time: OffsetDateTime, url: String) =
+        """|Запланировать встречу с командой $teamName
            |на ${dateTimeFormatter.format(time)}
            |ссылка на конференцию $url
            |Все верно?
