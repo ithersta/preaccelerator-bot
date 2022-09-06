@@ -11,8 +11,7 @@ class ModuleState(
 ) : DialogState
 
 @Serializable
-class ChooseModuleAction
-    (
+class ChooseModuleAction(
     val moduleNumber: Module.Number
 ) : DialogState
 
