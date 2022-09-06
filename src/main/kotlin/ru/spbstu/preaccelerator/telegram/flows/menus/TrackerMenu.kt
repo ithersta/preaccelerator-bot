@@ -5,10 +5,7 @@ import com.ithersta.tgbotapi.menu.menu
 import dev.inmo.tgbotapi.types.UserId
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
-import ru.spbstu.preaccelerator.telegram.entities.state.NotImplementedState
+import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Meetings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Teams
@@ -16,7 +13,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.T
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerMenu() {
     menu(MenuStrings.Tracker.Message, EmptyState) {
         submenu(Meetings.Button, Meetings.Message, MenuState.Tracker.Meetings) {
-            button(Meetings.Schedule, NotImplementedState)
+            button(Meetings.Schedule, NewMeeting)
             button(Meetings.SendProtocol, NotImplementedState)
             backButton(MenuStrings.Back)
         }
