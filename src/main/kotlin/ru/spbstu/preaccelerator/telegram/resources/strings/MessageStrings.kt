@@ -4,13 +4,14 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
+// TODO: Всё переписать
 object MessageStrings {
     object Start {
         const val AskContact = "TODO"
+        const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
-        const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
-        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}"
+        fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}."
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
     }
 
@@ -32,7 +33,9 @@ object MessageStrings {
     }
 
     object ChooseModuleAction {
-        const val Error = "Выберите действие из кнопочного меню"
+        const val ChooseModuleAction = "Выберите желаемое действие"
+        const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
+        const val Err = "Выберите действие из кнопочного меню"
     }
 
     object AddUsers {
