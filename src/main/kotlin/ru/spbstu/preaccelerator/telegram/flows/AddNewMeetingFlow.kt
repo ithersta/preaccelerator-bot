@@ -11,17 +11,20 @@ import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.CheckCorrect
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeeting
 import ru.spbstu.preaccelerator.telegram.entities.state.TimeMeeting
-import ru.spbstu.preaccelerator.telegram.entities.state.URLMeeting
+import ru.spbstu.preaccelerator.telegram.entities.state.UrlMeeting
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import java.text.SimpleDateFormat
+import java.time.ZoneOffset
+import java.util.*
 
 
 private var teamName = ""
 private var url = ""
-private var time = ""
+private var time = Date(System.currentTimeMillis()).toInstant().atOffset(ZoneOffset.UTC)
 
-fun StateMachineBuilder.addNewMeeting() {
+fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
         state<NewMeeting> {
             onTransition {
@@ -43,10 +46,10 @@ fun StateMachineBuilder.addNewMeeting() {
             }
             onText { message ->
                 teamName = message.content.text
-                setState(URLMeeting)
+                setState(UrlMeeting)
             }
         }
-        state<URLMeeting> {
+        state<UrlMeeting> {
             onTransition {
                 sendTextMessage(
                     it,
@@ -66,8 +69,7 @@ fun StateMachineBuilder.addNewMeeting() {
                 )
             }
             onText { message ->
-                time = message.content.text
-                //TODO добавить перевод из String в OffsetDateTime
+                time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(3))
                 setState(CheckCorrect)
             }
         }
@@ -91,4 +93,3 @@ fun StateMachineBuilder.addNewMeeting() {
         }
     }
 }
-

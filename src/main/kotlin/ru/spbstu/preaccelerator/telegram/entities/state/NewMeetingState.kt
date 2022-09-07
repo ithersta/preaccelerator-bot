@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object NewMeeting : DialogState
 
 @Serializable
-object URLMeeting : DialogState
+object UrlMeeting : DialogState
 
 @Serializable
 object TimeMeeting : DialogState

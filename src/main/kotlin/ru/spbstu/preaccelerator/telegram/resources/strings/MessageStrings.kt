@@ -89,6 +89,7 @@ object MessageStrings {
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(ZoneId.systemDefault())
+
     fun meetingCreationConfirmation (teamName: String, time: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName
            |на ${dateTimeFormatter.format(time)}

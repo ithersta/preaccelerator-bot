@@ -13,7 +13,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.usecases.GetUserUseCase
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-import ru.spbstu.preaccelerator.telegram.flows.addNewMeeting
+import ru.spbstu.preaccelerator.telegram.flows.addNewMeetingFlow
 import ru.spbstu.preaccelerator.telegram.flows.commands.cancelCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.stateCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.whoCommand
@@ -55,7 +55,7 @@ fun createStateMachine(
         trackerMenu()
     }
 
-    addNewMeeting()
+    addNewMeetingFlow()
     doModuleFlow()
     fallback()
 }
