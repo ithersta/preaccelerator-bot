@@ -7,3 +7,11 @@ CREATE TABLE Protocol (
   meetingId BIGINT AS Meeting.Id PRIMARY KEY,
   url TEXT NOT NULL
 );
+
+get:
+SELECT * FROM Protocol
+WHERE meetingId  = :meetingId;
+
+add:
+INSERT INTO Protocol(meetingId,url)
+ VALUES(:meetingId,:url);
