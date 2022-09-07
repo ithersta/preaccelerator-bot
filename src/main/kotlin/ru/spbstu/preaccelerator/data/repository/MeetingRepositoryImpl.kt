@@ -18,8 +18,8 @@ class MeetingRepositoryImpl(private val appDatabase: AppDatabase) : MeetingRepos
         return appDatabase.meetingQueries.getByTeamId(teamId).executeAsList().map { it.toDomainModel() }
     }
 
-    override fun add(teamId: Team.Id, timestamp: OffsetDateTime, URL: String): Meeting.Id {
-        return appDatabase.meetingQueries.add(teamId, timestamp, URL).executeAsOne()
+    override fun add(teamId: Team.Id, timestamp: OffsetDateTime, url: String): Meeting.Id {
+        return appDatabase.meetingQueries.add(teamId, timestamp, url).executeAsOne()
     }
 
     private fun ru.spbstu.preaccelerator.data.Meeting.toDomainModel() = Meeting(

@@ -15,5 +15,9 @@ object ButtonStrings {
         const val SendHomework = "Отправить домашнее задание"
     }
 
+    object Option {
+        const val Yes = "Да"
+        const val No = "Нет"
+    }
     const val Cancel = "Отменить"
 }

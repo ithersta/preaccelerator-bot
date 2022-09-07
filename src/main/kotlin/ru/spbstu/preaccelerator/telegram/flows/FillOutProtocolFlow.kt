@@ -51,7 +51,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<SendProtocolState> {
             onTransition { chatId ->
                 sendTextMessage(chatId,
-                    chooseTeam,
+                    ChooseTeam,
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         user.teams.chunked(2).forEach {
@@ -69,7 +69,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<ChooseMeetingState> {
             onTransition { chatId ->
                 sendTextMessage(chatId,
-                    chooseMeeting,
+                    ChooseMeeting,
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         user.teams[giveIdByName(user.teams, teamName) - 1].meetings.chunked(2).forEach {
@@ -88,7 +88,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         }
         state<UrlGoogleDocState> {
             onTransition { chatId ->
-                sendTextMessage(chatId, inputGoogleDiskUrl, parseMode = MarkdownV2)
+                sendTextMessage(chatId, InputGoogleDiskUrl, parseMode = MarkdownV2)
             }
             onText { message ->
                 URLGoogleDisk = message.content.text
@@ -102,8 +102,8 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         row {
-                            simpleButton("Да")
-                            simpleButton("Нет")
+                            simpleButton(ButtonStrings.Option.Yes)
+                            simpleButton(ButtonStrings.Option.No)
                         }
                     })
             }
