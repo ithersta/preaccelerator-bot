@@ -22,5 +22,10 @@ object ButtonStrings {
         const val WatchLectures = "Смотреть лекции"
     }
 
+    object Option {
+        const val Yes = "Да"
+        const val No = "Нет"
+    }
+
     const val Cancel = "Отменить"
 }

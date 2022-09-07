@@ -13,7 +13,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.NewMeeting
 import ru.spbstu.preaccelerator.telegram.entities.state.TimeMeeting
 import ru.spbstu.preaccelerator.telegram.entities.state.URLMeeting
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
-import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 
@@ -27,7 +27,7 @@ fun StateMachineBuilder.addNewMeeting() {
             onTransition {
                 sendTextMessage(
                     it,
-                    MenuStrings.Tracker.ScheduleMeetings.ChooseTeam,
+                    MessageStrings.ScheduleMeetings.ChooseTeam,
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -50,7 +50,7 @@ fun StateMachineBuilder.addNewMeeting() {
             onTransition {
                 sendTextMessage(
                     it,
-                    MenuStrings.Tracker.ScheduleMeetings.InputURL
+                    MessageStrings.ScheduleMeetings.InputURL
                 )
             }
             onText { message ->
@@ -62,7 +62,7 @@ fun StateMachineBuilder.addNewMeeting() {
             onTransition {
                 sendTextMessage(
                     it,
-                    MenuStrings.Tracker.ScheduleMeetings.InputTime
+                    MessageStrings.ScheduleMeetings.InputTime
                 )
             }
             onText { message ->
@@ -75,15 +75,15 @@ fun StateMachineBuilder.addNewMeeting() {
             onTransition {
                 sendTextMessage(
                     it,
-                    MenuStrings.meetingCreationConfirmation(teamName, time, url),
+                    MessageStrings.meetingCreationConfirmation(teamName, time, url),
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
                     )
                     {
                         row {
-                            simpleButton(MessageStrings.Option.Yes)
-                            simpleButton(MessageStrings.Option.No)
+                            simpleButton(ButtonStrings.Option.Yes)
+                            simpleButton(ButtonStrings.Option.No)
                         }
                     }
                 )

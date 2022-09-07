@@ -3,6 +3,10 @@ package ru.spbstu.preaccelerator.telegram.resources.strings
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 // TODO: Всё переписать
 object MessageStrings {
@@ -38,10 +42,6 @@ object MessageStrings {
         const val Err = "Выберите действие из кнопочного меню"
     }
 
-    object Option {
-        const val Yes = "Да"
-        const val No = "Нет"
-    }
 
 
     object AddUsers {
@@ -79,5 +79,21 @@ object MessageStrings {
     object Curator {
         fun addCuratorDeepLink(deepLink: String) = "Отправьте одноразовую ссылку будущему куратору: $deepLink"
     }
+
+    object ScheduleMeetings {
+        const val ChooseTeam = "Выберите команду"
+        const val InputURL = "Введите ссылку на конференцию"
+        const val InputTime = "Введите время конференции в формате дд.ММ.гггг чч:мм"
+    }
+
+    private val dateTimeFormatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withZone(ZoneId.systemDefault())
+    fun meetingCreationConfirmation (teamName: String, time: OffsetDateTime, url: String) =
+        """|Запланировать встречу с командой $teamName
+           |на ${dateTimeFormatter.format(time)}
+           |ссылка на конференцию $url
+           |Все верно?
+        """.trimMargin()
 
 }
