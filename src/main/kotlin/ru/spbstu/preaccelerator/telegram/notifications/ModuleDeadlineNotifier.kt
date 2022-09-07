@@ -16,10 +16,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.usecases.GetModuleDeadlinesUseCase
 import ru.spbstu.preaccelerator.domain.usecases.GetUnfinishedMembersUseCase
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.userId
-import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
 import java.time.OffsetDateTime
 import java.util.*
-import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
 private const val MODULE_NUMBER = "module_number"
@@ -27,6 +26,7 @@ private const val TEXT = "text"
 
 @Single
 class ModuleDeadlineNotifier(
+    private val config: Config,
     private val moduleConfig: ModuleConfig,
     private val massSendLimiter: MassSendLimiter,
     private val getModuleDeadlines: GetModuleDeadlinesUseCase,
@@ -51,15 +51,13 @@ class ModuleDeadlineNotifier(
         deadline: OffsetDateTime
     ): List<Trigger> {
         val now = OffsetDateTime.now()
-        val notifications = listOf(
-            deadline - 1.days.toJavaDuration() to NotificationStrings.ModuleDeadline.inOneDay(module.number)
-        )
-        return notifications.mapNotNull { (dateTime, text) ->
-            if (dateTime.isBefore(now)) return@mapNotNull null
+        return config.notifications.mapNotNull { (duration, text) ->
+            val at = deadline + duration.toJavaDuration()
+            if (at.isBefore(now)) return@mapNotNull null
             newTrigger()
-                .usingJobData(TEXT, text)
+                .usingJobData(TEXT, text(module.number))
                 .usingJobData(MODULE_NUMBER, module.number.value)
-                .startAt(Date.from(dateTime.toInstant()))
+                .startAt(Date.from(at.toInstant()))
                 .build()
         }
     }
@@ -82,4 +80,25 @@ class ModuleDeadlineNotifier(
             }
         }
     }
+
+    class Config(
+        val notifications: List<Pair<Duration, (Module.Number) -> String>>
+    ) {
+        class Builder {
+            private val notifications = mutableListOf<Pair<Duration, (Module.Number) -> String>>()
+
+            fun whenDeadlineIn(duration: Duration) = -duration
+            fun afterDeadline(duration: Duration) = duration
+
+            infix fun Duration.send(text: (Module.Number) -> String) {
+                notifications.add(this to text)
+            }
+
+            fun build() = ModuleDeadlineNotifier.Config(notifications)
+        }
+    }
+}
+
+fun moduleDeadlineNotifications(block: ModuleDeadlineNotifier.Config.Builder.() -> Unit): ModuleDeadlineNotifier.Config {
+    return ModuleDeadlineNotifier.Config.Builder().apply(block).build()
 }
