@@ -20,6 +20,4 @@ WHERE teamId = :teamId;
 add:
 INSERT INTO Meeting(teamId, timestamp,url)
 VALUES(:teamId, :timestamp, :url)
-ON CONFLICT (teamId)
-DO UPDATE SET teamId = :teamId
 RETURNING id;

@@ -91,7 +91,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 sendTextMessage(chatId, InputGoogleDiskUrl, parseMode = MarkdownV2)
             }
             onText { message ->
-                URLGoogleDisk = message.content.text
+                UrlGoogleDisk = message.content.text
                 setState(CheckCorrectInput)
             }
         }

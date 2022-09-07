@@ -7,5 +7,5 @@ import java.time.OffsetDateTime
 interface MeetingRepository {
     fun get(id: Meeting.Id): Meeting
     fun get(teamId: Team.Id): List<Meeting>
-    fun add(teamId: Team.Id, timestamp: OffsetDateTime, URL: String): Meeting.Id
+    fun add(teamId: Team.Id, timestamp: OffsetDateTime, url: String): Meeting.Id
 }
