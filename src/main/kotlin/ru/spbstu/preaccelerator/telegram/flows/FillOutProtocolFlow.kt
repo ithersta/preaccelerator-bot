@@ -10,27 +10,27 @@ import dev.inmo.tgbotapi.types.message.MarkdownV2
 import ru.spbstu.preaccelerator.domain.entities.Meeting
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.MeetingExt.addProtocol
-import ru.spbstu.preaccelerator.telegram.extensions.MeetingExt.protocol
-import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.meetings
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseMeeting
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InputGoogleDiskUrl
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.SentCurator
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
 import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 private var teamName = String()
 private var time = String()
-private var URLGoogleDisk = String()
+private var UrlGoogleDisk = String()
+private const val form = "dd\\.MM\\.yyyy HH:mm"
+private val formatter = DateTimeFormatter.ofPattern(form)
 
 private fun giveIdByName(teams: List<Team>, name: String): Int {
     return teams.find { it.name == name }!!.id.value.toInt()
@@ -41,7 +41,7 @@ private fun giveIdByTime(meetings: List<Meeting>, time: OffsetDateTime): Int {
 }
 
 private fun stringToOffsetDateTime(text: String): OffsetDateTime {
-    return SimpleDateFormat("yyyy-MM-dd  HH:mm:ss ")
+    return SimpleDateFormat(form)
         .parse(text).toInstant().atOffset(ZoneOffset.ofHours(3))
 }
 
@@ -52,7 +52,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onTransition { chatId ->
                 sendTextMessage(chatId,
                     ChooseTeam,
-                    parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         user.teams.chunked(2).forEach {
                             row {
@@ -70,12 +69,11 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onTransition { chatId ->
                 sendTextMessage(chatId,
                     ChooseMeeting,
-                    parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         user.teams[giveIdByName(user.teams, teamName) - 1].meetings.chunked(2).forEach {
                             row {
                                 it.forEach {
-                                    simpleButton(it.timestamp.)
+                                    simpleButton(it.timestamp.format(formatter))
                                 }
                             }
                         }
@@ -99,7 +97,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onTransition { chatId ->
                 sendTextMessage(chatId,
                     confirmationProtocol(teamName, time),
-                    parseMode = MarkdownV2,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         row {
                             simpleButton(ButtonStrings.Option.Yes)
@@ -116,10 +113,11 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<FinalSendProtocolState> {
             onTransition { chatId ->
                 sendTextMessage(chatId, SentCurator)
-                val team = user.teams[giveIdByName(user.teams, teamName)]
-                val time2: OffsetDateTime = stringToOffsetDateTime(time)
-                val meeting = team.meetings[giveIdByTime(team.meetings, time2)]
-                meeting.addProtocol(meeting.id, URLGoogleDisk)
+                val team = user.teams[giveIdByName(user.teams, teamName) - 1]
+                val time1: OffsetDateTime = stringToOffsetDateTime(time)
+                // придумать как нормально обратно OffsetDateTime взять из string-а
+                val meeting = team.meetings[giveIdByTime(team.meetings, time1) - 1]
+                meeting.addProtocol(meeting.id, UrlGoogleDisk)
             }
         }
     }
