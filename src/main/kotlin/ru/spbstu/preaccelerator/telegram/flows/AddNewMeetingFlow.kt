@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 import java.util.*
 
-
 private var teamName = ""
 private var url = ""
 private var time = Date(System.currentTimeMillis()).toInstant().atOffset(ZoneOffset.UTC)

@@ -10,6 +10,7 @@ import java.time.OffsetDateTime
 object TeamExt : KoinComponent {
     private val actions: TeamActions by inject()
 
+    val Team.meetings get() = with(actions) { meetings }
     val Team.availableModules get() = with(actions) { availableModules }
 
     fun Team.addHomework(taskNumber: Task.Number, url: String) =
