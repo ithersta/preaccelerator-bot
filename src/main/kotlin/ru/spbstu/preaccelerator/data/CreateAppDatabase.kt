@@ -47,7 +47,8 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
         ),
         MeetingAdapter = Meeting.Adapter(
             idAdapter = MeetingIdAdapter,
-            teamIdAdapter = TeamIdAdapter
+            teamIdAdapter = TeamIdAdapter,
+            moduleNumberAdapter = ModuleNumberAdapter
         )
     ).also {
         runCatching {
