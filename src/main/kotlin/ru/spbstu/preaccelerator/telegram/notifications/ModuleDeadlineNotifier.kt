@@ -9,9 +9,9 @@ import org.koin.core.annotation.Single
 import org.quartz.JobBuilder.newJob
 import org.quartz.JobExecutionContext
 import org.quartz.JobKey
+import org.quartz.Scheduler
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder.newTrigger
-import org.quartz.impl.StdSchedulerFactory
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.usecases.GetModuleDeadlinesUseCase
@@ -34,8 +34,7 @@ class ModuleDeadlineNotifier(
     private val getModuleDeadlines: GetModuleDeadlinesUseCase,
     private val getUnfinishedMembers: GetUnfinishedMembersUseCase
 ) {
-    fun BehaviourContext.start() {
-        val scheduler = StdSchedulerFactory.getDefaultScheduler()
+    fun BehaviourContext.setupJobs(scheduler: Scheduler) {
         scheduler.setJobFactory { _, _ -> Job(this) }
         getModuleDeadlines().onEach { deadlines ->
             scheduler.deleteJob(JobKey.jobKey(JOB_IDENTITY))
@@ -45,7 +44,6 @@ class ModuleDeadlineNotifier(
             }
             scheduler.scheduleJob(job, triggers.toSet(), false)
         }.launchIn(this)
-        scheduler.start()
     }
 
     private fun createTriggers(
@@ -89,10 +87,11 @@ class ModuleDeadlineNotifier(
         class Builder {
             private val notifications = mutableListOf<Pair<Duration, (Module.Number) -> String>>()
 
-            fun whenDeadlineIn(duration: Duration) = -duration
-            fun afterDeadline(duration: Duration) = duration
+            infix fun Duration.untilDeadlineSend(text: (Module.Number) -> String) {
+                notifications.add(-this to text)
+            }
 
-            infix fun Duration.send(text: (Module.Number) -> String) {
+            infix fun Duration.afterDeadlineSend(text: (Module.Number) -> String) {
                 notifications.add(this to text)
             }
 

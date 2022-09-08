@@ -5,12 +5,14 @@ import org.koin.ksp.generated.defaultModule
 import ru.spbstu.preaccelerator.data.createAppDatabase
 import ru.spbstu.preaccelerator.data.createDataSource
 import ru.spbstu.preaccelerator.data.readDatabaseCredentials
+import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.telegram.createModuleConfig
 import ru.spbstu.preaccelerator.telegram.createStateMachine
 import ru.spbstu.preaccelerator.telegram.notifications.moduleDeadlineNotifications
 import ru.spbstu.preaccelerator.telegram.notifications.protocolDeadlineNotifications
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ModuleDeadline
-import java.time.OffsetTime
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ProtocolDeadline
+import java.time.LocalTime
 import kotlin.time.Duration.Companion.days
 
 val preacceleratorModule = module(createdAtStart = true) {
@@ -22,15 +24,16 @@ val preacceleratorModule = module(createdAtStart = true) {
     single { createModuleConfig() }
     single {
         moduleDeadlineNotifications {
-            whenDeadlineIn(1.days) send ModuleDeadline::inOneDay
-            for (i in 1..56 step 3) {
-                afterDeadline(i.days) send ModuleDeadline::expired
+            1.days untilDeadlineSend ModuleDeadline::inOneDay
+            val lastDay = get<ModuleConfig>().fullDuration.inWholeDays
+            for (i in 1..lastDay step 3) {
+                i.days afterDeadlineSend ModuleDeadline::expired
             }
         }
     }
     single {
-        protocolDeadlineNotifications() {
-            5.days afterMeetingAt OffsetTime.parse("19:00:00+03:00")
+        protocolDeadlineNotifications(LocalTime.of(19, 0)) {
+            5.days afterFirstMeetingSend ProtocolDeadline::inTwoDays
         }
     }
 }
