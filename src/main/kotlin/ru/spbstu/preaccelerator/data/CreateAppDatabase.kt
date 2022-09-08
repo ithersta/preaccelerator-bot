@@ -44,6 +44,11 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
             teamIdAdapter = TeamIdAdapter,
             moduleNumberAdapter = ModuleNumberAdapter,
             value_Adapter = EnumColumnAdapter()
+        ),
+        MeetingAdapter = Meeting.Adapter(
+            idAdapter = MeetingIdAdapter,
+            teamIdAdapter = TeamIdAdapter,
+            moduleNumberAdapter = ModuleNumberAdapter
         )
     ).also {
         runCatching {
