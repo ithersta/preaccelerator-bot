@@ -18,7 +18,12 @@ ADD CONSTRAINT fk_meeting_team_id
 FOREIGN KEY (teamId)
 REFERENCES Team(id);
 
+ALTER TABLE ProtocolStatus
+ADD CONSTRAINT fk_protocol_status_team_id
+FOREIGN KEY (teamId)
+REFERENCES Team(id);
+
 ALTER TABLE Protocol
-ADD CONSTRAINT fk_protocol_meeting_id
-FOREIGN KEY (meetingId)
-REFERENCES Meeting(id);
+ADD CONSTRAINT fk_protocol_team_id
+FOREIGN KEY (teamId)
+REFERENCES Team(id);

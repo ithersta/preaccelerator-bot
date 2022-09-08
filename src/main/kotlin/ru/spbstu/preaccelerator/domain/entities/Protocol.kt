@@ -1,6 +1,6 @@
 package ru.spbstu.preaccelerator.domain.entities
 
 class Protocol(
-    val meetingId: Meeting.Id,
+    val teamId: Team.Id,
     val url: String
 )

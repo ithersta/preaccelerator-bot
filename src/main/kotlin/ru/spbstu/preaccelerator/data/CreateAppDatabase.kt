@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.data
 
+import app.cash.sqldelight.EnumColumnAdapter
 import app.cash.sqldelight.driver.jdbc.asJdbcDriver
 import mu.KotlinLogging
 import ru.spbstu.preaccelerator.data.adapters.*
@@ -38,6 +39,11 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
         HomeworkAdapter = Homework.Adapter(
             teamIdAdapter = TeamIdAdapter,
             taskNumberAdapter = TaskNumberAdapter
+        ),
+        ProtocolStatusAdapter = ProtocolStatus.Adapter(
+            teamIdAdapter = TeamIdAdapter,
+            moduleNumberAdapter = ModuleNumberAdapter,
+            value_Adapter = EnumColumnAdapter()
         ),
         MeetingAdapter = Meeting.Adapter(
             idAdapter = MeetingIdAdapter,
