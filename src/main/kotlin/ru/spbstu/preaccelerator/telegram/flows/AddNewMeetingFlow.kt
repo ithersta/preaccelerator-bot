@@ -121,8 +121,6 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 //заполнить БД
             }
         }
-
-
     }
 }
-}
+
