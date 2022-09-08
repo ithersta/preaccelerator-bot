@@ -38,4 +38,14 @@ object NewMeetingState {
         @Serializable (with= OffsetDateTimeSerializer::class)
         val time: OffsetDateTime
     ): DialogState
+
+    @Serializable
+    class WaitingForApproval(
+        val moduleNumber: Module.Number,
+        val teamId: Team.Id,
+        val url: String,
+        @Serializable (with= OffsetDateTimeSerializer::class)
+        val time: OffsetDateTime
+    ): DialogState
+
 }

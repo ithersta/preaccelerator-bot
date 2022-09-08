@@ -59,26 +59,31 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val url = message.content.text
-                setState(NewMeetingState.WaitingForTime(state.moduleNumber,state.teamId, url))
+                setState(NewMeetingState.WaitingForTime(state.moduleNumber, state.teamId, url))
             }
         }
         state<NewMeetingState.WaitingForTime> {
-            onTransition {chatId ->
+            onTransition { chatId ->
                 sendTextMessage(
                     chatId,
                     MessageStrings.ScheduleMeetings.InputTime
                 )
             }
             onText { message ->
-                val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(3))
-                setState(NewMeetingState.CheckCorrect(state.moduleNumber,state.teamId, state.url, time))
+                val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
+                    .atOffset(ZoneOffset.ofHours(3))
+                setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
             }
         }
         state<NewMeetingState.CheckCorrect> {
-            onTransition {chatId ->
+            onTransition { chatId ->
                 sendTextMessage(
                     chatId,
-                    MessageStrings.meetingCreationConfirmation(user.teams[state.teamId.value.toInt()].name, state.time, state.url),
+                    MessageStrings.meetingCreationConfirmation(
+                        user.teams[state.teamId.value.toInt()].name,
+                        state.time,
+                        state.url
+                    ),
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -91,17 +96,33 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     }
                 )
             }
-            onText{message->
-                if (message.content.text == ButtonStrings.Option.Yes){
-                   // заполнять БД
-                   // от
-                }
-                else if (message.content.text == ButtonStrings.Option.No){
-                    //отправить сообщение о том, что все начинается заново
+            onText { message ->
+                if (message.content.text == ButtonStrings.Option.Yes) {
+                    setState(
+                        NewMeetingState.WaitingForApproval(
+                            state.moduleNumber,
+                            state.teamId,
+                            state.url,
+                            state.time
+                        )
+                    )
+                } else if (message.content.text == ButtonStrings.Option.No) {
+                    //отправлять сообщение что все заново
                     setState(NewMeetingState.WaitingForModuleNumber)
                 }
             }
-
         }
+        state<NewMeetingState.WaitingForApproval> {
+            onTransition { chatId ->
+                sendTextMessage(
+                    chatId,
+                    MessageStrings.ScheduleMeetings.MeetingIsCreated
+                )
+                //заполнить БД
+            }
+        }
+
+
     }
+}
 }
