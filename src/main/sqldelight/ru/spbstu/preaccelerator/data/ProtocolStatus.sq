@@ -1,0 +1,27 @@
+import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus.Value;
+import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus;
+import ru.spbstu.preaccelerator.domain.entities.Team;
+import ru.spbstu.preaccelerator.domain.entities.module.Module;
+import ru.spbstu.preaccelerator.domain.entities.module.Task.Number;
+
+CREATE TABLE ProtocolStatus (
+  teamId BIGINT AS Team.Id NOT NULL,
+  moduleNumber INT AS Module.Number NOT NULL,
+  value TEXT AS ProtocolStatus.Value NOT NULL,
+  comment TEXT,
+  PRIMARY KEY(teamId, moduleNumber)
+);
+
+setComment:
+UPDATE ProtocolStatus SET comment = :comment
+WHERE teamId = :teamId AND moduleNumber = :moduleNumber
+RETURNING *;
+
+setValue:
+INSERT INTO ProtocolStatus
+VALUES(:teamId, :moduleNumber, :value, NULL)
+ON CONFLICT(teamId, moduleNumber)
+DO UPDATE SET value = :value
+RETURNING *;
+
+
