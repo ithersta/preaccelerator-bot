@@ -26,6 +26,10 @@ class TeamRepositoryImpl(
         return appDatabase.teamQueries.add(name, trackerId).executeAsOne()
     }
 
+    override fun getAll(): List<Team> {
+        return appDatabase.teamQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     private fun ru.spbstu.preaccelerator.data.Team.toDomainModel() = Team(
         id = id,
         name = name,

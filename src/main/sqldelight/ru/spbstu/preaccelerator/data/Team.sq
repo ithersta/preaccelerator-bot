@@ -27,3 +27,6 @@ VALUES(:name, :trackerId)
 ON CONFLICT (name)
 DO UPDATE SET trackerId = :trackerId
 RETURNING id;
+
+getAll:
+SELECT * FROM Team;

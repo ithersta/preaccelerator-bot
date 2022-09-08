@@ -14,6 +14,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.CuratorExt.generateCuratorToken
 import ru.spbstu.preaccelerator.telegram.flows.addUsersFlow
+import ru.spbstu.preaccelerator.telegram.flows.sendingInfo
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.AddUsers
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.GetStats
@@ -22,9 +23,9 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Curator.Message, EmptyState) {
     submenu(SendInfo.Button, SendInfo.Message, MenuState.Curator.SendInfo) {
-        button(SendInfo.ToAll, NotImplementedState)
-        button(SendInfo.ToTrackers, NotImplementedState)
-        button(SendInfo.ToSelectTeams, NotImplementedState)
+        button(SendInfo.ToAll, SendInfoState.AllFromCurator)
+        button(SendInfo.ToTrackers, SendInfoState.TrackersFromCurator)
+        button(SendInfo.ToSelectTeams, SendInfoState.TeamsFromCurator)
         backButton(MenuStrings.Back)
     }
     submenu(GetStats.Button, GetStats.Message, MenuState.Curator.GetStats) {
@@ -42,6 +43,7 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
     with(curatorMenu) { invoke() }
+    sendingInfo()
     addUsersFlow()
 }
 

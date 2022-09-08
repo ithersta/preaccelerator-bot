@@ -8,4 +8,5 @@ interface TeamRepository {
     fun get(trackerId: Tracker.Id): List<Team>
     fun get(name: String): Team?
     fun add(name: String, trackerId: Tracker.Id): Team.Id
+    fun getAll(): List<Team>
 }

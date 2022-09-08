@@ -71,6 +71,15 @@ object MessageStrings {
     }
 
     object Curator {
+        object massSendInfo {
+            const val inputOneMessage = "Введите текст сообщения"
+            const val listOfTeams = "Выберите команды для рассылки:"
+            fun requestConfirm(message: String) = "Вы ввели сообщение: $message"
+            const val send = "Отправить"
+            const val inputOtherMessage = "Ввести другое сообщение"
+            const val sendSuchTeams = "Отправить выбранным командам"
+        }
+
         fun addCuratorDeepLink(deepLink: String) = "Отправьте одноразовую ссылку будущему куратору: $deepLink"
     }
 }
