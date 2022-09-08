@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.quartz.JobBuilder.newJob
 import org.quartz.JobExecutionContext
+import org.quartz.JobKey
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder.newTrigger
 import org.quartz.impl.StdSchedulerFactory
@@ -23,6 +24,7 @@ import kotlin.time.toJavaDuration
 
 private const val MODULE_NUMBER = "module_number"
 private const val TEXT = "text"
+private const val JOB_IDENTITY = "module_deadline"
 
 @Single
 class ModuleDeadlineNotifier(
@@ -36,8 +38,8 @@ class ModuleDeadlineNotifier(
         val scheduler = StdSchedulerFactory.getDefaultScheduler()
         scheduler.setJobFactory { _, _ -> Job(this) }
         getModuleDeadlines().onEach { deadlines ->
-            scheduler.clear()
-            val job = newJob(Job::class.java).build()
+            scheduler.deleteJob(JobKey.jobKey(JOB_IDENTITY))
+            val job = newJob(Job::class.java).withIdentity(JOB_IDENTITY).build()
             val triggers = deadlines.flatMap { (module, deadline) ->
                 createTriggers(module, deadline)
             }

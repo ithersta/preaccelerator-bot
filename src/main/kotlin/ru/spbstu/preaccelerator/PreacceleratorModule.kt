@@ -23,11 +23,13 @@ val preacceleratorModule = module(createdAtStart = true) {
     single {
         moduleDeadlineNotifications {
             whenDeadlineIn(1.days) send ModuleDeadline::inOneDay
-            // также можно пользоваться afterDeadline(1.days) send ...
+            for (i in 1..56 step 3) {
+                afterDeadline(i.days) send ModuleDeadline::expired
+            }
         }
     }
     single {
-        protocolDeadlineNotifications()  {
+        protocolDeadlineNotifications() {
             5.days afterMeetingAt OffsetTime.parse("19:00:00+03:00")
         }
     }
