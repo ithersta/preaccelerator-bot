@@ -7,3 +7,11 @@ CREATE TABLE Protocol (
   teamId BIGINT AS Team.Id PRIMARY KEY,
   url TEXT NOT NULL
 );
+
+get:
+SELECT * FROM Protocol
+WHERE teamId  = :teamId;
+
+add:
+INSERT INTO Protocol(teamId,url)
+ VALUES(:teamId,:url);
