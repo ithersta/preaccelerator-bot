@@ -1,8 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.telegram.annotations.OffsetDateTimeSerializer
 import java.time.OffsetDateTime
 
 object NewMeetingState {
@@ -20,11 +20,12 @@ object NewMeetingState {
         val url: String
     ): DialogState
 
+
     @Serializable
     class CheckCorrect(
         val teamId: Team.Id,
         val url: String,
-        @Contextual
+        @Serializable (with= OffsetDateTimeSerializer::class)
         val time: OffsetDateTime
     ): DialogState
 }
