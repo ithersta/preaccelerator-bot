@@ -4,6 +4,7 @@ import org.koin.core.annotation.Single
 import ru.spbstu.preaccelerator.data.AppDatabase
 import ru.spbstu.preaccelerator.domain.entities.Meeting
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
 import java.time.OffsetDateTime
@@ -18,13 +19,14 @@ class MeetingRepositoryImpl(private val appDatabase: AppDatabase) : MeetingRepos
         return appDatabase.meetingQueries.getByTeamId(teamId).executeAsList().map { it.toDomainModel() }
     }
 
-    override fun add(teamId: Team.Id, timestamp: OffsetDateTime, url: String): Meeting.Id {
-        return appDatabase.meetingQueries.add(teamId, timestamp, url).executeAsOne()
+    override fun add(teamId: Team.Id, moduleNumber: Module.Number, timestamp: OffsetDateTime, url: String): Meeting.Id {
+        return appDatabase.meetingQueries.add(teamId, moduleNumber, timestamp, url).executeAsOne()
     }
 
     private fun ru.spbstu.preaccelerator.data.Meeting.toDomainModel() = Meeting(
         id = id,
         teamId = teamId,
+        moduleNumber = moduleNumber,
         timestamp = timestamp,
         url = url
     )
