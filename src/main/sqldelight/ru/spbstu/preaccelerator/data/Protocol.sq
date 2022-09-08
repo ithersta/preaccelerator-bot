@@ -4,6 +4,6 @@ import ru.spbstu.preaccelerator.domain.entities.Protocol;
 import ru.spbstu.preaccelerator.domain.entities.Team;
 
 CREATE TABLE Protocol (
-  meetingId BIGINT AS Meeting.Id PRIMARY KEY,
+  teamId BIGINT AS Team.Id PRIMARY KEY,
   url TEXT NOT NULL
 );
