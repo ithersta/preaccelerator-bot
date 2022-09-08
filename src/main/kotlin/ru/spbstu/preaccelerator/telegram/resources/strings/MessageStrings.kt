@@ -42,8 +42,6 @@ object MessageStrings {
         const val Err = "Выберите действие из кнопочного меню"
     }
 
-
-
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val TemplateFilename = "Шаблон"
