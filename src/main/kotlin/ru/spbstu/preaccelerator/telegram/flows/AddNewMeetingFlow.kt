@@ -5,6 +5,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
@@ -15,8 +16,21 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 
+
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
+        state<NewMeetingState.WaitingForModuleNumber> {
+            onTransition { chatId ->
+                sendTextMessage(
+                    chatId,
+                    MessageStrings.ScheduleMeetings.InputModuleNumber
+                )
+            }
+            onText { message ->
+                val moduleNumber = message.content.text
+                setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+            }
+        }
         state<NewMeetingState.WaitingForTeam> {
             onTransition { chatId ->
                 sendTextMessage(
@@ -33,7 +47,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onDataCallbackQuery(Regex("team \\d+")) {
                 val teamId = Team.Id(it.data.split(" ").last().toLong())
-                setState(NewMeetingState.WaitingForUrl(teamId))
+                setState(NewMeetingState.WaitingForUrl(state.moduleNumber, teamId))
             }
         }
         state<NewMeetingState.WaitingForUrl> {
@@ -45,7 +59,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val url = message.content.text
-                setState(NewMeetingState.WaitingForTime(state.teamId, url))
+                setState(NewMeetingState.WaitingForTime(state.moduleNumber,state.teamId, url))
             }
         }
         state<NewMeetingState.WaitingForTime> {
@@ -57,7 +71,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(3))
-                setState(NewMeetingState.CheckCorrect(state.teamId, state.url, time))
+                setState(NewMeetingState.CheckCorrect(state.moduleNumber,state.teamId, state.url, time))
             }
         }
         state<NewMeetingState.CheckCorrect> {
@@ -79,12 +93,15 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText{message->
                 if (message.content.text == ButtonStrings.Option.Yes){
-
+                   // заполнять БД
+                   // от
                 }
                 else if (message.content.text == ButtonStrings.Option.No){
-
+                    //отправить сообщение о том, что все начинается заново
+                    setState(NewMeetingState.WaitingForModuleNumber)
                 }
             }
+
         }
     }
 }
