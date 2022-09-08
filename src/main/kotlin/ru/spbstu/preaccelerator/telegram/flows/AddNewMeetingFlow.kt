@@ -1,17 +1,14 @@
 package ru.spbstu.preaccelerator.telegram.flows
 
+import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.row
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.CheckCorrect
-import ru.spbstu.preaccelerator.telegram.entities.state.NewMeeting
-import ru.spbstu.preaccelerator.telegram.entities.state.TimeMeeting
-import ru.spbstu.preaccelerator.telegram.entities.state.UrlMeeting
+import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -19,40 +16,32 @@ import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 import java.util.*
 
-private var teamName = ""
-private var url = ""
-private var time = Date(System.currentTimeMillis()).toInstant().atOffset(ZoneOffset.UTC)
-
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
-        state<NewMeeting> {
-            onTransition {
+        state<NewMeetingState.WaitingForTeam> {
+            onTransition { chatId ->
                 sendTextMessage(
-                    it,
+                    chatId,
                     MessageStrings.ScheduleMeetings.ChooseTeam,
-                    replyMarkup = replyKeyboard(
-                        resizeKeyboard = true,
-                        oneTimeKeyboard = true
-                    )
-                    {
+                    replyMarkup = inlineKeyboard {
                         user.teams.chunked(2).forEach {
                             row {
-                                it.forEach { simpleButton(it.name) }
+                                it.forEach { dataButton(it.name, "team ${it.id.value}") }
                             }
                         }
                     }
                 )
             }
-            onText { message ->
-                teamName = message.content.text
-                setState(UrlMeeting)
+            onDataCallbackQuery(Regex("team \\d+")) {
+                val teamId = Team.Id(it.data.split(" ").last().toLong())
+                setState(NewMeetingState.WaitingForUrl(teamId))
             }
         }
-        state<UrlMeeting> {
+        state<NewMeetingState.WaitingForUrl> {
             onTransition {
                 sendTextMessage(
                     it,
-                    MessageStrings.ScheduleMeetings.InputURL
+                    MessageStrings.ScheduleMeetings.InputUrl
                 )
             }
             onText { message ->
@@ -68,8 +57,8 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
-                time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(3))
-                setState(CheckCorrect)
+                time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atZone(ZoneOffset.systemDefault())
+                setState(WaitingForTime(state.teamId, time))
             }
         }
         state<CheckCorrect> {

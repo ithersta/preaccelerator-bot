@@ -1,15 +1,17 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
 import kotlinx.serialization.Serializable
+import ru.spbstu.preaccelerator.domain.entities.Team
 
-@Serializable
-object NewMeeting : DialogState
+object NewMeetingState {
+    @Serializable
+    object WaitingForTeam : DialogState
 
-@Serializable
-object UrlMeeting : DialogState
+    @Serializable
+    class WaitingForUrl(
+        val teamId: Team.Id
+    ): DialogState
 
-@Serializable
-object TimeMeeting : DialogState
-
-@Serializable
-object CheckCorrect : DialogState
+    @Serializable
+    class WaitingFor
+}

@@ -82,7 +82,7 @@ object MessageStrings {
 
     object ScheduleMeetings {
         const val ChooseTeam = "Выберите команду"
-        const val InputURL = "Введите ссылку на конференцию"
+        const val InputUrl = "Введите ссылку на конференцию"
         const val InputTime = "Введите время конференции в формате дд.ММ.гггг чч:мм"
     }
 
