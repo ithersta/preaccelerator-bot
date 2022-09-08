@@ -77,6 +77,14 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     }
                 )
             }
+            onText{message->
+                if (message.content.text == ButtonStrings.Option.Yes){
+
+                }
+                else if (message.content.text == ButtonStrings.Option.No){
+
+                }
+            }
         }
     }
 }

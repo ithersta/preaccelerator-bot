@@ -47,6 +47,5 @@ object MenuStrings {
             const val GetHomework = "Выгрузить домашнее задание"
             const val GetStats = "Получить статистику по командам"
         }
-
     }
 }
