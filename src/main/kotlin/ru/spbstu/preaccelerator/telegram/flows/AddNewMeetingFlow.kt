@@ -14,7 +14,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
-import java.util.*
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
@@ -38,34 +37,34 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
         }
         state<NewMeetingState.WaitingForUrl> {
-            onTransition {
+            onTransition { chatId ->
                 sendTextMessage(
-                    it,
+                    chatId,
                     MessageStrings.ScheduleMeetings.InputUrl
                 )
             }
             onText { message ->
-                url = message.content.text
-                setState(TimeMeeting)
+                val url = message.content.text
+                setState(NewMeetingState.WaitingForTime(state.teamId, url))
             }
         }
-        state<TimeMeeting> {
-            onTransition {
+        state<NewMeetingState.WaitingForTime> {
+            onTransition {chatId ->
                 sendTextMessage(
-                    it,
+                    chatId,
                     MessageStrings.ScheduleMeetings.InputTime
                 )
             }
             onText { message ->
-                time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atZone(ZoneOffset.systemDefault())
-                setState(WaitingForTime(state.teamId, time))
+                val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(3))
+                setState(NewMeetingState.CheckCorrect(state.teamId, state.url, time))
             }
         }
-        state<CheckCorrect> {
-            onTransition {
+        state<NewMeetingState.CheckCorrect> {
+            onTransition {chatId ->
                 sendTextMessage(
-                    it,
-                    MessageStrings.meetingCreationConfirmation(teamName, time, url),
+                    chatId,
+                    MessageStrings.meetingCreationConfirmation(user.teams[state.teamId.value.toInt()].name, state.time, state.url),
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
