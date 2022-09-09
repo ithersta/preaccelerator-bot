@@ -27,8 +27,8 @@ class GetUnfinishedTrackersUseCase(
             return trackerRepository.getAll()
                 .flatMap { tracker ->
                     moduleConfig.modules
-                        .filter { module ->
-                            tracker.teams.any { protocolStatusRepository.get(it.id, module.number).isFinished().not() }
+                        .filterNot { module ->
+                            tracker.teams.all { protocolStatusRepository.get(it.id, module.number).isFinished() }
                         }
                         .mapNotNull { meetingRepository.getFirst(tracker.id, it.number) }
                         .filter {
