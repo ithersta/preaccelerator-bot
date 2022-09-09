@@ -79,7 +79,7 @@ object MessageStrings {
     }
 
     object ScheduleMeetings {
-        const val InputModuleNumber = "Укажите номер модуля(недели), соответствующий теме встречи"
+        const val InputModuleNumber = "Укажите номер модуля\\(недели\\), соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
         const val InputTime = "Введите время конференции в формате дд.ММ.гггг чч:мм"
@@ -87,6 +87,7 @@ object MessageStrings {
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
         const val InvalidDataFormat = "Введен неверный формат данных"
+        const val InvalidModulNumber = "Введен неверный номер модуля\\(недели\\)\\. Модуль от 1 до 8"
     }
 
     private val dateTimeFormatter = DateTimeFormatter

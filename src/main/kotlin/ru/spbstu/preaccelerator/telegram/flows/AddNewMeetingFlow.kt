@@ -25,13 +25,23 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             onTransition { chatId ->
                 sendTextMessage(
                     chatId,
-                    MessageStrings.ScheduleMeetings.InputModuleNumber
+                    MessageStrings.ScheduleMeetings.InputModuleNumber,
+                    parseMode = MarkdownV2
                 )
             }
             onText { message ->
-                //TODO модуль от 1 до 8
                 val moduleNumber = message.content.text
-                setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+                if(moduleNumber.toInt() in 1..8) {
+                    setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+                }
+                else {
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ScheduleMeetings.InvalidModulNumber,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
             }
         }
         state<NewMeetingState.WaitingForTeam> {
@@ -49,7 +59,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onDataCallbackQuery(Regex("team \\d+")) {
-                //TODO если пользователь введет что-то
+                //если пользователь введет что-то не то, выводится "Нет такой команды или она сейчас недоступна"
                 val teamId = Team.Id(it.data.split(" ").last().toLong())
                 setState(NewMeetingState.WaitingForUrl(state.moduleNumber, teamId))
             }
@@ -74,6 +84,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
+                //TODO try catch
                 val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                     .atOffset(ZoneOffset.ofHours(3))
                 setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
