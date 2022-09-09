@@ -1,9 +1,16 @@
 import ru.spbstu.preaccelerator.domain.entities.Meeting;
 import ru.spbstu.preaccelerator.domain.entities.Team;
+import ru.spbstu.preaccelerator.domain.entities.module.Module;
 
 CREATE TABLE Meeting (
   id BIGSERIAL AS Meeting.Id PRIMARY KEY,
   teamId BIGINT AS Team.Id NOT NULL,
+  moduleNumber INT AS Module.Number NOT NULL,
   url TEXT NOT NULL,
   timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+getByTrackerIdAndModuleNumber:
+SELECT Meeting.* FROM Meeting
+JOIN Team ON Team.id = Meeting.teamId
+WHERE Team.trackerId = :trackerId AND Meeting.moduleNumber = :moduleNumber;

@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows
+package ru.spbstu.preaccelerator.telegram.flows.member
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -21,8 +21,8 @@ import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
-import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.module
-import ru.spbstu.preaccelerator.telegram.flows.ModuleStateExt.part
+import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.module
+import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
