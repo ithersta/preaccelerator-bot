@@ -111,7 +111,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                             state.time
                         )
                     )
-                    ButtonStrings.Option.No -> setState(NewMeetingState.MeetingNotCreated)
+                    ButtonStrings.Option.No -> setState(NewMeetingState.WaitingForRejection)
                     //TODO если пользователь отправляет что-то другое
                     //else ->
                 }
@@ -128,7 +128,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 setState(MenuState.Tracker.Meetings)
             }
         }
-        state<NewMeetingState.MeetingNotCreated> {
+        state<NewMeetingState.WaitingForRejection> {
             onTransition { chatId ->
                 sendTextMessage(
                     chatId,

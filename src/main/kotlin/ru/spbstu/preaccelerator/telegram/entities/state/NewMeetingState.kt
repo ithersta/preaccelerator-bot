@@ -49,6 +49,6 @@ object NewMeetingState {
     ): DialogState
 
     @Serializable
-    object MeetingNotCreated : DialogState
+    object WaitingForRejection : DialogState
 
 }
