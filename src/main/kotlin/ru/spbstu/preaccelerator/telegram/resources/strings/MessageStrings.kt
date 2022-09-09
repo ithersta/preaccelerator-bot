@@ -73,4 +73,14 @@ object MessageStrings {
     object Curator {
         fun addCuratorDeepLink(deepLink: String) = "Отправьте одноразовую ссылку будущему куратору: $deepLink"
     }
+
+    object Tracker {
+        fun confirmationProtocol(teamName: String, time: String) =
+            "Всё верно?  Протокол встречи с $teamName командой, состоявшейся $time, оправлен куратору\\.".trimMargin()
+
+        const val ChooseTeam = "Выберите команду"
+        const val ChooseModule = "Выберите модуль"
+        const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
+        const val SentCurator = "Протокол встречи оправлен куратору"
+    }
 }

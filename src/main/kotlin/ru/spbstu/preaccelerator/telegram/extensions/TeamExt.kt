@@ -9,7 +9,7 @@ import java.time.OffsetDateTime
 
 object TeamExt : KoinComponent {
     private val actions: TeamActions by inject()
-
+    val Team.protocol get() = with(actions) { protocol }
     val Team.availableModules get() = with(actions) { availableModules }
 
     fun Team.addHomework(taskNumber: Task.Number, url: String) =
