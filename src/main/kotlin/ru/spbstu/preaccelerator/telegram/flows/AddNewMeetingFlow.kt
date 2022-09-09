@@ -18,7 +18,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 
-
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
         state<NewMeetingState.WaitingForModuleNumber> {
@@ -74,7 +73,6 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
-                //TODO добавить regex
                 val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                     .atOffset(ZoneOffset.ofHours(3))
                 setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
@@ -103,42 +101,37 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 when (message.content.text) {
-                    ButtonStrings.Option.Yes -> setState(
-                        NewMeetingState.WaitingForApproval(
-                            state.moduleNumber,
-                            state.teamId,
-                            state.url,
-                            state.time
+                    ButtonStrings.Option.Yes -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ScheduleMeetings.MeetingIsCreated,
+                            parseMode = MarkdownV2
                         )
-                    )
-                    ButtonStrings.Option.No -> setState(NewMeetingState.WaitingForRejection)
-                    //TODO если пользователь отправляет что-то другое
-                    //else ->
+                        user.teams[state.teamId.value.toInt()].addMeeting(
+                            state.teamId,
+                            state.moduleNumber,
+                            state.time,
+                            state.url
+                        )
+                        setState(MenuState.Tracker.Meetings)
+                    }
+                    ButtonStrings.Option.No -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ScheduleMeetings.MeetingNotCreated,
+                            parseMode = MarkdownV2
+                        )
+                        setState(NewMeetingState.WaitingForModuleNumber)
+                    }
+                    else -> {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ChooseModuleAction.Err
+                        )
+                    }
                 }
             }
         }
-        state<NewMeetingState.WaitingForApproval> {
-            onTransition { chatId ->
-                sendTextMessage(
-                    chatId,
-                    MessageStrings.ScheduleMeetings.MeetingIsCreated,
-                    parseMode = MarkdownV2
-                )
-                //TODO заполнить БД
-                setState(MenuState.Tracker.Meetings)
-            }
-        }
-        state<NewMeetingState.WaitingForRejection> {
-            onTransition { chatId ->
-                sendTextMessage(
-                    chatId,
-                    MessageStrings.ScheduleMeetings.MeetingNotCreated,
-                    parseMode = MarkdownV2
-                )
-                setState(NewMeetingState.WaitingForModuleNumber)
-            }
-        }
-
     }
 }
 

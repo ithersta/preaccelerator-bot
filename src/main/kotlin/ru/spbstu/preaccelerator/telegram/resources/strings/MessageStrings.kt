@@ -86,6 +86,7 @@ object MessageStrings {
         const val MeetingIsCreated = "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
+        const val InvalidDataFormat = "Введен неверный формат данных"
     }
 
     private val dateTimeFormatter = DateTimeFormatter

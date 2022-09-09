@@ -29,7 +29,6 @@ object NewMeetingState {
         val url: String
     ): DialogState
 
-
     @Serializable
     class CheckCorrect(
         val moduleNumber: Module.Number,
@@ -38,17 +37,5 @@ object NewMeetingState {
         @Serializable (with= OffsetDateTimeSerializer::class)
         val time: OffsetDateTime
     ): DialogState
-
-    @Serializable
-    class WaitingForApproval(
-        val moduleNumber: Module.Number,
-        val teamId: Team.Id,
-        val url: String,
-        @Serializable (with= OffsetDateTimeSerializer::class)
-        val time: OffsetDateTime
-    ): DialogState
-
-    @Serializable
-    object WaitingForRejection : DialogState
 
 }
