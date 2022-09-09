@@ -101,7 +101,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 catch(e: Exception){
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ScheduleMeetings.InvalidDataFormat +  MessageStrings.ScheduleMeetings.InputTime,
+                        MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputTime,
                         parseMode = MarkdownV2
                     )
                     return@onText
