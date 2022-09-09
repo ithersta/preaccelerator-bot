@@ -18,6 +18,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
@@ -80,13 +81,23 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             onTransition { chatId ->
                 sendTextMessage(
                     chatId,
-                    MessageStrings.ScheduleMeetings.InputTime
+                    MessageStrings.ScheduleMeetings.InputTime,
+                    parseMode = MarkdownV2
                 )
             }
             onText { message ->
-                //TODO try catch
-                val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
+                val time = try{
+                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                     .atOffset(ZoneOffset.ofHours(3))
+                }
+                catch(e: Exception){
+                    sendTextMessage(
+                        message.chat,
+                        MessageStrings.ScheduleMeetings.InvalidDataFormat,
+                        parseMode = MarkdownV2
+                    )
+                    return@onText
+                }
                 setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
             }
         }
