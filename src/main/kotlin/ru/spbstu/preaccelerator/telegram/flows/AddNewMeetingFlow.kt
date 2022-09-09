@@ -31,13 +31,22 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val moduleNumber = message.content.text
-                if(moduleNumber.toInt() in 1..8) {
-                    setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+                try {
+                    if (moduleNumber.toInt() in 1..8) {
+                        setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+                    } else {
+                        sendTextMessage(
+                            message.chat,
+                            MessageStrings.ScheduleMeetings.InvalidModulNumber,
+                            parseMode = MarkdownV2
+                        )
+                        return@onText
+                    }
                 }
-                else {
+                catch(e: Exception){
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ScheduleMeetings.InvalidModulNumber,
+                        MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputModuleNumber,
                         parseMode = MarkdownV2
                     )
                     return@onText
@@ -92,7 +101,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 catch(e: Exception){
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ScheduleMeetings.InvalidDataFormat,
+                        MessageStrings.ScheduleMeetings.InvalidDataFormat +  MessageStrings.ScheduleMeetings.InputTime,
                         parseMode = MarkdownV2
                     )
                     return@onText
