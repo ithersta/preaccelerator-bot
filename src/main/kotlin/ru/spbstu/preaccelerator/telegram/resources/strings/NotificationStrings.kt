@@ -12,7 +12,7 @@ object NotificationStrings {
     }
 
     object ProtocolDeadline {
-        fun inTwoDays(moduleNumber: Module.Number) =
-            "Вам необходимо заполнить протоколы встреч Модуля ${moduleNumber.value + 1} в течение 2 дней"
+        fun inLessThanTwoDays(moduleNumber: Module.Number) =
+            "Осталось менее 2 дней, чтобы заполнить протоколы встреч Модуля ${moduleNumber.value + 1}"
     }
 }

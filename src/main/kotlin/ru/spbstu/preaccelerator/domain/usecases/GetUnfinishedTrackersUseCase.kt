@@ -24,19 +24,18 @@ class GetUnfinishedTrackersUseCase(
     operator fun invoke(duration: Duration, at: OffsetDateTime): List<Pair<Tracker, Module.Number>> =
         with(trackerActions) {
             val tomorrow = at.plusDays(1)
-            val trackers = trackerRepository.getAll()
-            val modules = moduleConfig.modules
-            return trackers.flatMap { tracker ->
-                modules
-                    .filter { module ->
-                        tracker.teams.any { protocolStatusRepository.get(it.id, module.number).isFinished().not() }
-                    }
-                    .mapNotNull { meetingRepository.getFirst(tracker.id, it.number) }
-                    .filter {
-                        val deadline = it.timestamp + duration.toJavaDuration()
-                        deadline.isAfter(at) && deadline.isBefore(tomorrow)
-                    }
-                    .map { tracker to it.moduleNumber }
-            }
+            return trackerRepository.getAll()
+                .flatMap { tracker ->
+                    moduleConfig.modules
+                        .filter { module ->
+                            tracker.teams.any { protocolStatusRepository.get(it.id, module.number).isFinished().not() }
+                        }
+                        .mapNotNull { meetingRepository.getFirst(tracker.id, it.number) }
+                        .filter {
+                            val deadline = it.timestamp + duration.toJavaDuration()
+                            deadline.isAfter(at) && deadline.isBefore(tomorrow)
+                        }
+                        .map { tracker to it.moduleNumber }
+                }
         }
 }
