@@ -48,4 +48,7 @@ object NewMeetingState {
         val time: OffsetDateTime
     ): DialogState
 
+    @Serializable
+    object MeetingNotCreated : DialogState
+
 }

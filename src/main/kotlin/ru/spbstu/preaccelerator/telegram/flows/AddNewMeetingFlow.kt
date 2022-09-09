@@ -5,6 +5,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import dev.inmo.tgbotapi.types.message.MarkdownV2
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
@@ -27,6 +28,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
+                //TODO модуль от 1 до 8
                 val moduleNumber = message.content.text
                 setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
             }
@@ -46,6 +48,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onDataCallbackQuery(Regex("team \\d+")) {
+                //TODO если пользователь введет что-то
                 val teamId = Team.Id(it.data.split(" ").last().toLong())
                 setState(NewMeetingState.WaitingForUrl(state.moduleNumber, teamId))
             }
@@ -70,6 +73,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
+                //TODO добавить regex
                 val time = SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                     .atOffset(ZoneOffset.ofHours(3))
                 setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
@@ -97,8 +101,8 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
-                if (message.content.text == ButtonStrings.Option.Yes) {
-                    setState(
+                when (message.content.text) {
+                    ButtonStrings.Option.Yes -> setState(
                         NewMeetingState.WaitingForApproval(
                             state.moduleNumber,
                             state.teamId,
@@ -106,9 +110,9 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                             state.time
                         )
                     )
-                } else if (message.content.text == ButtonStrings.Option.No) {
-                    //отправлять сообщение что все заново
-                    setState(NewMeetingState.WaitingForModuleNumber)
+                    ButtonStrings.Option.No -> setState(NewMeetingState.MeetingNotCreated)
+                    //TODO если пользователь отправляет что-то другое
+                    //else ->
                 }
             }
         }
@@ -116,11 +120,23 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             onTransition { chatId ->
                 sendTextMessage(
                     chatId,
-                    MessageStrings.ScheduleMeetings.MeetingIsCreated
+                    MessageStrings.ScheduleMeetings.MeetingIsCreated,
+                    parseMode = MarkdownV2
                 )
-                //заполнить БД
+                //TODO заполнить БД
             }
         }
+        state<NewMeetingState.MeetingNotCreated> {
+            onTransition { chatId ->
+                sendTextMessage(
+                    chatId,
+                    MessageStrings.ScheduleMeetings.MeetingNotCreated,
+                    parseMode = MarkdownV2
+                )
+                setState(NewMeetingState.WaitingForModuleNumber)
+            }
+        }
+
     }
 }
 

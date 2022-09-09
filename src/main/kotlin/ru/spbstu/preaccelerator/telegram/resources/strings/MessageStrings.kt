@@ -79,11 +79,13 @@ object MessageStrings {
     }
 
     object ScheduleMeetings {
-        const val InputModuleNumber = "Укажите номер модуля(недели), соответствующей теме встречи"
+        const val InputModuleNumber = "Укажите номер модуля(недели), соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
         const val InputTime = "Введите время конференции в формате дд.ММ.гггг чч:мм"
         const val MeetingIsCreated = "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+        //TODO написать красиво
+        const val MeetingNotCreated = "Встреча не создана"
     }
 
     private val dateTimeFormatter = DateTimeFormatter
