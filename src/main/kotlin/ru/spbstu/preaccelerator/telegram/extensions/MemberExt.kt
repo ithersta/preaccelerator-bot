@@ -9,4 +9,5 @@ object MemberExt : KoinComponent {
     private val actions: MemberActions by inject()
 
     val Member.team get() = with(actions) { team }
+    val Member.userId get() = with(actions) { userId }
 }
