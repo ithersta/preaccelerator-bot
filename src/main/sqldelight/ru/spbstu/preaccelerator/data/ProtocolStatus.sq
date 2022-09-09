@@ -24,4 +24,6 @@ ON CONFLICT(teamId, moduleNumber)
 DO UPDATE SET value = :value
 RETURNING *;
 
-
+get:
+SELECT * FROM ProtocolStatus
+WHERE teamId = :teamId AND moduleNumber = :moduleNumber;

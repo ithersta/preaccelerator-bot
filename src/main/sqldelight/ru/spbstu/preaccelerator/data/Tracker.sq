@@ -6,6 +6,9 @@ CREATE TABLE Tracker (
   phoneNumber TEXT AS PhoneNumber UNIQUE NOT NULL
 );
 
+getAll:
+SELECT * FROM Tracker;
+
 get:
 SELECT * FROM Tracker
 WHERE id = :id;
