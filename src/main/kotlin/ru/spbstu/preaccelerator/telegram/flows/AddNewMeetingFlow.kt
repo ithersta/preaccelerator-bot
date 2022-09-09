@@ -18,7 +18,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
-import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
