@@ -10,6 +10,7 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
@@ -124,6 +125,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     parseMode = MarkdownV2
                 )
                 //TODO заполнить БД
+                setState(MenuState.Tracker.Meetings)
             }
         }
         state<NewMeetingState.MeetingNotCreated> {
