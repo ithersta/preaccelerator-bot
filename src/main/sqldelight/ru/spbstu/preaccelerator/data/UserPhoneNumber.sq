@@ -12,6 +12,10 @@ get:
 SELECT phoneNumber FROM UserPhoneNumber
 WHERE userId = :userId;
 
+getUserId:
+SELECT userId FROM UserPhoneNumber
+WHERE phoneNumber = :phoneNumber;
+
 add:
 INSERT INTO UserPhoneNumber
 VALUES(:userId, :phoneNumber)

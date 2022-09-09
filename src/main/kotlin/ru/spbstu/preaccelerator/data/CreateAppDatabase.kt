@@ -52,7 +52,7 @@ fun createAppDatabase(dataSource: DataSource): AppDatabase {
         ),
         ProtocolAdapter = Protocol.Adapter(
             teamIdAdapter = TeamIdAdapter
-        )
+        ),
     ).also {
         runCatching {
             AppDatabase.Schema.create(driver)

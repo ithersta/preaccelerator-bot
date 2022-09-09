@@ -17,4 +17,8 @@ class UserPhoneNumberRepositoryImpl(
     override fun get(userId: UserId): PhoneNumber? {
         return appDatabase.userPhoneNumberQueries.get(userId).executeAsOneOrNull()
     }
+
+    override fun get(phoneNumber: PhoneNumber): UserId? {
+        return appDatabase.userPhoneNumberQueries.getUserId(phoneNumber).executeAsOneOrNull()
+    }
 }

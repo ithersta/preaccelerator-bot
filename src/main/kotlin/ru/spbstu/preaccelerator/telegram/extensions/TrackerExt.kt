@@ -9,4 +9,5 @@ object TrackerExt : KoinComponent {
     private val actions: TrackerActions by inject()
 
     val Tracker.teams get() = with(actions) { teams }
+    val Tracker.userId get() = with(actions) { userId }
 }

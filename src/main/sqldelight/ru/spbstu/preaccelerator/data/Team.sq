@@ -9,6 +9,9 @@ CREATE TABLE Team (
 
 CREATE INDEX team_tracker_id_index ON Team(trackerId);
 
+getAll:
+SELECT * FROM Team;
+
 get:
 SELECT * FROM Team
 WHERE id = :id;

@@ -10,6 +10,10 @@ import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 class TrackerRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : TrackerRepository {
+    override fun getAll(): List<Tracker> {
+        return appDatabase.trackerQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     override fun get(id: Tracker.Id): Tracker {
         return appDatabase.trackerQueries.get(id).executeAsOne().toDomainModel()
     }
