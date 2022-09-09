@@ -10,8 +10,7 @@ CREATE TABLE Meeting (
   timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-getFirst:
+getByTrackerIdAndModuleNumber:
 SELECT Meeting.* FROM Meeting
 JOIN Team ON Team.id = Meeting.teamId
-WHERE Team.trackerId = :trackerId AND Meeting.moduleNumber = :moduleNumber
-ORDER BY Meeting.timestamp LIMIT 1;
+WHERE Team.trackerId = :trackerId AND Meeting.moduleNumber = :moduleNumber;

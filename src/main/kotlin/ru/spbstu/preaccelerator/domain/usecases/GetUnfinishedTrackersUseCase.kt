@@ -27,12 +27,18 @@ class GetUnfinishedTrackersUseCase(
             return trackerRepository.getAll()
                 .flatMap { tracker ->
                     moduleConfig.modules
-                        .filterNot { module ->
-                            tracker.teams.all { protocolStatusRepository.get(it.id, module.number).isFinished() }
+                        .asSequence()
+                        .map { module ->
+                            meetingRepository.get(tracker.id, module.number)
                         }
-                        .mapNotNull { meetingRepository.getFirst(tracker.id, it.number) }
-                        .filter {
-                            val deadline = it.timestamp + duration.toJavaDuration()
+                        .filterNot { meetings ->
+                            meetings.all { protocolStatusRepository.get(it.teamId, it.moduleNumber).isFinished() }
+                        }
+                        .mapNotNull { meetings ->
+                            meetings.minByOrNull { it.timestamp }
+                        }
+                        .filter { firstMeeting ->
+                            val deadline = firstMeeting.timestamp + duration.toJavaDuration()
                             deadline.isAfter(at) && deadline.isBefore(tomorrow)
                         }
                         .map { tracker to it.moduleNumber }

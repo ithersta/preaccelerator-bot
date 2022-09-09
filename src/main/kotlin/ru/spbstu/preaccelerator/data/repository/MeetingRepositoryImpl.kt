@@ -11,8 +11,9 @@ import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
 class MeetingRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : MeetingRepository {
-    override fun getFirst(trackerId: Tracker.Id, moduleNumber: Module.Number): Meeting? {
-        return appDatabase.meetingQueries.getFirst(trackerId, moduleNumber).executeAsOneOrNull()?.toDomainModel()
+    override fun get(trackerId: Tracker.Id, moduleNumber: Module.Number): List<Meeting> {
+        return appDatabase.meetingQueries.getByTrackerIdAndModuleNumber(trackerId, moduleNumber)
+            .executeAsList().map { it.toDomainModel() }
     }
 
     private fun ru.spbstu.preaccelerator.data.Meeting.toDomainModel() = Meeting(

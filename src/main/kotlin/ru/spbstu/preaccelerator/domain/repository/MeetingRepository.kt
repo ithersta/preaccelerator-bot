@@ -5,5 +5,5 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 
 interface MeetingRepository {
-    fun getFirst(trackerId: Tracker.Id, moduleNumber: Module.Number): Meeting?
+    fun get(trackerId: Tracker.Id, moduleNumber: Module.Number): List<Meeting>
 }
