@@ -24,8 +24,6 @@ fun StateMachineBuilder.getProtocolFlow() {
                 )
                 setState(EmptyState)
             }
-
         }
     }
-
 }

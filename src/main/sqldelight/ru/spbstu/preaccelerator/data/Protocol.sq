@@ -8,7 +8,6 @@ CREATE TABLE Protocol (
   url TEXT NOT NULL
 );
 
-
 get:
 SELECT * FROM Protocol
 WHERE teamId  = :teamId;
