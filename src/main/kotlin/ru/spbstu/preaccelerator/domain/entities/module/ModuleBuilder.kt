@@ -12,7 +12,7 @@ class ModuleBuilder(
     private val parts = mutableListOf<ModulePart>()
 
     fun task(description: String) {
-        val task = Task(Task.Number(allTasks.size), description)
+        val task = Task(Task.Number(allTasks.size + 1), description)
         allTasks.add(task)
         parts.add(task)
     }
