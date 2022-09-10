@@ -127,7 +127,7 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                     replyMarkup = inlineKeyboard {
                         teamRep.get(state.team).availableModules.chunked(2).forEach {
                             row {
-                                it.forEach { dataButton((it.number.value + 1).toString(), "module ${it.number.value}") }
+                                it.forEach { dataButton((it.number.value).toString(), "module ${it.number.value}") }
                             }
                         }
                     }

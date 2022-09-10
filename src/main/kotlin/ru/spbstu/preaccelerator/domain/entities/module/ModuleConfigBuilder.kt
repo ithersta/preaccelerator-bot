@@ -13,7 +13,7 @@ class ModuleConfigBuilder {
         block: ModuleBuilder.() -> Unit
     ) {
         modules.add(
-            ModuleBuilder(Module.Number(modules.size), name, duration, finalTestUrl, tasks).apply(block).build()
+            ModuleBuilder(Module.Number(modules.size + 1), name, duration, finalTestUrl, tasks).apply(block).build()
         )
     }
 
