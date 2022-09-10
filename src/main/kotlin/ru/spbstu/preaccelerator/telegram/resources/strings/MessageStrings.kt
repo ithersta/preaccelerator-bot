@@ -87,6 +87,7 @@ object MessageStrings {
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
         const val InvalidDataFormat = "Введен неверный формат данных\\."
+        //TODO исправить
         const val InvalidModulNumber = "Введен неверный номер модуля\\(недели\\)\\. Модуль от 1 до 8"
     }
 
