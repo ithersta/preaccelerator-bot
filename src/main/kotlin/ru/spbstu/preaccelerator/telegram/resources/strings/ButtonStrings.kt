@@ -1,5 +1,7 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import ru.spbstu.preaccelerator.domain.entities.module.Task
+
 object ButtonStrings {
 
     object Start {
@@ -13,6 +15,16 @@ object ButtonStrings {
         const val DoTest = "Пройти тест"
         const val HomeworkAlreadyDone = "Уже отправлено другим участником"
         const val SendHomework = "Отправить домашнее задание"
+    }
+
+    object Homework{
+        const val SeeHomework = "Посмотреть домашнее задание"
+        object ModuleSpecific{
+            const val LastOnly = "Задания последнего модуля"
+            const val AllMod = "Выбор из всех"
+        }
+        fun taskNumber(numb: Task.Number) =
+            "Задание №${numb.value+1}"
     }
 
     object ChooseModule {

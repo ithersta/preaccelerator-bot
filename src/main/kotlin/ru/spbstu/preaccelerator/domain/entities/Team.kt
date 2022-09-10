@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.domain.entities
 
+import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 
 class Team(
@@ -7,6 +8,7 @@ class Team(
     val name: String,
     val trackerId: Tracker.Id
 ) {
+    @Serializable
     @JvmInline
     value class Id(val value: Long)
 }

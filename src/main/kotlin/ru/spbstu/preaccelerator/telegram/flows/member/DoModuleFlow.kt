@@ -12,6 +12,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
+import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
@@ -21,6 +22,7 @@ import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.module
 import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
@@ -33,15 +35,18 @@ import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.nextMod
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.taskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.welcomeModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Homework.SeeHomework
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.DoTest
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkDownloaded
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
+    val trackerRep: TrackerRepository by inject()
 
     role<Member> {
         state<EmptyState> {
@@ -326,6 +331,20 @@ fun StateMachineBuilder.doModuleFlow() {
                     sendTextMessage(
                         chat = message.chat,
                         text = ModuleStrings.Error.HomeworkWasAlreadyAdded
+                    )
+                } else {
+                    sendTextMessage(
+                        trackerRep.get(user.team.trackerId).userId,
+                        homeworkDownloaded(task.number, user.team),
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(
+                                    SeeHomework,
+                                    url.toString()
+                                )
+                            }
+                        }
                     )
                 }
                 setState(state.returnTo)

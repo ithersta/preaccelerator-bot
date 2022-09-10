@@ -1,6 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
+import ru.spbstu.preaccelerator.domain.entities.module.Task
 
 object NotificationStrings {
     object ModuleDeadline {
@@ -10,6 +12,9 @@ object NotificationStrings {
         fun expired(moduleNumber: Module.Number) =
             "Ваша команда пропустила дедлайн Модуля ${moduleNumber.value + 1}. Завершите его сейчас."
     }
+
+    fun homeworkDownloaded(taskNumb: Task.Number, team: Team) =
+        "Домашнее задание №${taskNumb.value+1} от команды ${team.name} загружено\\!"
 
     object ProtocolDeadline {
         fun inLessThanTwoDays(moduleNumber: Module.Number) =
