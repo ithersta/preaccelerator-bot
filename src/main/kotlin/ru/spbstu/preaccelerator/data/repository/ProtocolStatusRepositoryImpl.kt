@@ -11,6 +11,10 @@ import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 class ProtocolStatusRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : ProtocolStatusRepository {
+    override fun getSent(): ProtocolStatus? {
+        return appDatabase.protocolStatusQueries.getSent().executeAsOneOrNull()?.toDomainModel()
+    }
+
     override fun get(teamId: Team.Id, moduleNumber: Module.Number): ProtocolStatus {
         return appDatabase.protocolStatusQueries.get(teamId, moduleNumber).executeAsOneOrNull()?.toDomainModel()
             ?: ProtocolStatus(teamId, moduleNumber)

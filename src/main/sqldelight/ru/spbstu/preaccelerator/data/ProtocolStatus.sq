@@ -27,3 +27,9 @@ RETURNING *;
 get:
 SELECT * FROM ProtocolStatus
 WHERE teamId = :teamId AND moduleNumber = :moduleNumber;
+
+getSent:
+SELECT * FROM ProtocolStatus
+WHERE value = 'Sent'
+ORDER BY teamId, moduleNumber
+LIMIT 1;

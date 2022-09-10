@@ -1,6 +1,9 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
@@ -64,6 +67,37 @@ object MessageStrings {
                 }"
             )
         }
+    }
+
+    object ReviewProtocols {
+        const val Accepted = "✅"
+        const val Declined = "❌"
+
+        const val SendComment = "Напишите в комментарии причину"
+        const val SendCommentPlaceholder = "Комментарий"
+        const val NoUnreviewedProtocols = "🎉 Непроверенных протоколов больше нет!"
+
+        fun protocol(protocol: Protocol?, team: Team, moduleNumber: Module.Number, status: String?, comment: String?) =
+            buildEntities {
+                if (status != null) {
+                    regular(status)
+                    regular(" ")
+                }
+                bold("Модуль ${moduleNumber.value + 1}")
+                regular(" | ")
+                bold("Команда: ")
+                regularln(team.name)
+                if (protocol != null) {
+                    bold("Протокол: ")
+                    linkln(protocol.url)
+                } else {
+                    regularln("Ссылка на протокол не установлена")
+                }
+                if (comment != null) {
+                    bold("Комментарий: ")
+                    regularln(comment)
+                }
+            }
     }
 
     object Error {
