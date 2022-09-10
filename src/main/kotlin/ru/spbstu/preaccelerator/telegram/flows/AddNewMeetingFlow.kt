@@ -18,6 +18,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     role<Tracker> {
@@ -68,7 +69,6 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onDataCallbackQuery(Regex("team \\d+")) {
-                //если пользователь введет что-то не то, выводится "Нет такой команды или она сейчас недоступна"
                 val teamId = Team.Id(it.data.split(" ").last().toLong())
                 setState(NewMeetingState.WaitingForUrl(state.moduleNumber, teamId))
             }
@@ -98,7 +98,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                     .atOffset(ZoneOffset.ofHours(3))
                 }
-                catch(e: Exception){
+                catch(e: DateTimeParseException){
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputTime,
