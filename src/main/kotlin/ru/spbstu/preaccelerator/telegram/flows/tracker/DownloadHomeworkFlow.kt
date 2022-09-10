@@ -18,7 +18,6 @@ import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Homework.ModuleSpecific.AllMod
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Homework.ModuleSpecific.LastOnly
-import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Homework.taskNumber
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.DownloadHomework.ChooseModuleNumber
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.DownloadHomework.ChooseTeam
@@ -101,7 +100,7 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                             if (homework != null) {
                                 row {
                                     urlButton(
-                                        taskNumber(homework.taskNumber),
+                                        task.templateName,
                                         homework.url
                                     )
                                 }
