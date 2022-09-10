@@ -17,6 +17,7 @@ import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.time.ZoneOffset
 
 fun StateMachineBuilder.addNewMeetingFlow() {
@@ -93,8 +94,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val time = try{
-                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
-                    .atOffset(ZoneOffset.ofHours(3))
+                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC-5")).toOffsetDateTime()
                 }
                 catch(e: Exception){
                     sendTextMessage(
@@ -128,36 +128,26 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     }
                 )
             }
-            onText { message ->
-                when (message.content.text) {
-                    ButtonStrings.Option.Yes -> {
-                        sendTextMessage(
-                            message.chat,
-                            MessageStrings.ScheduleMeetings.MeetingIsCreated,
-                            parseMode = MarkdownV2
-                        )
-                        user.teams[state.teamId.value.toInt()].addMeeting(
-                            state.moduleNumber,
-                            state.time,
-                            state.url
-                        )
-                        setState(MenuState.Tracker.Meetings)
-                    }
-                    ButtonStrings.Option.No -> {
-                        sendTextMessage(
-                            message.chat,
-                            MessageStrings.ScheduleMeetings.MeetingNotCreated,
-                            parseMode = MarkdownV2
-                        )
-                        setState(NewMeetingState.WaitingForModuleNumber)
-                    }
-                    else -> {
-                        sendTextMessage(
-                            message.chat,
-                            MessageStrings.ChooseModuleAction.Err
-                        )
-                    }
-                }
+            onText(ButtonStrings.Option.Yes){message->
+                sendTextMessage(
+                    message.chat,
+                    MessageStrings.ScheduleMeetings.MeetingIsCreated,
+                    parseMode = MarkdownV2
+                )
+                user.teams[state.teamId.value.toInt()].addMeeting(
+                    state.moduleNumber,
+                    state.time,
+                    state.url
+                )
+                setState(MenuState.Tracker.Meetings)
+            }
+            onText(ButtonStrings.Option.No){message->
+                sendTextMessage(
+                    message.chat,
+                    MessageStrings.ScheduleMeetings.MeetingNotCreated,
+                    parseMode = MarkdownV2
+                )
+                setState(NewMeetingState.WaitingForModuleNumber)
             }
         }
     }
