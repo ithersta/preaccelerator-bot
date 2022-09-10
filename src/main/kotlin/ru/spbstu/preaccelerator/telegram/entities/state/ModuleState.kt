@@ -5,6 +5,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
 
 @Serializable
+object ChooseModule:DialogState
+
+@Serializable
 class ModuleState(
     val moduleNumber: Module.Number,
     val partIndex: Int
