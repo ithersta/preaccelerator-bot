@@ -24,7 +24,7 @@ object ButtonStrings {
             const val AllMod = "Выбор из всех"
         }
         fun taskNumber(numb: Task.Number) =
-            "Задание №${numb.value+1}"
+            "Задание №${numb.value}"
     }
 
     object ChooseModule {

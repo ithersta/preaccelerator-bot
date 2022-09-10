@@ -17,7 +17,7 @@ class ModuleConfigBuilder {
         )
     }
 
-    fun build() = ModuleConfig(modules, tasks)
+    fun build() = ModuleConfig(modules.associateBy { it.number }, tasks)
 }
 
 fun moduleConfig(block: ModuleConfigBuilder.() -> Unit): ModuleConfig {

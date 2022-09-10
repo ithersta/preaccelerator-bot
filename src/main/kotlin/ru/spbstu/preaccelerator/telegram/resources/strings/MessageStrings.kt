@@ -39,12 +39,13 @@ object MessageStrings {
         const val Err = "Выберите действие из кнопочного меню"
     }
 
-    object DownloadHomework{
+    object DownloadHomework {
         const val ChooseTeam = "Выберите команду"
         const val DownloadOption = "Выберите модуль, к которому относится задание"
         const val Err = "Выберите вариант из кнопочного меню"
         fun moduleHomeworks(num: Module.Number) =
-            "Задания модуля №${num.value+1}"
+            "Задания модуля №${num.value}"
+
         const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
         const val ChooseModuleNumber = "Выберите номер модуля"
     }

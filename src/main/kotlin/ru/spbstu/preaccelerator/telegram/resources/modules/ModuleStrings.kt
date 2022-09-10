@@ -36,7 +36,7 @@ object ModuleStrings {
     """.trimMargin()
 
     fun welcomeModule(module: Module) = """
-        |*Модуль ${module.number.value + 1}*
+        |*Модуль ${module.number.value}*
         |*Название*: ${module.name}
     """.trimMargin()
 
@@ -45,7 +45,7 @@ object ModuleStrings {
     fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = """
         |Вы закончили изучать материалы Модуля ${number.value}\.
         |${
-        if (number.value != moduleConfig.modules.lastIndex) {
+        if (number.value != moduleConfig.modules.keys.maxOf { it.value }) {
             "Пройдите короткий тест и приступайте к изучению Модуля ${number.value + 1}\\!"
         } else {
             Congrats

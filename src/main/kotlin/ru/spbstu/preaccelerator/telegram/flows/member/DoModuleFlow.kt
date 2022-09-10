@@ -68,7 +68,7 @@ fun StateMachineBuilder.doModuleFlow() {
             }
             onText { message ->
                 val moduleName = message.content.text
-                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                val module = moduleConfig.modules.values.find { it.name == moduleName } ?: run {
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ChooseModuleAction.Err,
@@ -101,12 +101,9 @@ fun StateMachineBuilder.doModuleFlow() {
             }
 
             onText { message ->
-                val moduleNumb = state.moduleNumber
-                val moduleNumbInt = moduleNumb.value
-                val mess = message.content.text
-                when (mess) {
+                when (message.content.text) {
                     ButtonStrings.ChooseModule.DoEntireModule -> {
-                        setState(ModuleState(moduleNumb, 0))
+                        setState(ModuleState(state.moduleNumber, 0))
                     }
 
                     ButtonStrings.ChooseModule.WatchLectures -> {
@@ -115,7 +112,7 @@ fun StateMachineBuilder.doModuleFlow() {
                             MessageStrings.ChooseModuleAction.ModuleLectures,
                             parseMode = MarkdownV2,
                             replyMarkup = inlineKeyboard {
-                                moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                moduleConfig.modules.getValue(state.moduleNumber).parts.forEach { part ->
                                     if (part is Lecture) {
                                         row {
                                             urlButton(
@@ -139,7 +136,7 @@ fun StateMachineBuilder.doModuleFlow() {
                                 row {
                                     urlButton(
                                         DoTest,
-                                        moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                        moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                                     )
                                 }
                             })
@@ -256,8 +253,8 @@ fun StateMachineBuilder.doModuleFlow() {
                     return@onDataCallbackQuery
                 }
                 val newState = ModuleState(state.moduleNumber, partIndex)
-                val maxPart = moduleConfig.modules[state.moduleNumber.value].parts.lastIndex
-                val maxModule = moduleConfig.modules.lastIndex
+                val maxPart = moduleConfig.modules.getValue(state.moduleNumber).parts.lastIndex
+                val maxModule = moduleConfig.modules.maxOf { it.key.value }
                 if (state.partIndex == maxPart) {
                     sendTextMessage(
                         it.from,
@@ -267,7 +264,7 @@ fun StateMachineBuilder.doModuleFlow() {
                             row {
                                 urlButton(
                                     DoTest,
-                                    moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                    moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                                 )
                                 if (state.moduleNumber.value != maxModule) {
                                     dataButton(
@@ -357,6 +354,6 @@ fun StateMachineBuilder.doModuleFlow() {
 private object ModuleStateExt : KoinComponent {
     private val moduleConfig: ModuleConfig by inject()
 
-    val ModuleState.module get() = moduleConfig.modules[moduleNumber.value]
+    val ModuleState.module get() = moduleConfig.modules.getValue(moduleNumber)
     val ModuleState.part get() = module.parts[partIndex]
 }

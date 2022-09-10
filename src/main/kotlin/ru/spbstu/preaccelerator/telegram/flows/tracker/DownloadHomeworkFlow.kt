@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.HomeworkRepository
@@ -59,7 +60,7 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
-                    ){
+                    ) {
 
                         row {
                             simpleButton(LastOnly)
@@ -78,6 +79,7 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                     AllMod -> {
                         setState(AllModules(state.team))
                     }
+
                     else -> {
                         sendTextMessage(
                             it.chat,
@@ -94,7 +96,7 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                     moduleHomeworks(state.moduleNumber),
                     parseMode = MarkdownV2,
                     replyMarkup = inlineKeyboard {
-                        val currentModule = moduleConfig.modules[state.moduleNumber.value]
+                        val currentModule = moduleConfig.modules.getValue(state.moduleNumber)
                         for (task in currentModule.tasks) {
                             val homework = homeworkRepository.get(state.team, task.number)
                             if (homework != null) {
@@ -134,8 +136,8 @@ fun StateMachineBuilder.downloadHomeworkFlow() {
                 )
             }
             onDataCallbackQuery(Regex("module \\d+")) {
-                val moduleNumb = it.data.split(" ").last().toInt()
-                setState(ModuleHomework(state.team,moduleConfig.modules[moduleNumb].number))
+                val moduleNumber = Module.Number(it.data.split(" ").last().toInt())
+                setState(ModuleHomework(state.team, moduleNumber))
             }
         }
     }
