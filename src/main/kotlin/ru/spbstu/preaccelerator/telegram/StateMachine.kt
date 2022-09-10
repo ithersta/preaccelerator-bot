@@ -19,6 +19,7 @@ import ru.spbstu.preaccelerator.telegram.flows.commands.stateCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.whoCommand
 import ru.spbstu.preaccelerator.telegram.flows.fallback
 import ru.spbstu.preaccelerator.telegram.flows.member.doModuleFlow
+import ru.spbstu.preaccelerator.telegram.flows.member.getProtocolFlow
 import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.memberMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
@@ -59,6 +60,7 @@ fun createStateMachine(
         memberMenu()
     }
 
+    getProtocolFlow()
     doModuleFlow()
     fallback()
 }

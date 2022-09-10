@@ -7,3 +7,8 @@ CREATE TABLE Protocol (
   teamId BIGINT AS Team.Id PRIMARY KEY,
   url TEXT NOT NULL
 );
+
+
+get:
+SELECT * FROM Protocol
+WHERE teamId  = :teamId;
