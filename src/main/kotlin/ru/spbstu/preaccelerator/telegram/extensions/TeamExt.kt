@@ -13,10 +13,10 @@ object TeamExt : KoinComponent {
     val Team.meetings get() = with(actions) { meetings }
     val Team.availableModules get() = with(actions) { availableModules }
 
-    fun Team.addMeeting(teamId: Team.Id, moduleNumber: Module.Number, timestamp: OffsetDateTime, url: String) = with(
+    fun Team.addMeeting(moduleNumber: Module.Number, timestamp: OffsetDateTime, url: String) = with(
         actions
     ) {
-        addMeeting(teamId, moduleNumber, timestamp, url)
+        addMeeting(moduleNumber, timestamp, url)
 
     }
 

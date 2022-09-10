@@ -21,8 +21,8 @@ class TeamActions(
     val Team.meetings get() = meetingRepository.get(id)
     val Team.availableModules get() = getAvailableModules(id)
 
-    fun Team.addMeeting(teamId: Team.Id, moduleNumber: Number, timestamp: OffsetDateTime, url: String) =
-        meetingRepository.add(teamId, moduleNumber, timestamp, url)
+    fun Team.addMeeting(moduleNumber: Number, timestamp: OffsetDateTime, url: String) =
+        meetingRepository.add(id, moduleNumber, timestamp, url)
 
     fun Team.addHomework(taskNumber: Task.Number, url: String, at: OffsetDateTime) =
         homeworkRepository.add(id, taskNumber, url, at)
