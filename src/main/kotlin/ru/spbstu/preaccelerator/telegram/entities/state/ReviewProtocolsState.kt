@@ -7,7 +7,9 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 
 object ReviewProtocolsState {
     @Serializable
-    object New : DialogState
+    class New(
+        val teamId: Team.Id?
+    ) : DialogState
 
     @Serializable
     class WaitingForComment(
