@@ -12,6 +12,7 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module.Number
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
+import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
@@ -27,6 +28,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracke
 fun StateMachineBuilder.fillOutProtocolFlow() {
     val protocolRepository: ProtocolRepository by inject()
     val statusRepository: ProtocolStatusRepository by inject()
+    val teamRepository: TeamRepository by inject()
 
     role<Tracker> {
         state<ChooseTeam> {
@@ -49,7 +51,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<ChooseModule> {
             onTransition { chatId ->
                 sendTextMessage(chatId, ChooseModule, replyMarkup = inlineKeyboard {
-                    user.teams[state.teamId.value.toInt()].availableModules.chunked(2).forEach {
+                    teamRepository.get(state.teamId).availableModules.chunked(2).forEach {
                         row {
                             it.forEach {
                                 dataButton(it.name, "moduleId ${it.number.value}")
