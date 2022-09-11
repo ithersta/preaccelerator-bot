@@ -8,5 +8,6 @@ interface MemberRepository {
     fun get(id: Member.Id): Member
     fun get(teamId: Team.Id): List<Member>
     fun get(phoneNumber: PhoneNumber): Member?
+    fun getAll(): List<Member>
     fun add(phoneNumber: PhoneNumber, teamId: Team.Id): Member.Id
 }

@@ -20,5 +20,7 @@ object MenuState {
 
         @Serializable
         object Teams : DialogState
+        @Serializable
+        object SendInfo : DialogState
     }
 }

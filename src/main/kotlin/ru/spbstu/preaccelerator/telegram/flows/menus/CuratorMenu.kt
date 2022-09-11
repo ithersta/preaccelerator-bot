@@ -9,12 +9,12 @@ import dev.inmo.tgbotapi.extensions.utils.formatting.makeDeepLink
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.CuratorExt.generateCuratorToken
 import ru.spbstu.preaccelerator.telegram.flows.addUsersFlow
-import ru.spbstu.preaccelerator.telegram.flows.sendingInfo
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.AddUsers
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.GetStats
@@ -23,9 +23,9 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Curator.Message, EmptyState) {
     submenu(SendInfo.Button, SendInfo.Message, MenuState.Curator.SendInfo) {
-        button(SendInfo.ToAll, SendInfoState.AllFromCurator)
-        button(SendInfo.ToTrackers, SendInfoState.TrackersFromCurator)
-        button(SendInfo.ToSelectTeams, SendInfoState.TeamsFromCurator)
+        button(SendInfo.ToAll, SendInfoState(TypeMassMess.AllFromCurator, true))
+        button(SendInfo.ToTrackers, SendInfoState(TypeMassMess.TrackersFromCurator, true))
+        button(SendInfo.ToSelectTeams, SendInfoState(TypeMassMess.TeamsFromCuratorAndTacker, false))
         backButton(MenuStrings.Back)
     }
     submenu(GetStats.Button, GetStats.Message, MenuState.Curator.GetStats) {
@@ -43,7 +43,6 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
     with(curatorMenu) { invoke() }
-    sendingInfo()
     addUsersFlow()
 }
 

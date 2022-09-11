@@ -1,14 +1,18 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
+import dev.inmo.tgbotapi.types.MessageIdentifier
 import kotlinx.serialization.Serializable
 
-object SendInfoState {
-    @Serializable
-    sealed interface BaseState : DialogState
-    @Serializable
-    object AllFromCurator : BaseState
-    @Serializable
-    object TrackersFromCurator : BaseState
-    @Serializable
-    object TeamsFromCurator : BaseState
+@Serializable
+data class SendInfoState(
+    val typeMassMess: TypeMassMess,
+    val startSending: Boolean,
+    val mutableSetTeamId: MutableSet<Long>? = null,
+    val listNamesTeams: List<Pair<Long, String>>? = null,
+    val infoMess: String = "",
+    val messageIdentifier: MessageIdentifier? = null
+) : DialogState
+
+enum class TypeMassMess {
+    AllFromCurator, TrackersFromCurator, TeamsFromCuratorAndTacker, AllFromTracker
 }

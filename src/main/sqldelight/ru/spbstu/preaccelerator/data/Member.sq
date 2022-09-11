@@ -22,6 +22,9 @@ getByTeamId:
 SELECT * FROM Member
 WHERE teamId = :teamId;
 
+getAll:
+SELECT * FROM Member;
+
 add:
 INSERT INTO Member(phoneNumber, teamId)
 VALUES(:phoneNumber, :teamId)

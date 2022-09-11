@@ -23,6 +23,10 @@ class MemberRepositoryImpl(
         return appDatabase.memberQueries.getByPhoneNumber(phoneNumber).executeAsOneOrNull()?.toDomainModel()
     }
 
+    override fun getAll(): List<Member> {
+        return appDatabase.memberQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     override fun add(phoneNumber: PhoneNumber, teamId: Team.Id): Member.Id {
         return appDatabase.memberQueries.add(phoneNumber, teamId).executeAsOne()
     }
