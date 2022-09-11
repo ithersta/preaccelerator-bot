@@ -66,6 +66,19 @@ object MessageStrings {
         }
     }
 
+    object MassSendInfo {
+        const val InputOneMessage = "Введите текст сообщения"
+        const val ListOfTeams = "Выберите команды для рассылки:"
+        fun requestConfirm(message: String) = "Вы ввели сообщение: $message;\nЧтобы заменить сообщение, введите его"
+        const val StartSendInfo = "Началась рассылка информации"
+        const val FinishSendInfo = "Рассылка закончилась"
+
+        fun listTeams(setTeamId: Set<Team.Id>, mapOfTeams: Map<Team.Id, String>) =
+            "Сообщение будет разослано командам: ${
+                setTeamId.joinToString { mapOfTeams[it]!! }
+            }"
+    }
+
     object Error {
         fun internal(message: String?) = "Произошла внутренняя ошибка: $message"
     }

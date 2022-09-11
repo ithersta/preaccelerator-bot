@@ -22,5 +22,11 @@ object ButtonStrings {
         const val WatchLectures = "Смотреть лекции"
     }
 
+    object MassSendInfo{
+        const val Send = "Отправить"
+        const val InputOtherMessage = "Ввести другое сообщение"
+        const val SendSuchTeams = "Отправить выбранным командам"
+    }
+
     const val Cancel = "Отменить"
 }

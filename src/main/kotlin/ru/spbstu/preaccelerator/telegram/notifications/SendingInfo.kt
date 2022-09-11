@@ -27,10 +27,8 @@ import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.StateFilterBuilder
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.SendInfoState
-import ru.spbstu.preaccelerator.telegram.entities.state.TypeMassMess
+import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
 import java.lang.Exception
@@ -39,36 +37,20 @@ import java.util.StringJoiner
 fun StateMachineBuilder.sendingInfo() {
     val teamRepository: TeamRepository by inject()
     val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
+    val memberRepository: MemberRepository by inject()
     val trackerRepository: TrackerRepository by inject()
     anyRole {
         state<SendInfoState> {
             onTransition { messenger ->
-                if (!state.startSending && (state.typeMassMess == TypeMassMess.TeamsFromCuratorAndTacker)) {
+                if (state.typeMassMess == TypeMassMess.TeamsFromCuratorAndTacker) {
                     if (state.messageIdentifier == null) {
-                        val listNamesTeams = when (user) {
-                            is Curator -> teamRepository.getAll().map { it.id.value to it.name }
-                            is Tracker -> teamRepository.get(
-                                trackerRepository.get(
-                                    userPhoneNumberRepository.get(
-                                        messenger.chatId.toChatId()
-                                    )!!
-                                )!!.id
-                            )
-                                .map { it.id.value to it.name }
-
-                            else -> {
-                                require(false) //user is not Curator or Tracker
-                                listOf(0L to "")
-                            }
-                        }
                         val newState = state.copy(
-                            listNamesTeams = listNamesTeams,
-                            mutableSetTeamId = mutableSetOf(),
+                            setTeamId = setOf(),
                             messageIdentifier = sendTextMessage(
                                 chatId = messenger,
-                                text = NotificationStrings.MassSendInfo.listOfTeams,
+                                text = MessageStrings.MassSendInfo.ListOfTeams,
                                 replyMarkup = inlineTeams(
-                                    listNamesTeams,
+                                    teamRepository.getAll(),
                                     mutableSetOf()
                                 )
                             ).messageId
@@ -80,181 +62,171 @@ fun StateMachineBuilder.sendingInfo() {
                                 chatId = messenger,
                                 messageId = state.messageIdentifier!!,
                                 replyMarkup = inlineTeams(
-                                    state.listNamesTeams!!,
-                                    state.mutableSetTeamId!!
+                                    teamRepository.getAll(),
+                                    state.setTeamId!!
                                 )
                             )
                         } catch (_: CommonBotException) {
                         }
                     }
-                } else if (state.infoMess.isNotEmpty()) {
-                    if (state.messageIdentifier == null) {
-                        val newState = state.copy(
-                            messageIdentifier = sendTextMessage(
-                                chatId = messenger,
-                                text = NotificationStrings.MassSendInfo.requestConfirm(state.infoMess),
-                                replyMarkup = inlineKeyboard {
-                                    row {
-                                        dataButton(NotificationStrings.MassSendInfo.send, "send info")
-                                    }
-                                    row {
-                                        dataButton(
-                                            NotificationStrings.MassSendInfo.inputOtherMessage,
-                                            "input other message"
-                                        )
+                } else {
+                    val listUsers = when (state.typeMassMess) {
+                        TypeMassMess.AllFromCurator -> {
+                            val list = trackerRepository.getAll().map { userPhoneNumberRepository.get(it.phoneNumber) }
+                                .toMutableList()
+                            list.addAll(memberRepository.getAll().map { userPhoneNumberRepository.get(it.phoneNumber) })
+                            list.filterNotNull()
+                        }
+
+                        TypeMassMess.TrackersFromCurator ->
+                            trackerRepository.getAll().mapNotNull { userPhoneNumberRepository.get(it.phoneNumber) }
+
+                        TypeMassMess.AllFromTracker -> {
+                            val mutableList = mutableListOf<UserId>()
+                            teamRepository.get(trackerRepository.get(userPhoneNumberRepository.get(messenger)!!)!!.id)
+                                .forEach { team ->
+                                    memberRepository.get(team.id).forEach { member ->
+                                        val userId = userPhoneNumberRepository.get(member.phoneNumber)
+                                        if (userId != null) {
+                                            mutableList.add(userId)
+                                        }
                                     }
                                 }
-                            ).messageId
-                        )
-                        setState(newState)
+                            mutableList.toList()
+                        }
+
+                        else -> listOf()
                     }
-                } else {
-                    sendTextMessage(
-                        chatId = messenger,
-                        text = NotificationStrings.MassSendInfo.inputOneMessage,
-                        replyMarkup = ReplyKeyboardRemove()
-                    ).messageId
-                }
-            }
-            onText { message ->
-                if (state.startSending) {
-                    val newState = state.copy(
-                        infoMess = message.content.text
+                    val newState = InputMess(
+                        listUserId = listUsers,
+                        massMess = ""
                     )
                     setState(newState)
                 }
             }
-            onDataCallbackQuery(Regex("input other message")) { message ->
-                editMessageReplyMarkup(
-                    chat = message.from,
-                    messageId = state.messageIdentifier!!,
-                    replyMarkup = null
-                )
+            onDataCallbackQuery(Regex("add:\\d+")) { message ->
+                val newSetTeamId = state.setTeamId!!.toMutableSet()
+                newSetTeamId.add(Team.Id(message.data.split(":")[1].toLong()))
                 val newState = state.copy(
-                    messageIdentifier = null,
-                    infoMess = ""
+                    setTeamId = newSetTeamId
                 )
                 setState(newState)
             }
-            onDataCallbackQuery(Regex("add:\\d+")) { message ->
-                state.mutableSetTeamId!!.add(message.data.split(":")[1].toLong())
-                setState(state)
-            }
             onDataCallbackQuery(Regex("del:\\d+")) { message ->
-                state.mutableSetTeamId!!.remove(message.data.split(":")[1].toLong())
-                setState(state)
+                val newSetTeamId = state.setTeamId!!.toMutableSet()
+                newSetTeamId.remove(Team.Id(message.data.split(":")[1].toLong()))
+                val newState = state.copy(
+                    setTeamId = newSetTeamId
+                )
+                setState(newState)
             }
             onDataCallbackQuery(Regex("send such teams")) { message ->
                 editMessageText(
                     chat = message.from,
                     messageId = message.messageCallbackQueryOrThrow().message.messageId,
-                    text = NotificationStrings.MassSendInfo.listTeams(
-                        state.mutableSetTeamId!!,
-                        state.listNamesTeams!!.toMap()
+                    text = MessageStrings.MassSendInfo.listTeams(
+                        state.setTeamId!!,
+                        teamRepository.getAll().associate { it.id to it.name }
                     ),
                     replyMarkup = null
                 )
-                val newState = state.copy(
-                    messageIdentifier = null,
-                    startSending = true
+                val listUsers = mutableListOf<UserId>()
+                state.setTeamId!!.forEach { teamId ->
+                    memberRepository.get(teamId).forEach { member ->
+                        val userId = userPhoneNumberRepository.get(member.phoneNumber)
+                        if (userId != null) {
+                            listUsers.add(userId)
+                        }
+                    }
+                }
+                val newState = InputMess(
+                    listUserId = listUsers,
+                    massMess = ""
                 )
                 setState(newState)
             }
-            onDataCallbackQuery(Regex("send info")) { message ->
+        }
+        state<InputMess> {
+            onTransition { messager ->
+                if (state.massMess.isEmpty()) {
+                    sendTextMessage(
+                        chatId = messager,
+                        text = MessageStrings.MassSendInfo.InputOneMessage
+                    )
+                } else {
+                    sendTextMessage(
+                        chatId = messager,
+                        text = MessageStrings.MassSendInfo.requestConfirm(state.massMess),
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                dataButton(ButtonStrings.MassSendInfo.Send, "send info")
+                            }
+                            row {
+                                dataButton(ButtonStrings.MassSendInfo.InputOtherMessage, "input other message")
+                            }
+                        }
+                    )
+                }
+
+            }
+            onText { message ->
+                val newState = state.copy(
+                    massMess = message.content.text
+                )
+                setState(newState)
+            }
+            onDataCallbackQuery(Regex("input other message")) { message ->
                 editMessageReplyMarkup(
                     chat = message.from,
                     messageId = message.messageCallbackQueryOrThrow().message.messageId,
                     replyMarkup = null
                 )
-                sendTextMessage(message.from, NotificationStrings.MassSendInfo.startSendInfo)
-                val massSendLimiter: MassSendLimiter by inject()
-                val messageMass = when (user) {
-                    is Curator -> NotificationStrings.MassSendInfo.notificationCurator(state.infoMess)
-                    is Tracker -> NotificationStrings.MassSendInfo.notificationTracker(state.infoMess)
+                val newState = state.copy(
+                    massMess = ""
+                )
+                setState(newState)
+            }
+            onDataCallbackQuery(Regex("send info")) { message ->
+                val massMessage = when(user)
+                {
+                    is Curator -> NotificationStrings.MassSendInfo.notificationCurator(state.massMess)
+                    is Tracker -> NotificationStrings.MassSendInfo.notificationTracker(state.massMess)
                     else -> {
-                        require(true) //user is not Curator or Tracker
+                        require(false) // user is not curator or tracker
                         ""
                     }
                 }
-                when (state.typeMassMess) {
-                    TypeMassMess.AllFromCurator -> {
-                        val trackerRepository: TrackerRepository by inject()
-                        trackerRepository.getAll().forEach {
-                            massSendLimiter.wait()
-                            sendTextMessage(
-                                chatId = UserId(it.id.value),
-                                text = messageMass
-                            )
-                        }
-                        val memberRepository: MemberRepository by inject()
-                        memberRepository.getAll().forEach {
-                            massSendLimiter.wait()
-                            sendTextMessage(
-                                chatId = UserId(it.id.value),
-                                text = messageMass
-                            )
-                        }
-                    }
-
-                    TypeMassMess.TrackersFromCurator -> {
-                        val trackerRepository: TrackerRepository by inject()
-                        trackerRepository.getAll().forEach { tracker ->
-                            massSendLimiter.wait()
-                            sendTextMessage(
-                                chatId = UserId(tracker.id.value),
-                                text = messageMass
-                            )
-                        }
-                    }
-
-                    TypeMassMess.TeamsFromCuratorAndTacker -> {
-                        val memberRepository: MemberRepository by inject()
-                        state.mutableSetTeamId!!.forEach { teamId ->
-                            memberRepository.get(Team.Id(teamId)).forEach { member ->
-                                sendTextMessage(
-                                    chatId = UserId(member.id.value),
-                                    text = messageMass
-                                )
-                            }
-                        }
-                    }
-
-                    TypeMassMess.AllFromTracker -> {
-                        val memberRepository: MemberRepository by inject()
-                        teamRepository.get(Tracker.Id(message.user.id.chatId)).forEach { team ->
-                            memberRepository.get(team.id).forEach { member ->
-                                massSendLimiter.wait()
-                                sendTextMessage(
-                                    chatId = UserId(member.id.value),
-                                    text = messageMass
-                                )
-                            }
-                        }
-                    }
+                val massSendLimiter: MassSendLimiter by inject()
+                state.listUserId.forEach { chatId ->
+                    massSendLimiter.wait()
+                    sendTextMessage(
+                        chatId = chatId,
+                        text = massMessage
+                    )
                 }
-                sendTextMessage(message.from, NotificationStrings.MassSendInfo.finishSendInfo)
                 setState(EmptyState)
             }
         }
     }
 
+
 }
 
-private fun inlineTeams(teams: List<Pair<Long, String>>, mutableSetTeamId: MutableSet<Long>): InlineKeyboardMarkup {
+private fun inlineTeams(teams: List<Team>, setTeamId: Set<Team.Id>): InlineKeyboardMarkup {
     return inlineKeyboard {
         teams.chunked(2).forEach { chunk ->
             row {
-                chunk.forEach { (id, name) ->
-                    if (mutableSetTeamId.contains(id)) {
-                        dataButton("-${name}", "del:${id}")
+                chunk.forEach { team ->
+                    if (setTeamId.contains(team.id)) {
+                        dataButton("-${team.name}", "del:${team.id}")
                     } else {
-                        dataButton("+${name}", "add:${id}")
+                        dataButton("+${team.name}", "add:${team.id}")
                     }
                 }
             }
         }
         row {
-            dataButton(NotificationStrings.MassSendInfo.sendSuchTeams, "send such teams")
+            dataButton(ButtonStrings.MassSendInfo.SendSuchTeams, "send such teams")
         }
     }
 }
