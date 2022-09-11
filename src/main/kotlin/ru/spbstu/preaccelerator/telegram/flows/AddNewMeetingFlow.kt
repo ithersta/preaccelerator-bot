@@ -20,7 +20,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
@@ -97,7 +97,8 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val time = try{
-                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC-5")).toOffsetDateTime()
+                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
+                        .atOffset(ZoneOffset.ofHours(5))
                 }
                 catch(e: ParseException){
                     sendTextMessage(
