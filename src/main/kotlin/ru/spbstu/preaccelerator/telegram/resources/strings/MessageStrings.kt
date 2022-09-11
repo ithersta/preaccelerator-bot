@@ -1,7 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import org.koin.core.context.GlobalContext
+import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
@@ -51,15 +52,9 @@ object MessageStrings {
     }
 
     object GetProtocol {
-        fun teamProtocol(team: Team): String {
-            val protocolRepository: ProtocolRepository by GlobalContext.get().inject()
-            val currProtocol = protocolRepository.get(team.id)
-            if (currProtocol != null) {
-                return "[Протокол команды ${team.name}](${currProtocol.url})"
-            } else {
-                return "Протокол ещё не закреплён за командой\\. Обратитесь к своему трекеру, чтобы он отправил его на проверку\\."
-            }
-        }
+        fun teamProtocol(team: Team, currProtocol: Protocol) =
+            "[Протокол команды ${team.name}](${currProtocol.url})"
+        const val noProtocol = "Протокол ещё не закреплён за командой\\. Обратитесь к своему трекеру, чтобы он отправил его на проверку\\."
     }
 
 
