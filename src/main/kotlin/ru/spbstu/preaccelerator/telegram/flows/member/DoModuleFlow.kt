@@ -14,10 +14,7 @@ import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleAction
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.ModuleState
-import ru.spbstu.preaccelerator.telegram.entities.state.WaitingForHomework
+import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
@@ -49,7 +46,7 @@ fun StateMachineBuilder.doModuleFlow() {
     val trackerRep: TrackerRepository by inject()
 
     role<Member> {
-        state<EmptyState> {
+        state<ChooseModuleState> {
             onTransition {
                 sendTextMessage(
                     it,
@@ -76,10 +73,10 @@ fun StateMachineBuilder.doModuleFlow() {
                     )
                     return@onText
                 }
-                setState(ChooseModuleAction(module.number))
+                setState(ChooseModuleActionState(module.number))
             }
         }
-        state<ChooseModuleAction> {
+        state<ChooseModuleActionState> {
             onTransition {
                 sendTextMessage(
                     it,
@@ -302,10 +299,10 @@ fun StateMachineBuilder.doModuleFlow() {
             onDataCallbackQuery(Regex("send \\d+")) {
                 answer(it)
                 val taskNumber = Task.Number(it.data.split(' ').last().toInt())
-                setState(WaitingForHomework(state, taskNumber))
+                setState(WaitingForHomeworkState(state, taskNumber))
             }
         }
-        state<WaitingForHomework> {
+        state<WaitingForHomeworkState> {
             onTransition {
                 sendTextMessage(
                     it,

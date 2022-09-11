@@ -52,6 +52,16 @@ object MessageStrings {
         const val ChooseModuleNumber = "Выберите номер модуля"
     }
 
+    object GetProtocol {
+        fun teamProtocol(team: Team, protocol: Protocol) = buildEntities {
+            link("Протокол команды ${team.name}", protocol.url)
+        }
+
+        val NoProtocol = buildEntities {
+            regular("Протокол ещё не закреплён за командой. Обратитесь к своему трекеру, чтобы он отправил его на проверку.")
+        }
+    }
+
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val TemplateFilename = "Шаблон"

@@ -26,10 +26,10 @@ class GetUnfinishedTrackersUseCase(
             val tomorrow = at.plusDays(1)
             return trackerRepository.getAll()
                 .flatMap { tracker ->
-                    moduleConfig.modules.values
+                    moduleConfig.modules
                         .asSequence()
                         .map { module ->
-                            meetingRepository.get(tracker.id, module.number)
+                            meetingRepository.get(tracker.id, module.key)
                         }
                         .filterNot { meetings ->
                             meetings.all { protocolStatusRepository.get(it.teamId, it.moduleNumber).isFinished() }
