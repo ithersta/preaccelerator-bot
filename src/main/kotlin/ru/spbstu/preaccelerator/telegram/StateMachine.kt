@@ -9,9 +9,9 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import mu.KotlinLogging
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
+import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.usecases.GetUserUseCase
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.flows.commands.cancelCommand
@@ -57,7 +57,7 @@ fun createStateMachine(
     role<Tracker> {
         trackerMenu()
     }
-    role<Member>{
+    role<Member> {
         memberMenu()
     }
 

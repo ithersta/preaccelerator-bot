@@ -1,5 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
+import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.extensions.utils.formatting.regular
 import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -52,9 +55,13 @@ object MessageStrings {
     }
 
     object GetProtocol {
-        fun teamProtocol(team: Team, currProtocol: Protocol) =
-            "[Протокол команды ${team.name}](${currProtocol.url})"
-        const val noProtocol = "Протокол ещё не закреплён за командой\\. Обратитесь к своему трекеру, чтобы он отправил его на проверку\\."
+        fun teamProtocol(team: Team, protocol: Protocol) = buildEntities {
+            link("Протокол команды ${team.name}", protocol.url)
+        }
+
+        val NoProtocol = buildEntities {
+            regular("Протокол ещё не закреплён за командой. Обратитесь к своему трекеру, чтобы он отправил его на проверку.")
+        }
     }
 
 

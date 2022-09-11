@@ -5,7 +5,7 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
 
 @Serializable
-object ChooseModule:DialogState
+object ChooseModuleState : DialogState
 
 @Serializable
 class ModuleState(
@@ -14,12 +14,12 @@ class ModuleState(
 ) : DialogState
 
 @Serializable
-class ChooseModuleAction(
+class ChooseModuleActionState(
     val moduleNumber: Module.Number
 ) : DialogState
 
 @Serializable
-class WaitingForHomework(
+class WaitingForHomeworkState(
     val returnTo: ModuleState,
     val taskNumber: Task.Number
 ) : DialogState

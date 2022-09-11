@@ -46,7 +46,7 @@ fun StateMachineBuilder.doModuleFlow() {
     val trackerRep: TrackerRepository by inject()
 
     role<Member> {
-        state<ChooseModule> {
+        state<ChooseModuleState> {
             onTransition {
                 sendTextMessage(
                     it,
@@ -73,10 +73,10 @@ fun StateMachineBuilder.doModuleFlow() {
                     )
                     return@onText
                 }
-                setState(ChooseModuleAction(module.number))
+                setState(ChooseModuleActionState(module.number))
             }
         }
-        state<ChooseModuleAction> {
+        state<ChooseModuleActionState> {
             onTransition {
                 sendTextMessage(
                     it,
@@ -299,10 +299,10 @@ fun StateMachineBuilder.doModuleFlow() {
             onDataCallbackQuery(Regex("send \\d+")) {
                 answer(it)
                 val taskNumber = Task.Number(it.data.split(' ').last().toInt())
-                setState(WaitingForHomework(state, taskNumber))
+                setState(WaitingForHomeworkState(state, taskNumber))
             }
         }
-        state<WaitingForHomework> {
+        state<WaitingForHomeworkState> {
             onTransition {
                 sendTextMessage(
                     it,
