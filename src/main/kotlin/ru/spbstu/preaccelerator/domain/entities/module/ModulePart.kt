@@ -13,7 +13,8 @@ class Lecture(
 
 class Task(
     val number: Number,
-    val description: String
+    val description: String,
+    val templateName: String
 ) : ModulePart {
     @Serializable
     @JvmInline

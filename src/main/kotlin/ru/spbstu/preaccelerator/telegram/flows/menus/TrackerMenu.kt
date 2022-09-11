@@ -17,7 +17,7 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
         backButton(MenuStrings.Back)
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
-        button(Teams.GetHomework, NotImplementedState)
+        button(Teams.GetHomework, DownloadHomeworkState)
         button(Teams.GetStats, NotImplementedState)
         backButton(MenuStrings.Back)
     }

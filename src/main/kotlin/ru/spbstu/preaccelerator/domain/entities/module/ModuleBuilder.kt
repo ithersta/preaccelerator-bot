@@ -11,8 +11,8 @@ class ModuleBuilder(
 ) {
     private val parts = mutableListOf<ModulePart>()
 
-    fun task(description: String) {
-        val task = Task(Task.Number(allTasks.size), description)
+    fun task(description: String, templateName: String) {
+        val task = Task(Task.Number(allTasks.size + 1), description, templateName)
         allTasks.add(task)
         parts.add(task)
     }

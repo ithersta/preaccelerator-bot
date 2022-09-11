@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 class ModuleConfig(
-    val modules: List<Module>,
+    val modules: Map<Module.Number, Module>,
     val tasks: List<Task>
 ) {
-    val fullDuration = modules.fold(Duration.ZERO) { acc, module -> acc + module.duration }
+    val fullDuration = modules.values.fold(Duration.ZERO) { acc, module -> acc + module.duration }
 }
 
 class Module(
