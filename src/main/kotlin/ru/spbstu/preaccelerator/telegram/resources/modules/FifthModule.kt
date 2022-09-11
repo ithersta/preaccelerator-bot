@@ -27,7 +27,8 @@ fun ModuleConfigBuilder.fifthModule() {
                     "• [Пять ошибок в финмодели стартапа: как их заметить и избежать](https://rb.ru/opinion/pyat-oshibok-finmodeli/)\n"
         )
         task(
-            "Постройте финансовую модель вашего стартапа и показатели эффективности, используя [Шаблон «Финмодель»](https://docs.google.com/spreadsheets/d/1V5BTZN37LA6Bbfzq6EcbZI_WNnv9KWmd/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)"
+            "Постройте финансовую модель вашего стартапа и показатели эффективности, используя [Шаблон «Финмодель»](https://docs.google.com/spreadsheets/d/1V5BTZN37LA6Bbfzq6EcbZI_WNnv9KWmd/edit?usp=sharing&ouid=117136603392830305877&rtpof=true&sd=true)",
+            "«Финмодель»"
         )
     }
 }

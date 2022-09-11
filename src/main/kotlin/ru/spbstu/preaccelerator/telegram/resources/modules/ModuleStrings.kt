@@ -36,17 +36,17 @@ object ModuleStrings {
     """.trimMargin()
 
     fun welcomeModule(module: Module) = """
-        |*Модуль ${module.number.value + 1}*
+        |*Модуль ${module.number.value}*
         |*Название*: ${module.name}
     """.trimMargin()
 
-    fun nextModule(number: Module.Number) = "Модуль ${number.value + 2}"
+    fun nextModule(number: Module.Number) = "Модуль ${number.value}"
 
     fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = """
-        |Вы закончили изучать материалы Модуля ${number.value + 1}\.
+        |Вы закончили изучать материалы Модуля ${number.value}\.
         |${
-        if (number.value != moduleConfig.modules.lastIndex) {
-            "Пройдите короткий тест и приступайте к изучению Модуля ${number.value + 2}\\!"
+        if (number.value != moduleConfig.modules.keys.maxOf { it.value }) {
+            "Пройдите короткий тест и приступайте к изучению Модуля ${number.value + 1}\\!"
         } else {
             Congrats
         }
@@ -66,13 +66,13 @@ object ModuleStrings {
     """.trimMargin()
 
     fun taskMessage(task: Task) = """
-        |Пришло время выполнить задание №${task.number.value + 1}
+        |Пришло время выполнить задание №${task.number.value}
         |
         |${task.description}
     """.trimMargin()
 
     fun doneTaskMessage(task: Task, url: String) = """
-        |✅ Ваша команда отправила ответ на задание №${task.number.value + 1}:
+        |✅ Ваша команда отправила ответ на задание №${task.number.value}:
         |$url
     """.trimMargin()
 }

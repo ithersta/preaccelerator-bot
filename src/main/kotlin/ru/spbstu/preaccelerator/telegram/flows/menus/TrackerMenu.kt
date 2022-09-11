@@ -5,10 +5,7 @@ import com.ithersta.tgbotapi.menu.builders.menu
 import dev.inmo.tgbotapi.types.UserId
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
-import ru.spbstu.preaccelerator.telegram.entities.state.NotImplementedState
+import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Meetings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Teams
@@ -20,7 +17,7 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
         backButton(MenuStrings.Back)
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
-        button(Teams.GetHomework, NotImplementedState)
+        button(Teams.GetHomework, DownloadHomeworkState)
         button(Teams.GetStats, NotImplementedState)
         backButton(MenuStrings.Back)
     }
