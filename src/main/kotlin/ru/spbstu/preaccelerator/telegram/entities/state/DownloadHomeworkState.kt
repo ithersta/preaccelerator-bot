@@ -5,23 +5,23 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 
 @Serializable
-object DownloadHomeworkState:DialogState
+object DownloadHomeworkState : DialogState
 
 @Serializable
 class WaitingForModuleSpecification(
     val team: Team.Id
-):DialogState
+) : DialogState
 
 @Serializable
 class ModuleHomework(
     val team: Team.Id,
     val moduleNumber: Module.Number
-):DialogState
+) : DialogState
 
 
 @Serializable
 class AllModules(
     val team: Team.Id
-):DialogState
+) : DialogState
 
 

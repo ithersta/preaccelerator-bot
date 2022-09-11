@@ -17,12 +17,14 @@ object ButtonStrings {
         const val SendHomework = "Отправить домашнее задание"
     }
 
-    object Homework{
+    object Homework {
         const val SeeHomework = "Посмотреть домашнее задание"
-        object ModuleSpecific{
+
+        object ModuleSpecific {
             const val LastOnly = "Задания последнего модуля"
             const val AllMod = "Выбор из всех"
         }
+
         fun taskNumber(numb: Task.Number) =
             "Задание №${numb.value}"
     }
