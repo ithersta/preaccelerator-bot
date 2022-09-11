@@ -1,6 +1,11 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
+import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.extensions.utils.formatting.regular
+import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
@@ -37,6 +42,28 @@ object MessageStrings {
         const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
         const val Err = "Выберите действие из кнопочного меню"
     }
+
+    object DownloadHomework {
+        const val ChooseTeam = "Выберите команду"
+        const val DownloadOption = "Выберите модуль, к которому относится задание"
+        const val Err = "Выберите вариант из кнопочного меню"
+        fun moduleHomeworks(num: Module.Number) =
+            "Задания модуля №${num.value}"
+
+        const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
+        const val ChooseModuleNumber = "Выберите номер модуля"
+    }
+
+    object GetProtocol {
+        fun teamProtocol(team: Team, protocol: Protocol) = buildEntities {
+            link("Протокол команды ${team.name}", protocol.url)
+        }
+
+        val NoProtocol = buildEntities {
+            regular("Протокол ещё не закреплён за командой. Обратитесь к своему трекеру, чтобы он отправил его на проверку.")
+        }
+    }
+
 
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"

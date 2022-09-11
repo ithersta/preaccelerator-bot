@@ -14,7 +14,7 @@ class GetAvailableModulesUseCase(
     operator fun invoke(teamId: Team.Id): List<Module> {
         val homeworks = homeworkRepository.get(teamId)
         val modules = moduleConfig.modules
-        return listOf(modules.first()) + modules.asSequence()
+        return listOf(modules.values.first()) + modules.values.asSequence()
             .zipWithNext()
             .takeWhile { (module, _) ->
                 module.tasks.all { task ->
