@@ -6,24 +6,24 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.message.MarkdownV2
+import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addMeeting
-import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.addNewMeetingFlow() {
+    val moduleConfig: ModuleConfig by inject()
     role<Tracker> {
         state<NewMeetingState.WaitingForModuleNumber> {
             onTransition { chatId ->
@@ -43,8 +43,8 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     )
                     return@onText
                 }
-                if (moduleNumber.toInt() >= (user.teams[0].availableModules[0].number.value + 1) && moduleNumber.toInt() <= user.teams[0].availableModules.size) {
-                        setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
+                if (moduleNumber.toInt() >= (moduleConfig.modules.first().number.value + 1) && moduleNumber.toInt() <= moduleConfig.modules.size) {
+                            setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
                     }
                 else {
                     sendTextMessage(
