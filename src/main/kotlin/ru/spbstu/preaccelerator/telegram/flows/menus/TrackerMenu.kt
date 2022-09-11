@@ -13,7 +13,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.T
 val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tracker.Message, EmptyState) {
     submenu(Meetings.Button, Meetings.Message, MenuState.Tracker.Meetings) {
         button(Meetings.Schedule, NotImplementedState)
-        button(Meetings.SendProtocol, ChooseTeam)
+        button(Meetings.SendProtocol, ProtocolState.ChooseTeam)
         backButton(MenuStrings.Back)
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {

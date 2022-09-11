@@ -17,6 +17,7 @@ import ru.spbstu.preaccelerator.telegram.flows.commands.cancelCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.stateCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.whoCommand
 import ru.spbstu.preaccelerator.telegram.flows.fallback
+import ru.spbstu.preaccelerator.telegram.flows.fillOutProtocolFlow
 import ru.spbstu.preaccelerator.telegram.flows.member.doModuleFlow
 import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
@@ -53,7 +54,7 @@ fun createStateMachine(
     role<Tracker> {
         trackerMenu()
     }
-
+    fillOutProtocolFlow()
     doModuleFlow()
     fallback()
 }
