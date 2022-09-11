@@ -99,7 +99,7 @@ object MessageStrings {
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
         const val InvalidDataFormat = "Введен неверный формат данных\\."
-        const val InvalidModulNumber = "Введен неверный номер модуля\\(недели\\)\\"
+        const val InvalidModulNumber = "Введен неверный номер модуля\\(недели\\)"
     }
 
     private val dateTimeFormatter = DateTimeFormatter

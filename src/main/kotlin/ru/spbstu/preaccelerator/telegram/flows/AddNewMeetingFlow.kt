@@ -43,7 +43,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     )
                     return@onText
                 }
-                if (moduleNumber.toInt() > moduleConfig.modules.first().number.value && moduleNumber.toInt() <= moduleConfig.modules.size) {
+                if (moduleNumber.toInt() >= moduleConfig.modules.keys.first().value && moduleNumber.toInt() <= moduleConfig.modules.size) {
                             setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
                     }
                 else {
