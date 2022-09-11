@@ -18,6 +18,7 @@ class Module(
     val parts: List<ModulePart>,
     val tasks: List<Task>
 ) {
+
     @JvmInline
     @Serializable
     value class Number(val value: Int)
