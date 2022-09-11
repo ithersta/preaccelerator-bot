@@ -75,7 +75,9 @@ object MessageStrings {
     }
 
     object Tracker {
-        fun confirmationProtocol(moduleNumber: String) = "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты.".trimMargin()
+        fun confirmationProtocol(moduleNumber: String) =
+            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты.".trimMargin()
+
         const val ChooseTeam = "Выберите команду"
         const val ChooseModule = "Выберите модуль"
         const val ChooseProtocol = "Выберите протокол"

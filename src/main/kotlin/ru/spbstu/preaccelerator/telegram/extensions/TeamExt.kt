@@ -2,9 +2,7 @@ package ru.spbstu.preaccelerator.telegram.extensions
 
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
-import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
 import ru.spbstu.preaccelerator.domain.usecases.actions.TeamActions
 import java.time.OffsetDateTime
