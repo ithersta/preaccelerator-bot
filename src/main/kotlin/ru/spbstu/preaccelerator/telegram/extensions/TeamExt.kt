@@ -17,7 +17,6 @@ object TeamExt : KoinComponent {
         actions
     ) {
         addMeeting(moduleNumber, timestamp, url)
-
     }
 
     fun Team.addHomework(taskNumber: Task.Number, url: String) =

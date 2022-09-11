@@ -14,7 +14,6 @@ object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
 
     override fun serialize(encoder: Encoder, value: OffsetDateTime) {
         val format = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-
         val string = format.format(value)
         encoder.encodeString(string)
     }
