@@ -86,7 +86,9 @@ object MessageStrings {
 
         const val SendComment = "Напишите в комментарии причину"
         const val SendCommentPlaceholder = "Комментарий"
-        const val NoUnreviewedProtocols = "🎉 Непроверенных протоколов больше нет!"
+        const val NoMoreUnreviewedProtocols = "🎉 Непроверенных протоколов больше нет!"
+        const val NoUnreviewedProtocols = "Непроверенных протоколов нет"
+        const val ChooseTeam = "Выберите команду, у которой хотите проверить протоколы"
 
         fun protocol(protocol: Protocol?, team: Team, moduleNumber: Module.Number, status: String?, comment: String?) =
             buildEntities {
@@ -94,7 +96,7 @@ object MessageStrings {
                     regular(status)
                     regular(" ")
                 }
-                bold("Модуль ${moduleNumber.value + 1}")
+                bold("Модуль ${moduleNumber.value}")
                 regular(" | ")
                 bold("Команда: ")
                 regularln(team.name)

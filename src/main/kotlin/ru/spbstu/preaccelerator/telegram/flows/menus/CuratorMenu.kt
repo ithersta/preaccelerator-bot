@@ -38,7 +38,7 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
         button(AddUsers.Curator) { handleAddCurator(it) }
         backButton(MenuStrings.Back)
     }
-    button(MenuStrings.Curator.GetProtocols, ReviewProtocolsState.New)
+    button(MenuStrings.Curator.GetProtocols, ReviewProtocolsState.ChooseTeam)
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
