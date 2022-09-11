@@ -97,6 +97,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val time = try{
+                    //TODO()
                     SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
                         .atOffset(ZoneOffset.ofHours(5))
                 }
