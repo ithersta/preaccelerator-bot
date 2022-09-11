@@ -18,10 +18,4 @@ object TeamExt : KoinComponent {
         with(actions) { addHomework(taskNumber, url, OffsetDateTime.now()) }
 
     fun Team.getHomework(taskNumber: Task.Number) = with(actions) { getHomework(taskNumber) }
-
-    fun Team.getProtocolStatus(number: Module.Number) = with(actions) { getProtocolStatus(number) }
-
-    fun Team.setProtocolStatus(number: Module.Number, value: ProtocolStatus.Value) =
-        with(actions) { setProtocolStatus(number, value) }
-
 }

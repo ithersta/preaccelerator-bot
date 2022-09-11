@@ -16,7 +16,6 @@ class TeamActions(
     private val getAvailableModules: GetAvailableModulesUseCase,
     private val meetingRepository: MeetingRepository,
     private val protocolRepository: ProtocolRepository,
-    private val protocolStatusRepository: ProtocolStatusRepository
 ) {
     val Team.protocol get() = protocolRepository.get(id)
 
@@ -28,12 +27,5 @@ class TeamActions(
     fun Team.addHomework(taskNumber: Task.Number, url: String, at: OffsetDateTime) =
         homeworkRepository.add(id, taskNumber, url, at)
 
-    fun Team.getHomework(taskNumber: Task.Number) =
-        homeworkRepository.get(id, taskNumber)
-
-    fun Team.getProtocolStatus(number: Module.Number) =
-        protocolStatusRepository.get(id, number)
-
-    fun Team.setProtocolStatus(number: Module.Number, value: ProtocolStatus.Value) =
-        protocolStatusRepository.set(id, number, value)
+    fun Team.getHomework(taskNumber: Task.Number) = homeworkRepository.get(id, taskNumber)
 }
