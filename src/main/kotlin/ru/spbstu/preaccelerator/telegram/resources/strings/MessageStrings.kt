@@ -81,5 +81,6 @@ object MessageStrings {
         const val ChooseProtocol = "Выберите протокол"
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
         const val MessageCurator = "Оповестить куратора о готовности протокола"
+        const val Attention = "Оповещение"
     }
 }
