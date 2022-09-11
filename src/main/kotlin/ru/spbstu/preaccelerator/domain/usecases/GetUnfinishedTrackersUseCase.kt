@@ -29,7 +29,7 @@ class GetUnfinishedTrackersUseCase(
                     moduleConfig.modules
                         .asSequence()
                         .map { module ->
-                            meetingRepository.get(tracker.id, module.number)
+                            meetingRepository.get(tracker.id, module.key)
                         }
                         .filterNot { meetings ->
                             meetings.all { protocolStatusRepository.get(it.teamId, it.moduleNumber).isFinished() }

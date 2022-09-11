@@ -1,5 +1,9 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
+import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.extensions.utils.formatting.regular
+import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
@@ -49,6 +53,17 @@ object MessageStrings {
         const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
         const val ChooseModuleNumber = "Выберите номер модуля"
     }
+
+    object GetProtocol {
+        fun teamProtocol(team: Team, protocol: Protocol) = buildEntities {
+            link("Протокол команды ${team.name}", protocol.url)
+        }
+
+        val NoProtocol = buildEntities {
+            regular("Протокол ещё не закреплён за командой. Обратитесь к своему трекеру, чтобы он отправил его на проверку.")
+        }
+    }
+
 
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
