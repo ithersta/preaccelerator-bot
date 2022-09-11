@@ -24,6 +24,7 @@ import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.memberMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
 import ru.spbstu.preaccelerator.telegram.flows.startFlow
+import ru.spbstu.preaccelerator.telegram.flows.tracker.downloadHomeworkFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.time.OffsetDateTime
 
@@ -61,6 +62,7 @@ fun createStateMachine(
     }
 
     getProtocolFlow()
+    downloadHomeworkFlow()
     doModuleFlow()
     fallback()
 }

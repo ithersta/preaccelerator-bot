@@ -40,12 +40,12 @@ object ModuleStrings {
         |*Название*: ${module.name}
     """.trimMargin()
 
-    fun nextModule(number: Module.Number) = "Модуль ${number.value + 1}"
+    fun nextModule(number: Module.Number) = "Модуль ${number.value}"
 
     fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = """
         |Вы закончили изучать материалы Модуля ${number.value}\.
         |${
-        if (number.value != moduleConfig.modules.lastIndex) {
+        if (number.value != moduleConfig.modules.keys.maxOf { it.value }) {
             "Пройдите короткий тест и приступайте к изучению Модуля ${number.value + 1}\\!"
         } else {
             Congrats

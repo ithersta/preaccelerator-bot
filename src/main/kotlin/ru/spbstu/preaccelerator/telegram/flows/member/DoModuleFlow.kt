@@ -12,12 +12,14 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.domain.entities.user.Member
+import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addHomework
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.getHomework
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.module
 import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
@@ -30,15 +32,18 @@ import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.nextMod
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.taskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.welcomeModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Homework.SeeHomework
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.DoTest
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.NextPart
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkDownloaded
 import java.net.URL
 
 fun StateMachineBuilder.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
+    val trackerRep: TrackerRepository by inject()
 
     role<Member> {
         state<ChooseModule> {
@@ -60,7 +65,7 @@ fun StateMachineBuilder.doModuleFlow() {
             }
             onText { message ->
                 val moduleName = message.content.text
-                val module = moduleConfig.modules.find { it.name == moduleName } ?: run {
+                val module = moduleConfig.modules.values.find { it.name == moduleName } ?: run {
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ChooseModuleAction.Err,
@@ -93,12 +98,9 @@ fun StateMachineBuilder.doModuleFlow() {
             }
 
             onText { message ->
-                val moduleNumb = state.moduleNumber
-                val moduleNumbInt = moduleNumb.value
-                val mess = message.content.text
-                when (mess) {
+                when (message.content.text) {
                     ButtonStrings.ChooseModule.DoEntireModule -> {
-                        setState(ModuleState(moduleNumb, 0))
+                        setState(ModuleState(state.moduleNumber, 0))
                     }
 
                     ButtonStrings.ChooseModule.WatchLectures -> {
@@ -107,7 +109,7 @@ fun StateMachineBuilder.doModuleFlow() {
                             MessageStrings.ChooseModuleAction.ModuleLectures,
                             parseMode = MarkdownV2,
                             replyMarkup = inlineKeyboard {
-                                moduleConfig.modules[moduleNumbInt].parts.forEach { part ->
+                                moduleConfig.modules.getValue(state.moduleNumber).parts.forEach { part ->
                                     if (part is Lecture) {
                                         row {
                                             urlButton(
@@ -131,7 +133,7 @@ fun StateMachineBuilder.doModuleFlow() {
                                 row {
                                     urlButton(
                                         DoTest,
-                                        moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                        moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                                     )
                                 }
                             })
@@ -248,8 +250,8 @@ fun StateMachineBuilder.doModuleFlow() {
                     return@onDataCallbackQuery
                 }
                 val newState = ModuleState(state.moduleNumber, partIndex)
-                val maxPart = moduleConfig.modules[state.moduleNumber.value].parts.lastIndex
-                val maxModule = moduleConfig.modules.lastIndex
+                val maxPart = moduleConfig.modules.getValue(state.moduleNumber).parts.lastIndex
+                val maxModule = moduleConfig.modules.maxOf { it.key.value }
                 if (state.partIndex == maxPart) {
                     sendTextMessage(
                         it.from,
@@ -259,7 +261,7 @@ fun StateMachineBuilder.doModuleFlow() {
                             row {
                                 urlButton(
                                     DoTest,
-                                    moduleConfig.modules[state.moduleNumber.value].finalTestUrl
+                                    moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                                 )
                                 if (state.moduleNumber.value != maxModule) {
                                     dataButton(
@@ -324,6 +326,20 @@ fun StateMachineBuilder.doModuleFlow() {
                         chat = message.chat,
                         text = ModuleStrings.Error.HomeworkWasAlreadyAdded
                     )
+                } else {
+                    sendTextMessage(
+                        trackerRep.get(user.team.trackerId).userId,
+                        homeworkDownloaded(task.number, user.team),
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(
+                                    SeeHomework,
+                                    url.toString()
+                                )
+                            }
+                        }
+                    )
                 }
                 setState(state.returnTo)
             }
@@ -335,6 +351,6 @@ fun StateMachineBuilder.doModuleFlow() {
 private object ModuleStateExt : KoinComponent {
     private val moduleConfig: ModuleConfig by inject()
 
-    val ModuleState.module get() = moduleConfig.modules[moduleNumber.value]
+    val ModuleState.module get() = moduleConfig.modules.getValue(moduleNumber)
     val ModuleState.part get() = module.parts[partIndex]
 }

@@ -16,7 +16,7 @@ class GetModuleDeadlinesUseCase(
     private val moduleConfig: ModuleConfig
 ) {
     operator fun invoke(): Flow<List<Pair<Module, OffsetDateTime>>> {
-        val modules = moduleConfig.modules
+        val modules = moduleConfig.modules.values
         return seasonStartRepository.getAsFlow().map { start ->
             if (start == null) return@map emptyList()
             modules.mapIndexed { index, module ->

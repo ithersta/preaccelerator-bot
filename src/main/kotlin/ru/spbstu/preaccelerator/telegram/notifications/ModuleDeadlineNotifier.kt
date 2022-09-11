@@ -64,8 +64,8 @@ class ModuleDeadlineNotifier(
 
     inner class Job(private val behaviourContext: BehaviourContext) : org.quartz.Job {
         override fun execute(context: JobExecutionContext) {
-            val moduleIndex = context.trigger.jobDataMap.getInt(MODULE_NUMBER)
-            val module = moduleConfig.modules[moduleIndex]
+            val moduleNumber = Module.Number(context.trigger.jobDataMap.getInt(MODULE_NUMBER))
+            val module = moduleConfig.modules.getValue(moduleNumber)
             val text = context.trigger.jobDataMap.getString(TEXT)
             val members = getUnfinishedMembers(module)
             with(behaviourContext) {

@@ -2,7 +2,6 @@ package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import org.koin.core.context.GlobalContext
 import ru.spbstu.preaccelerator.domain.entities.Team
-import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 
@@ -38,6 +37,17 @@ object MessageStrings {
         const val ChooseModuleAction = "Выберите желаемое действие"
         const val ModuleLectures = "Лекции этого модуля\\. Для просмотра нажмите на интересующую лекцию"
         const val Err = "Выберите действие из кнопочного меню"
+    }
+
+    object DownloadHomework {
+        const val ChooseTeam = "Выберите команду"
+        const val DownloadOption = "Выберите модуль, к которому относится задание"
+        const val Err = "Выберите вариант из кнопочного меню"
+        fun moduleHomeworks(num: Module.Number) =
+            "Задания модуля №${num.value}"
+
+        const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
+        const val ChooseModuleNumber = "Выберите номер модуля"
     }
 
     object GetProtocol {
