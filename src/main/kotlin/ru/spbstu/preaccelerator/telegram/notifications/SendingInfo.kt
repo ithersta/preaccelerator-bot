@@ -24,6 +24,7 @@ import ru.spbstu.preaccelerator.domain.repository.MemberRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
+import ru.spbstu.preaccelerator.domain.usecases.GetListTeamsUseCase
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.StateFilterBuilder
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
@@ -35,22 +36,23 @@ import java.lang.Exception
 import java.util.StringJoiner
 
 fun StateMachineBuilder.sendingInfo() {
-    val teamRepository: TeamRepository by inject()
     val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
-    val memberRepository: MemberRepository by inject()
     val trackerRepository: TrackerRepository by inject()
+    val memberRepository: MemberRepository by inject()
+    val getListTeamsUseCase: GetListTeamsUseCase by inject()
+
     anyRole {
         state<SendInfoState> {
-            onTransition { messenger ->
+            onTransition { messeger ->
                 if (state.typeMassMess == TypeMassMess.TeamsFromCuratorAndTacker) {
                     if (state.messageIdentifier == null) {
                         val newState = state.copy(
                             setTeamId = setOf(),
                             messageIdentifier = sendTextMessage(
-                                chatId = messenger,
+                                chatId = messeger,
                                 text = MessageStrings.MassSendInfo.ListOfTeams,
                                 replyMarkup = inlineTeams(
-                                    teamRepository.getAll(),
+                                    getListTeamsUseCase(user, messeger),
                                     mutableSetOf()
                                 )
                             ).messageId
@@ -59,10 +61,10 @@ fun StateMachineBuilder.sendingInfo() {
                     } else {
                         try {
                             editMessageReplyMarkup(
-                                chatId = messenger,
+                                chatId = messeger,
                                 messageId = state.messageIdentifier!!,
                                 replyMarkup = inlineTeams(
-                                    teamRepository.getAll(),
+                                    getListTeamsUseCase(user, messeger),
                                     state.setTeamId!!
                                 )
                             )
@@ -83,7 +85,7 @@ fun StateMachineBuilder.sendingInfo() {
 
                         TypeMassMess.AllFromTracker -> {
                             val mutableList = mutableListOf<UserId>()
-                            teamRepository.get(trackerRepository.get(userPhoneNumberRepository.get(messenger)!!)!!.id)
+                            getListTeamsUseCase(user, messeger)
                                 .forEach { team ->
                                     memberRepository.get(team.id).forEach { member ->
                                         val userId = userPhoneNumberRepository.get(member.phoneNumber)
@@ -126,7 +128,7 @@ fun StateMachineBuilder.sendingInfo() {
                     messageId = message.messageCallbackQueryOrThrow().message.messageId,
                     text = MessageStrings.MassSendInfo.listTeams(
                         state.setTeamId!!,
-                        teamRepository.getAll().associate { it.id to it.name }
+                        getListTeamsUseCase(user, message.from.id).associate { it.id to it.name }
                     ),
                     replyMarkup = null
                 )
@@ -187,13 +189,11 @@ fun StateMachineBuilder.sendingInfo() {
                 setState(newState)
             }
             onDataCallbackQuery(Regex("send info")) { message ->
-                val massMessage = when(user)
-                {
+                val massMessage = when (user) {
                     is Curator -> NotificationStrings.MassSendInfo.notificationCurator(state.massMess)
                     is Tracker -> NotificationStrings.MassSendInfo.notificationTracker(state.massMess)
                     else -> {
-                        require(false) // user is not curator or tracker
-                        ""
+                        error("user is not curator or tracker")
                     }
                 }
                 val massSendLimiter: MassSendLimiter by inject()
