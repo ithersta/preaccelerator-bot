@@ -14,12 +14,15 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
+import ru.spbstu.preaccelerator.domain.repository.MemberRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
+import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -29,6 +32,8 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
     val meetingRepository: MeetingRepository by inject()
     val teamRepository: TeamRepository by inject()
+    val memberRepository: MemberRepository by inject()
+    val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
     val zoneId: ZoneId by inject()
     state<NewMeetingState.WaitingForModuleNumber> {
         onTransition { chatId ->
@@ -146,6 +151,12 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 parseMode = MarkdownV2
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
+            memberRepository.get(state.teamId).forEach {
+                val chatId = userPhoneNumberRepository.get(it.phoneNumber)
+                if (chatId != null) {
+                    sendTextMessage (chatId, NotificationStrings.MeetingNotifications.meetingCreatedNotify(state.dateTime, state.url))
+                }
+            }
             setState(MenuState.Tracker.Meetings)
         }
         onText(ButtonStrings.Option.No) { message ->

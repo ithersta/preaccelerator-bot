@@ -153,7 +153,7 @@ object MessageStrings : KoinComponent {
         const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
 
-    private val dateTimeFormatter = DateTimeFormatter
+     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(zoneId)
 
