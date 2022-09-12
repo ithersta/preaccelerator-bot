@@ -6,6 +6,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Team
@@ -15,7 +16,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
+import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
@@ -34,7 +35,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             sendTextMessage(
                 chatId,
                 MessageStrings.ScheduleMeetings.InputModuleNumber,
-                parseMode = MarkdownV2
+                replyMarkup = ReplyKeyboardRemove()
             )
         }
         onText { message ->
@@ -145,7 +146,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 parseMode = MarkdownV2
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
-            setState(EmptyState)
+            setState(MenuState.Tracker.Meetings)
         }
         onText(ButtonStrings.Option.No) { message ->
             sendTextMessage(
