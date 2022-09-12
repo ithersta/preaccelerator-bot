@@ -52,6 +52,7 @@ fun createStateMachine(
             stateCommand()
         }
     }
+
     startFlow()
     role<Curator> {
         curatorMenu()

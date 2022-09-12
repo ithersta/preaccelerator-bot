@@ -14,7 +14,7 @@ data class SendInfoState(
 
 @Serializable
 data class InputMess(
-    val listUserId: List<UserId>,
+    val listUserId: List<Long>,
     val massMess: String
 ): DialogState
 

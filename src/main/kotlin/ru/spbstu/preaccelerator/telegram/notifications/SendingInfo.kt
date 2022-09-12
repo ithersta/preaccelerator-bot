@@ -100,7 +100,7 @@ fun StateMachineBuilder.sendingInfo() {
                         else -> listOf()
                     }
                     val newState = InputMess(
-                        listUserId = listUsers,
+                        listUserId = listUsers.map { it.chatId },
                         massMess = ""
                     )
                     setState(newState)
@@ -142,7 +142,7 @@ fun StateMachineBuilder.sendingInfo() {
                     }
                 }
                 val newState = InputMess(
-                    listUserId = listUsers,
+                    listUserId = listUsers.map { it.chatId },
                     massMess = ""
                 )
                 setState(newState)
@@ -169,7 +169,6 @@ fun StateMachineBuilder.sendingInfo() {
                         }
                     )
                 }
-
             }
             onText { message ->
                 val newState = state.copy(
@@ -200,7 +199,7 @@ fun StateMachineBuilder.sendingInfo() {
                 state.listUserId.forEach { chatId ->
                     massSendLimiter.wait()
                     sendTextMessage(
-                        chatId = chatId,
+                        chatId = UserId(chatId),
                         text = massMessage
                     )
                 }
