@@ -47,18 +47,13 @@ object MenuStrings {
             const val GetHomework = "Выгрузить домашнее задание"
             const val GetStats = "Получить статистику по командам"
         }
+
         object SendInfo {
             const val Button = "Разослать информацию"
             const val Message = "Выберите получателей"
             const val ToAll = "Все"
             const val ToSelectTeams = "Выбрать отдельные команды"
         }
-    }
-
-    object Member {
-        const val Message = "Меню участника"
-        const val SelectModule = "Выбрать модуль"
-        const val GetRating = "Получить место в рейтинге"
     }
 
     object Member {

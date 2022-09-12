@@ -218,9 +218,9 @@ private fun inlineTeams(teams: List<Team>, setTeamId: Set<Team.Id>): InlineKeybo
             row {
                 chunk.forEach { team ->
                     if (setTeamId.contains(team.id)) {
-                        dataButton("-${team.name}", "del:${team.id}")
+                        dataButton("-${team.name}", "del:${team.id.value}")
                     } else {
-                        dataButton("+${team.name}", "add:${team.id}")
+                        dataButton("+${team.name}", "add:${team.id.value}")
                     }
                 }
             }

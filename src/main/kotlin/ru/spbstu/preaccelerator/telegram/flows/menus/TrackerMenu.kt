@@ -24,8 +24,8 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
         backButton(MenuStrings.Back)
     }
     submenu(MenuStrings.Tracker.SendInfo.Button, MenuStrings.Tracker.SendInfo.Message, MenuState.Tracker.SendInfo) {
-        button(MenuStrings.Tracker.SendInfo.ToAll, SendInfoState(TypeMassMess.AllFromTracker, true))
-        button(MenuStrings.Tracker.SendInfo.ToSelectTeams, SendInfoState(TypeMassMess.TeamsFromCuratorAndTacker, false))
+        button(MenuStrings.Tracker.SendInfo.ToAll, SendInfoState(TypeMassMess.AllFromTracker))
+        button(MenuStrings.Tracker.SendInfo.ToSelectTeams, SendInfoState(TypeMassMess.TeamsFromCuratorAndTacker))
         backButton(MenuStrings.Back)
     }
 }
