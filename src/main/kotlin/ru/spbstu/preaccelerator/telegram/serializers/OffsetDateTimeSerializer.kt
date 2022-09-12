@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.annotations
+package ru.spbstu.preaccelerator.telegram.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

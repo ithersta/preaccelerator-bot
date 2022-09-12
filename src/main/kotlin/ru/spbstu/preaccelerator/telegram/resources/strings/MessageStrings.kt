@@ -1,6 +1,8 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -12,7 +14,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 // TODO: Всё переписать
-object MessageStrings {
+object MessageStrings : KoinComponent {
+    private val zoneId: ZoneId by inject()
+
     object Start {
         const val AskContact = "TODO"
         const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
@@ -149,7 +153,7 @@ object MessageStrings {
 
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
-        .withZone(ZoneId.systemDefault())
+        .withZone(zoneId)
 
     fun meetingCreationConfirmation (teamName: String, time: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName

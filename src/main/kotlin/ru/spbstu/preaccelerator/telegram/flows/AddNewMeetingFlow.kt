@@ -21,12 +21,19 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
     val meetingRepository: MeetingRepository by inject()
     val teamRepository: TeamRepository by inject()
+    val zoneId: ZoneId by inject()
     role<Tracker> {
         state<NewMeetingState.WaitingForModuleNumber> {
             onTransition { chatId ->
@@ -100,10 +107,9 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             }
             onText { message ->
                 val time = try{
-                    //TODO()
-                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(5))
-                }
-                catch(e: ParseException){
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
+                    ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
+                } catch(e: DateTimeParseException){
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputTime,
