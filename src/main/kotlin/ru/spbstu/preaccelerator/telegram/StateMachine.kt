@@ -65,9 +65,7 @@ fun createStateMachine(
     role<Member> {
         memberMenu()
     }
-
     fillOutProtocolFlow()
-    doModuleFlow()
     fallback()
 }
 

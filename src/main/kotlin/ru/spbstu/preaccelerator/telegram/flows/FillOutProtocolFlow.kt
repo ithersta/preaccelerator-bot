@@ -106,6 +106,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             }
         }
 //      кнопка для отправки оповещения куратору
+//      todo() оповестить куратора  - мне делать или не мне не понятно
         state<NotificationButton> {
             onTransition { chatId ->
                 sendTextMessage(chatId,
