@@ -1,14 +1,22 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 // TODO: Всё переписать
-object MessageStrings {
+object MessageStrings : KoinComponent {
+    private val zoneId: ZoneId by inject()
+
     object Start {
         const val AskContact = "TODO"
         const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
@@ -143,4 +151,30 @@ object MessageStrings {
     object Curator {
         fun addCuratorDeepLink(deepLink: String) = "Отправьте одноразовую ссылку будущему куратору: $deepLink"
     }
+
+    object ScheduleMeetings {
+        const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
+        const val ChooseTeam = "Выберите команду"
+        const val InputUrl = "Введите ссылку на конференцию"
+        const val InputDateTime = "Введите дату и время конференции в формате дд\\.ММ\\.гггг чч:мм"
+        const val MeetingIsCreated =
+            "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+
+        //TODO написать красиво
+        const val MeetingNotCreated = "Встреча не создана"
+        const val InvalidDataFormat = "Введён неверный формат данных"
+        const val InvalidModuleNumber = "Введён неверный номер модуля"
+    }
+
+    private val dateTimeFormatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withZone(zoneId)
+
+    fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
+        """|Запланировать встречу с командой $teamName
+           |на ${dateTimeFormatter.format(dateTime)}
+           |ссылка на конференцию: $url
+           |Всё верно?
+        """.trimMargin()
+
 }

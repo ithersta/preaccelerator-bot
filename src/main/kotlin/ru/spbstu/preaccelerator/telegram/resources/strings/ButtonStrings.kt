@@ -48,5 +48,10 @@ object ButtonStrings {
         const val All = "⏭️ Все непроверенные протоколы"
     }
 
+    object Option {
+        const val Yes = "Да"
+        const val No = "Нет"
+    }
+
     const val Cancel = "Отменить"
 }

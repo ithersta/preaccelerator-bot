@@ -14,3 +14,16 @@ getByTrackerIdAndModuleNumber:
 SELECT Meeting.* FROM Meeting
 JOIN Team ON Team.id = Meeting.teamId
 WHERE Team.trackerId = :trackerId AND Meeting.moduleNumber = :moduleNumber;
+
+get:
+SELECT * FROM Meeting
+WHERE id = :id;
+
+getByTeamId:
+SELECT * FROM Meeting
+WHERE teamId = :teamId;
+
+add:
+INSERT INTO Meeting(teamId, moduleNumber,timestamp, url)
+VALUES(:teamId, :moduleNumber, :timestamp, :url)
+RETURNING id;

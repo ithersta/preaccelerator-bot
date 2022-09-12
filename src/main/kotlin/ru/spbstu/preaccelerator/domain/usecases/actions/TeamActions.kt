@@ -4,10 +4,7 @@ import org.koin.core.annotation.Single
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
-import ru.spbstu.preaccelerator.domain.repository.HomeworkRepository
-import ru.spbstu.preaccelerator.domain.repository.MemberRepository
-import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
-import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
+import ru.spbstu.preaccelerator.domain.repository.*
 import ru.spbstu.preaccelerator.domain.usecases.GetAvailableModulesUseCase
 import java.time.OffsetDateTime
 
@@ -15,11 +12,13 @@ import java.time.OffsetDateTime
 class TeamActions(
     private val memberRepository: MemberRepository,
     private val homeworkRepository: HomeworkRepository,
+    private val getAvailableModules: GetAvailableModulesUseCase,
+    private val meetingRepository: MeetingRepository,
     private val protocolRepository: ProtocolRepository,
-    private val protocolStatusRepository: ProtocolStatusRepository,
-    private val getAvailableModules: GetAvailableModulesUseCase
+    private val protocolStatusRepository: ProtocolStatusRepository
 ) {
     val Team.members get() = memberRepository.get(id)
+    val Team.meetings get() = meetingRepository.get(id)
     val Team.availableModules get() = getAvailableModules(id)
     val Team.protocol get() = protocolRepository.get(id)
 
