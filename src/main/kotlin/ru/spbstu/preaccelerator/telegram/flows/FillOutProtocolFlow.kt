@@ -14,6 +14,7 @@ import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
@@ -78,9 +79,9 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 sendTextMessage(chatId, InputGoogleDiskUrl)
             }
             onText { message ->
-                statusRepository.get(state.teamId, state.moduleNumber)
                 val googleDiskLink = message.content.text
                 if (statusRepository.get(state.teamId, state.moduleNumber).value == ProtocolStatus.Value.Unsent) {
+                    protocolRepository.add(state.teamId, googleDiskLink)
                     setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
                 }
             }
@@ -88,8 +89,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
 //      если протокол есть
         state<ChooseProtocol> {
             onTransition { chatId ->
-                sendTextMessage(
-                    chatId,
+                sendTextMessage(chatId,
                     ChooseProtocol,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         row {
@@ -108,8 +108,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
 //      кнопка для отправки оповещения куратору
         state<NotificationButton> {
             onTransition { chatId ->
-                sendTextMessage(
-                    chatId,
+                sendTextMessage(chatId,
                     Attention,
                     replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         row {
@@ -117,10 +116,11 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                         }
                     })
             }
-            onText { message ->
+            onText(MessageCurator) { message ->
                 statusRepository.get(state.teamId, state.moduleNumber)
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
+                setState(EmptyState)
             }
         }
     }
