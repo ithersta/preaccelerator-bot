@@ -19,7 +19,6 @@ get:
 SELECT * FROM Meeting
 WHERE id = :id;
 
-
 getByTeamId:
 SELECT * FROM Meeting
 WHERE teamId = :teamId;
