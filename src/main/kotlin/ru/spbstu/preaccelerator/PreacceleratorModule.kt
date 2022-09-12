@@ -38,5 +38,5 @@ val preacceleratorModule = module(createdAtStart = true) {
             5.days afterFirstMeetingSend ProtocolDeadline::inLessThanTwoDays
         }
     }
-    single { ZoneId.of("Europe/Moscow") }
+    single { ZoneId.of("Asia/Yekaterinburg") }
 }
