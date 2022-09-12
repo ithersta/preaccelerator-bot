@@ -36,10 +36,16 @@ object ButtonStrings {
         const val WatchLectures = "Смотреть лекции"
     }
 
-    object MassSendInfo{
+    object MassSendInfo {
         const val Send = "Отправить"
         const val InputOtherMessage = "Ввести другое сообщение"
         const val SendSuchTeams = "Отправить выбранным командам"
+    }
+
+    object ReviewProtocols {
+        const val Accept = "✅ Принять"
+        const val Decline = "❌ Отклонить"
+        const val All = "⏭️ Все непроверенные протоколы"
     }
 
     const val Cancel = "Отменить"

@@ -14,7 +14,8 @@ import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.CuratorExt.generateCuratorToken
-import ru.spbstu.preaccelerator.telegram.flows.addUsersFlow
+import ru.spbstu.preaccelerator.telegram.flows.curator.addUsersFlow
+import ru.spbstu.preaccelerator.telegram.flows.curator.reviewProtocolsFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.AddUsers
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.GetStats
@@ -38,12 +39,13 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
         button(AddUsers.Curator) { handleAddCurator(it) }
         backButton(MenuStrings.Back)
     }
-    button(MenuStrings.Curator.GetProtocols, NotImplementedState)
+    button(MenuStrings.Curator.GetProtocols, ReviewProtocolsState.ChooseTeam)
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
     with(curatorMenu) { invoke() }
     addUsersFlow()
+    reviewProtocolsFlow()
 }
 
 private suspend fun StatefulContext<DialogState, PreacceleratorUser, *, Curator>.handleAddCurator(message: CommonMessage<TextContent>) {

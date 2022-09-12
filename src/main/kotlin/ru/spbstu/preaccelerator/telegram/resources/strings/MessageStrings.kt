@@ -1,8 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
-import dev.inmo.tgbotapi.extensions.utils.formatting.link
-import dev.inmo.tgbotapi.extensions.utils.formatting.regular
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import ru.spbstu.preaccelerator.domain.entities.Protocol
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -64,7 +62,6 @@ object MessageStrings {
         }
     }
 
-
     object AddUsers {
         const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
         const val TemplateFilename = "Шаблон"
@@ -104,6 +101,39 @@ object MessageStrings {
             "Сообщение будет разослано командам: ${
                 setTeamId.joinToString { mapOfTeams[it]!! }
             }"
+    }
+
+    object ReviewProtocols {
+        const val Accepted = "✅"
+        const val Declined = "❌"
+
+        const val SendComment = "Напишите в комментарии причину"
+        const val SendCommentPlaceholder = "Комментарий"
+        const val NoMoreUnreviewedProtocols = "🎉 Непроверенных протоколов больше нет!"
+        const val NoUnreviewedProtocols = "Непроверенных протоколов нет"
+        const val ChooseTeam = "Выберите команду, у которой хотите проверить протоколы"
+
+        fun protocol(protocol: Protocol?, team: Team, moduleNumber: Module.Number, status: String?, comment: String?) =
+            buildEntities {
+                if (status != null) {
+                    regular(status)
+                    regular(" ")
+                }
+                bold("Модуль ${moduleNumber.value}")
+                regular(" | ")
+                bold("Команда: ")
+                regularln(team.name)
+                if (protocol != null) {
+                    bold("Протокол: ")
+                    linkln(protocol.url)
+                } else {
+                    regularln("Ссылка на протокол не установлена")
+                }
+                if (comment != null) {
+                    bold("Комментарий: ")
+                    regularln(comment)
+                }
+            }
     }
 
     object Error {
