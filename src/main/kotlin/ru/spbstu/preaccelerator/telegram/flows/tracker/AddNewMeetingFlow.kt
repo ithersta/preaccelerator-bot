@@ -3,6 +3,7 @@ package ru.spbstu.preaccelerator.telegram.flows.tracker
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
+import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.message.MarkdownV2
@@ -16,7 +17,6 @@ import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
-import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.time.ZoneId
@@ -58,18 +58,24 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             }
         }
     }
+    val teamPager = inlineKeyboardPager("addNewMeetingFlow") { offset, limit ->
+        val teams = teamRepository.getByTrackerIdPaginated(user.id, offset, limit)
+        val count = teamRepository.countByTrackerId(user.id)
+        inlineKeyboard {
+            teams.forEach {
+                row {
+                    dataButton(it.name, "team ${it.id.value}")
+                }
+            }
+            navigationRow(count)
+        }
+    }
     state<NewMeetingState.WaitingForTeam> {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
                 MessageStrings.ScheduleMeetings.ChooseTeam,
-                replyMarkup = inlineKeyboard {
-                    user.teams.chunked(2).forEach {
-                        row {
-                            it.forEach { dataButton(it.name, "team ${it.id.value}") }
-                        }
-                    }
-                }
+                replyMarkup = teamPager.firstPage
             )
         }
         onDataCallbackQuery(Regex("team \\d+")) {
@@ -86,30 +92,30 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         }
         onText { message ->
             val url = message.content.text
-            setState(NewMeetingState.WaitingForTime(state.moduleNumber, state.teamId, url))
+            setState(NewMeetingState.WaitingForDateTime(state.moduleNumber, state.teamId, url))
         }
     }
-    state<NewMeetingState.WaitingForTime> {
+    state<NewMeetingState.WaitingForDateTime> {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.ScheduleMeetings.InputTime,
+                MessageStrings.ScheduleMeetings.InputDateTime,
                 parseMode = MarkdownV2
             )
         }
         onText { message ->
-            val time = try {
+            val dateTime = try {
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
                 ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
             } catch (e: DateTimeParseException) {
                 sendTextMessage(
                     message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputTime,
+                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputDateTime,
                     parseMode = MarkdownV2
                 )
                 return@onText
             }
-            setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, time))
+            setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, dateTime))
         }
     }
     state<NewMeetingState.CheckCorrect> {
@@ -118,7 +124,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 chatId,
                 MessageStrings.meetingCreationConfirmation(
                     teamRepository.get(state.teamId).name,
-                    state.time,
+                    state.dateTime,
                     state.url
                 ),
                 replyMarkup = replyKeyboard(
@@ -138,7 +144,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 MessageStrings.ScheduleMeetings.MeetingIsCreated,
                 parseMode = MarkdownV2
             )
-            meetingRepository.add(state.teamId, state.moduleNumber, state.time, state.url)
+            meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             setState(EmptyState)
         }
         onText(ButtonStrings.Option.No) { message ->

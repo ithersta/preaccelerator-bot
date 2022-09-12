@@ -143,7 +143,7 @@ object MessageStrings : KoinComponent {
         const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
-        const val InputTime = "Введите время конференции в формате дд\\.ММ\\.гггг чч:мм"
+        const val InputDateTime = "Введите дату и время конференции в формате дд\\.ММ\\.гггг чч:мм"
         const val MeetingIsCreated =
             "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
 
@@ -157,9 +157,9 @@ object MessageStrings : KoinComponent {
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(zoneId)
 
-    fun meetingCreationConfirmation(teamName: String, time: OffsetDateTime, url: String) =
+    fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName
-           |на ${dateTimeFormatter.format(time)}
+           |на ${dateTimeFormatter.format(dateTime)}
            |ссылка на конференцию: $url
            |Всё верно?
         """.trimMargin()

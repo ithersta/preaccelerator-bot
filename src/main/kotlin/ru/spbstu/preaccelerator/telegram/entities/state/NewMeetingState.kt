@@ -23,7 +23,7 @@ object NewMeetingState {
     ) : DialogState
 
     @Serializable
-    class WaitingForTime(
+    class WaitingForDateTime(
         val moduleNumber: Module.Number,
         val teamId: Team.Id,
         val url: String
@@ -35,7 +35,7 @@ object NewMeetingState {
         val teamId: Team.Id,
         val url: String,
         @Serializable(with = OffsetDateTimeSerializer::class)
-        val time: OffsetDateTime
+        val dateTime: OffsetDateTime
     ) : DialogState
 
 }

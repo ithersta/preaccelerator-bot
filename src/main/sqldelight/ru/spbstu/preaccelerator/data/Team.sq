@@ -32,6 +32,15 @@ getByTrackerId:
 SELECT * FROM Team
 WHERE trackerId = :trackerId;
 
+getByTrackerIdPaginated:
+SELECT * FROM Team
+WHERE trackerId = :trackerId
+LIMIT :limit OFFSET :offset;
+
+countByTrackerId:
+SELECT COUNT(*) FROM Team
+WHERE trackerId = :trackerId;
+
 getByName:
 SELECT * FROM Team
 WHERE name = :name;
