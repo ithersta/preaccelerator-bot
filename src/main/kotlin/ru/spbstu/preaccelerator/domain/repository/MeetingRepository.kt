@@ -12,3 +12,4 @@ interface MeetingRepository {
     fun get(teamId: Team.Id): List<Meeting>
     fun add(teamId: Team.Id, moduleNumber: Module.Number, timestamp: OffsetDateTime, url: String): Meeting.Id
 }
+

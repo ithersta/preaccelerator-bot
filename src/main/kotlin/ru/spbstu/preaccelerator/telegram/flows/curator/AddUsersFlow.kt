@@ -1,4 +1,4 @@
-package ru.spbstu.preaccelerator.telegram.flows
+package ru.spbstu.preaccelerator.telegram.flows.curator
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDocument
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition

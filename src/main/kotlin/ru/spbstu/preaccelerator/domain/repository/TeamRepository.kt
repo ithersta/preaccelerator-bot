@@ -9,4 +9,8 @@ interface TeamRepository {
     fun get(trackerId: Tracker.Id): List<Team>
     fun get(name: String): Team?
     fun add(name: String, trackerId: Tracker.Id): Team.Id
+    fun getPaginatedWithSentProtocols(offset: Int, limit: Int): List<Team>
+    fun countWithSentProtocols(): Int
+    fun getByTrackerIdPaginated(trackerId: Tracker.Id, offset: Int, limit: Int): List<Team>
+    fun countByTrackerId(trackerId: Tracker.Id): Int
 }

@@ -1,25 +1,27 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
 import kotlinx.serialization.Serializable
+import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
-import ru.spbstu.preaccelerator.domain.entities.module.Task
 
 @Serializable
-object ChooseModuleState : DialogState
+object DownloadHomeworkState : DialogState
 
 @Serializable
-class ModuleState(
-    val moduleNumber: Module.Number,
-    val partIndex: Int
+class WaitingForModuleSpecification(
+    val team: Team.Id
 ) : DialogState
 
 @Serializable
-class ChooseModuleActionState(
+class ModuleHomework(
+    val team: Team.Id,
     val moduleNumber: Module.Number
 ) : DialogState
 
+
 @Serializable
-class WaitingForHomeworkState(
-    val returnTo: ModuleState,
-    val taskNumber: Task.Number
+class AllModules(
+    val team: Team.Id
 ) : DialogState
+
+
