@@ -7,8 +7,8 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.inject
-import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
@@ -19,12 +19,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -44,8 +39,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
-                val moduleNumber = message.content.text
-                moduleNumber.toIntOrNull() ?: run {
+                val moduleNumber = message.content.text.toIntOrNull()?.let { Module.Number(it) } ?: run {
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputModuleNumber,
@@ -53,13 +47,12 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     )
                     return@onText
                 }
-                if (moduleConfig.modules.containsKey(Module.Number(moduleNumber.toInt()))) {
-                            setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
-                    }
-                else {
+                if (moduleConfig.modules.containsKey(moduleNumber)) {
+                    setState(NewMeetingState.WaitingForTeam(moduleNumber))
+                } else {
                     sendTextMessage(
                         message.chat,
-                        MessageStrings.ScheduleMeetings.InvalidModulNumber,
+                        MessageStrings.ScheduleMeetings.InvalidModuleNumber,
                         parseMode = MarkdownV2
                     )
                     return@onText
@@ -106,10 +99,10 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 )
             }
             onText { message ->
-                val time = try{
+                val time = try {
                     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
                     ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
-                } catch(e: DateTimeParseException){
+                } catch (e: DateTimeParseException) {
                     sendTextMessage(
                         message.chat,
                         MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputTime,
@@ -132,8 +125,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
-                    )
-                    {
+                    ) {
                         row {
                             simpleButton(ButtonStrings.Option.Yes)
                             simpleButton(ButtonStrings.Option.No)
@@ -141,16 +133,16 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     }
                 )
             }
-            onText(ButtonStrings.Option.Yes){message->
+            onText(ButtonStrings.Option.Yes) { message ->
                 sendTextMessage(
                     message.chat,
                     MessageStrings.ScheduleMeetings.MeetingIsCreated,
                     parseMode = MarkdownV2
                 )
-                meetingRepository.add(state.teamId,state.moduleNumber, state.time, state.url)
+                meetingRepository.add(state.teamId, state.moduleNumber, state.time, state.url)
                 setState(EmptyState)
             }
-            onText(ButtonStrings.Option.No){message->
+            onText(ButtonStrings.Option.No) { message ->
                 sendTextMessage(
                     message.chat,
                     MessageStrings.ScheduleMeetings.MeetingNotCreated,

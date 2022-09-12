@@ -1,9 +1,9 @@
 package ru.spbstu.preaccelerator.domain.repository
 
 import ru.spbstu.preaccelerator.domain.entities.Meeting
+import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.entities.Team
 import java.time.OffsetDateTime
 
 interface MeetingRepository {

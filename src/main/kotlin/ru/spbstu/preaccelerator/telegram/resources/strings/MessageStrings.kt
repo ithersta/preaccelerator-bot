@@ -140,26 +140,28 @@ object MessageStrings : KoinComponent {
     }
 
     object ScheduleMeetings {
-        const val InputModuleNumber = "Укажите номер модуля\\(недели\\), соответствующий теме встречи"
+        const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
         const val InputTime = "Введите время конференции в формате дд\\.ММ\\.гггг чч:мм"
-        const val MeetingIsCreated = "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+        const val MeetingIsCreated =
+            "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
-        const val InvalidDataFormat = "Введен неверный формат данных\\."
-        const val InvalidModulNumber = "Введен неверный номер модуля\\(недели\\)"
+        const val InvalidDataFormat = "Введён неверный формат данных"
+        const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
 
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(zoneId)
 
-    fun meetingCreationConfirmation (teamName: String, time: OffsetDateTime, url: String) =
+    fun meetingCreationConfirmation(teamName: String, time: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName
            |на ${dateTimeFormatter.format(time)}
-           |ссылка на конференцию $url
-           |Все верно?
+           |ссылка на конференцию: $url
+           |Всё верно?
         """.trimMargin()
 
 }
