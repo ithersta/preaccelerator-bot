@@ -12,6 +12,7 @@ object TeamExt : KoinComponent {
     private val actions: TeamActions by inject()
 
     val Team.members get() = with(actions) { members }
+    val Team.meetings get() = with(actions) { meetings }
     val Team.availableModules get() = with(actions) { availableModules }
     val Team.protocol get() = with(actions) { protocol }
 
