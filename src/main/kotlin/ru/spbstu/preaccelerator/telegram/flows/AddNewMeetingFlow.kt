@@ -11,19 +11,25 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
+import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
+import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
+import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
-import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.addMeeting
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
+    val meetingRepository: MeetingRepository by inject()
+    val teamRepository: TeamRepository by inject()
     role<Tracker> {
         state<NewMeetingState.WaitingForModuleNumber> {
             onTransition { chatId ->
@@ -43,7 +49,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     )
                     return@onText
                 }
-                if (moduleNumber.toInt() >= moduleConfig.modules.keys.first().value && moduleNumber.toInt() <= moduleConfig.modules.size) {
+                if (moduleConfig.modules.containsKey(Module.Number(moduleNumber.toInt()))) {
                             setState(NewMeetingState.WaitingForTeam(Module.Number(moduleNumber.toInt())))
                     }
                 else {
@@ -98,8 +104,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
             onText { message ->
                 val time = try{
                     //TODO()
-                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant()
-                        .atOffset(ZoneOffset.ofHours(5))
+                    SimpleDateFormat("dd.MM.yyyy HH:mm").parse(message.content.text).toInstant().atOffset(ZoneOffset.ofHours(5))
                 }
                 catch(e: ParseException){
                     sendTextMessage(
@@ -117,7 +122,7 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                 sendTextMessage(
                     chatId,
                     MessageStrings.meetingCreationConfirmation(
-                        user.teams[state.teamId.value.toInt()].name,
+                        teamRepository.get(state.teamId).name,
                         state.time,
                         state.url
                     ),
@@ -139,12 +144,8 @@ fun StateMachineBuilder.addNewMeetingFlow() {
                     MessageStrings.ScheduleMeetings.MeetingIsCreated,
                     parseMode = MarkdownV2
                 )
-                user.teams[state.teamId.value.toInt()].addMeeting(
-                    state.moduleNumber,
-                    state.time,
-                    state.url
-                )
-                setState(MenuState.Tracker.Meetings)
+                meetingRepository.add(state.teamId,state.moduleNumber, state.time, state.url)
+                setState(EmptyState)
             }
             onText(ButtonStrings.Option.No){message->
                 sendTextMessage(
