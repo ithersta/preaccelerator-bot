@@ -18,7 +18,9 @@ class TeamActions(
     private val memberRepository: MemberRepository,
     private val homeworkRepository: HomeworkRepository,
     private val getAvailableModules: GetAvailableModulesUseCase,
-    private val meetingRepository: MeetingRepository
+    private val meetingRepository: MeetingRepository,
+    private val protocolRepository: ProtocolRepository,
+    private val protocolStatusRepository: ProtocolStatusRepository
 ) {
     val Team.members get() = memberRepository.get(id)
     val Team.meetings get() = meetingRepository.get(id)
