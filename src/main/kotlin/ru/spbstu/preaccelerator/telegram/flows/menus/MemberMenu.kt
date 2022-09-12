@@ -9,6 +9,8 @@ import ru.spbstu.preaccelerator.telegram.entities.state.ChooseModuleState
 import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.GetProtocolState
+import ru.spbstu.preaccelerator.telegram.flows.member.doModuleFlow
+import ru.spbstu.preaccelerator.telegram.flows.member.getProtocolFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 
 val memberMenu = menu<DialogState, PreacceleratorUser, Member>(MenuStrings.Member.Message, EmptyState) {
@@ -18,4 +20,6 @@ val memberMenu = menu<DialogState, PreacceleratorUser, Member>(MenuStrings.Membe
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Member, UserId>.memberMenu() {
     with(memberMenu) { invoke() }
+    getProtocolFlow()
+    doModuleFlow()
 }
