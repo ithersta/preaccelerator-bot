@@ -6,6 +6,7 @@ import dev.inmo.tgbotapi.types.UserId
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.flows.tracker.sendStatisticsTracker
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Meetings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Teams
@@ -18,11 +19,12 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
         button(Teams.GetHomework, DownloadHomeworkState)
-        button(Teams.GetStats, NotImplementedState)
+        button(Teams.GetStats, SendStatisticsTeamsState)
         backButton(MenuStrings.Back)
     }
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerMenu() {
+    sendStatisticsTracker()
     with(trackerMenu) { invoke() }
 }

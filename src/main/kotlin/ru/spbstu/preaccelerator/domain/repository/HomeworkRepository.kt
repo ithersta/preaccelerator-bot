@@ -8,5 +8,6 @@ import java.time.OffsetDateTime
 interface HomeworkRepository {
     fun get(teamId: Team.Id): List<Homework>
     fun get(teamId: Team.Id, taskNumber: Task.Number): Homework?
+    fun getAll(): List<Homework>
     fun add(teamId: Team.Id, taskNumber: Task.Number, url: String, timestamp: OffsetDateTime): Boolean
 }

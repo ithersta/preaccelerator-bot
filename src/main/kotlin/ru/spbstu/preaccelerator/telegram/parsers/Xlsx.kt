@@ -1,11 +1,16 @@
 package ru.spbstu.preaccelerator.telegram.parsers
 
-import org.apache.poi.ss.usermodel.CellType
-import org.apache.poi.ss.usermodel.Row
-import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import ru.spbstu.preaccelerator.domain.entities.Homework
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
+import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.telegram.resources.strings.SpreadsheetStrings
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.lang.RuntimeException
 
 const val MEMBERS_SHEET_NAME = "Участники"
 const val TEAMS_SHEET_NAME = "Команды"
@@ -72,4 +77,88 @@ object Xlsx {
             else -> null
         }
     }.getOrNull()
+
+    fun createStatisticsSpreadsheet(teams: List<Team>, homeworks: List<Homework>): ByteArray {
+        if (teams.isEmpty()){
+            throw RuntimeException("list of teams is empty")
+        }
+        val workbook = XSSFWorkbook()
+        workbook.createSheet().apply {
+            val style = workbook.createCellStyle().apply {
+                setFont(workbook.createFont())
+                alignment = HorizontalAlignment.CENTER
+                verticalAlignment = VerticalAlignment.CENTER
+                wrapText = false
+            }
+            createRow(0).apply {
+                createCell(0).apply {
+                    setCellValue(SpreadsheetStrings.StatisticsTable.NameTeam)
+                    cellStyle = style
+                }
+                addMergedRegion(CellRangeAddress(0, 2, 0, 0))
+                createCell(1).apply {
+                    setCellValue(SpreadsheetStrings.StatisticsTable.DateOfComplete)
+                    cellStyle = style
+                }
+                addMergedRegion(CellRangeAddress(0, 0, 1, 17))
+            }
+            createRow(1).apply {
+                var firstColumn = 1
+                SpreadsheetStrings.StatisticsTable.modules.forEach { module ->
+                    createCell(firstColumn).apply {
+                        setCellValue(module.name)
+                        cellStyle = style
+                    }
+                    if (module.range > 1) {
+                        addMergedRegion(CellRangeAddress(1, 1, firstColumn, firstColumn + module.range - 1))
+                    }
+                    firstColumn += module.range
+                }
+            }
+            createRow(2).apply {
+                generateSequence(1) { it + 1 }.take(17).forEach {
+                    createCell(it).apply {
+                        setCellValue("№$it")
+                        cellStyle = style
+                    }
+                }
+            }
+            teams.forEachIndexed { index, team ->
+                createRow(index + 3).apply {
+                    createCell(0).apply {
+                        setCellValue(team.name)
+                        cellStyle = style
+                    }
+                    homeworks.filter { homework ->
+                        homework.teamId == team.id
+                    }.sortedBy { it.taskNumber.value }.forEachIndexed { index, homework ->
+                        createCell(index + 1).apply {
+                            setCellValue(SpreadsheetStrings.StatisticsTable.timeStampToString(homework.timestamp))
+                            cellStyle = style
+                        }
+                    }
+                }
+            }
+            createRow(3 + teams.size).apply {
+                createCell(0).apply {
+                    setCellValue(SpreadsheetStrings.StatisticsTable.TotalCompleted)
+                    cellStyle = style
+                }
+                generateSequence('b') { it + 1 }.take(17).forEachIndexed { index, column ->
+                    createCell(index + 1).apply {
+                        cellFormula = SpreadsheetStrings.StatisticsTable.formula(column, teams.size)
+                        cellStyle = style
+                    }
+                }
+            }
+            generateSequence(0) { it + 1 }.take(17).forEach {
+                autoSizeColumn(it)
+            }
+        }
+        workbook.creationHelper.createFormulaEvaluator().evaluateAll()
+        return ByteArrayOutputStream().apply {
+            workbook.write(this)
+            workbook.close()
+        }.toByteArray()
+    }
 }
