@@ -30,6 +30,15 @@ class TeamRepositoryImpl(
         return appDatabase.teamQueries.add(name, trackerId).executeAsOne()
     }
 
+    override fun getPaginatedWithSentProtocols(offset: Int, limit: Int): List<Team> {
+        return appDatabase.teamQueries.getPaginatedWithSentProtocols(limit.toLong(), offset.toLong()).executeAsList()
+            .map { it.toDomainModel() }
+    }
+
+    override fun countWithSentProtocols(): Int {
+        return appDatabase.teamQueries.countWithSentProtocols().executeAsOne().toInt()
+    }
+
     private fun ru.spbstu.preaccelerator.data.Team.toDomainModel() = Team(
         id = id,
         name = name,

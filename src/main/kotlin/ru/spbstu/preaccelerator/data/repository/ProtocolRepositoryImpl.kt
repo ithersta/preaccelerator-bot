@@ -7,7 +7,9 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 
 @Single
-class ProtocolRepositoryImpl(private val appDatabase: AppDatabase) : ProtocolRepository {
+class ProtocolRepositoryImpl(
+    private val appDatabase: AppDatabase
+) : ProtocolRepository {
     override fun get(teamId: Team.Id): Protocol? {
         return appDatabase.protocolQueries.get(teamId).executeAsOneOrNull()?.toDomainModel()
     }
@@ -16,5 +18,4 @@ class ProtocolRepositoryImpl(private val appDatabase: AppDatabase) : ProtocolRep
         teamId = teamId,
         url = url
     )
-
 }

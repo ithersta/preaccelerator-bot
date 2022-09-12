@@ -12,6 +12,18 @@ CREATE INDEX team_tracker_id_index ON Team(trackerId);
 getAll:
 SELECT * FROM Team;
 
+getPaginatedWithSentProtocols:
+SELECT DISTINCT Team.* FROM Team
+JOIN ProtocolStatus ON ProtocolStatus.teamId = Team.id
+WHERE ProtocolStatus.value = 'Sent'
+ORDER BY Team.id
+LIMIT :limit OFFSET :offset;
+
+countWithSentProtocols:
+SELECT COUNT(DISTINCT Team.id) FROM Team
+JOIN ProtocolStatus ON ProtocolStatus.teamId = Team.id
+WHERE ProtocolStatus.value = 'Sent';
+
 get:
 SELECT * FROM Team
 WHERE id = :id;

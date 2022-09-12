@@ -36,6 +36,12 @@ object ButtonStrings {
         const val WatchLectures = "Смотреть лекции"
     }
 
+    object ReviewProtocols {
+        const val Accept = "✅ Принять"
+        const val Decline = "❌ Отклонить"
+        const val All = "⏭️ Все непроверенные протоколы"
+    }
+
     object Option {
         const val Yes = "Да"
         const val No = "Нет"
