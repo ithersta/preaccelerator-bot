@@ -15,16 +15,13 @@ import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 fun StateMachineBuilder.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
