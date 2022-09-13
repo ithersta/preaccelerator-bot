@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.13.5")
-    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.13.5")
+    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.13.6")
     implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.13.5")
     implementation("dev.inmo:tgbotapi:3.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
