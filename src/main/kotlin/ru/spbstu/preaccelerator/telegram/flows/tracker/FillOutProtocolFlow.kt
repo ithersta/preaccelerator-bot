@@ -20,7 +20,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
-import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
+import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
@@ -91,12 +91,12 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<ChooseProtocol> {
             onTransition {
                 if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
-                    setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
-                } else {
                     val status = statusRepository.get(state.teamId, state.moduleNumber)
                     if (status.value == ProtocolStatus.Value.Declined) {
                         setState(FixWrongProtocol(state.teamId, state.moduleNumber))
                     }
+                    setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
+                } else {
                     sendTextMessage(it, ProtocolHasBeenSent)
                     setState(EmptyState)
                 }
@@ -106,15 +106,20 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
 
         state<FixWrongProtocol> {
             onTransition { chatId ->
-                sendTextMessage(chatId, explanationReasons(
-                    state.moduleNumber.value.toString(),
-                    statusRepository.get(state.teamId, state.moduleNumber).comment.toString()
-                ), replyMarkup = replyKeyboard {
-                    row {
-                        simpleButton(ProtocolChanged)
+                sendTextMessage(
+                    chatId,
+                    explanationReasons(
+                        state.moduleNumber.value.toString(),
+                        statusRepository.get(state.teamId, state.moduleNumber).comment.toString()
+                    ),
+                    replyMarkup = replyKeyboard {
+                        row {
+                            simpleButton(ProtocolChanged)
+                        }
                     }
-                })
+                )
             }
+
             onText { message ->
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 sendTextMessage(message.chat, ProtocolHasBeenSent)
@@ -141,15 +146,8 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     sendTextMessage(
                         it.userId,
                         ReadyCheck,
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                dataButton(
-                                    ButtonStrings.Option.Yes,
-                                    "do review ${state.teamId.value} ${state.moduleNumber.value}"
-                                )
-                                dataButton(ButtonStrings.Option.No, " ")
-                            }
-                        })
+                        replyMarkup = declineOrAcceptKeyboard(statusRepository.get(state.teamId, state.moduleNumber))
+                    )
                 }
                 setState(EmptyState)
             }
