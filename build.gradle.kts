@@ -33,6 +33,7 @@ dependencies {
     implementation("org.apache.poi:poi:5.2.2")
     implementation("org.apache.poi:poi-ooxml:5.2.2")
     implementation("org.quartz-scheduler:quartz:2.3.2")
+    implementation("commons-validator:commons-validator:1.7")
     ksp("io.insert-koin:koin-ksp-compiler:1.0.2")
     testImplementation(kotlin("test"))
 }
