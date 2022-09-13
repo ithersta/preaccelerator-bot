@@ -100,8 +100,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.ScheduleMeetings.InputDateTime,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.InputDateTime
             )
         }
         onText { message ->
@@ -111,8 +110,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             } catch (e: DateTimeParseException) {
                 sendTextMessage(
                     message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputDateTime,
-                    parseMode = MarkdownV2
+                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputDateTime
                 )
                 return@onText
             }
