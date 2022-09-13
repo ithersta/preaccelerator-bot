@@ -32,6 +32,15 @@ getByTrackerId:
 SELECT * FROM Team
 WHERE trackerId = :trackerId;
 
+getByTrackerIdPaginated:
+SELECT * FROM Team
+WHERE trackerId = :trackerId
+LIMIT :limit OFFSET :offset;
+
+countByTrackerId:
+SELECT COUNT(*) FROM Team
+WHERE trackerId = :trackerId;
+
 getByName:
 SELECT * FROM Team
 WHERE name = :name;
@@ -42,3 +51,10 @@ VALUES(:name, :trackerId)
 ON CONFLICT (name)
 DO UPDATE SET trackerId = :trackerId
 RETURNING id;
+
+getAllPaginated:
+SELECT * FROM Team
+LIMIT :limit OFFSET :offset;
+
+countAll:
+SELECT COUNT(*) FROM Team;

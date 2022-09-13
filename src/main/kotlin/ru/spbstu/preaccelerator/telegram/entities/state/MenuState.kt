@@ -16,6 +16,9 @@ object MenuState {
 
     object Tracker {
         @Serializable
+        object SendInfo : DialogState
+
+        @Serializable
         object Meetings : DialogState
 
         @Serializable

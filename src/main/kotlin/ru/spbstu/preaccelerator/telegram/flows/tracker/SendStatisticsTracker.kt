@@ -13,18 +13,16 @@ import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.SendStatisticsTeamsState
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.SpreadsheetStrings
 
 fun RoleFilterBuilder<Tracker>.sendStatisticsTracker() {
     state<SendStatisticsTeamsState> {
-        val teamRepository: TeamRepository by inject()
         val homeworkRepository: HomeworkRepository by inject()
-        val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
-        val trackerRepository: TrackerRepository by inject()
         onTransition { messager ->
             val spreadsheet = Xlsx.createStatisticsSpreadsheet(
-                teamRepository.get(trackerRepository.get(userPhoneNumberRepository.get(messager)!!)!!.id),
+                user.teams,
                 homeworkRepository.getAll()
             )
             sendDocument(messager, spreadsheet.asMultipartFile("${SpreadsheetStrings.StatisticsTable.FileName}.xlsx"))

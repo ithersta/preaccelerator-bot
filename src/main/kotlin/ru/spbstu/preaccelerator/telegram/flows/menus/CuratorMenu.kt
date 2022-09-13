@@ -24,9 +24,9 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Curator.Message, EmptyState) {
     submenu(SendInfo.Button, SendInfo.Message, MenuState.Curator.SendInfo) {
-        button(SendInfo.ToAll, NotImplementedState)
-        button(SendInfo.ToTrackers, NotImplementedState)
-        button(SendInfo.ToSelectTeams, NotImplementedState)
+        button(SendInfo.ToAll, SendInfoState.WaitingForMessage(Recipient.All))
+        button(SendInfo.ToTrackers, SendInfoState.WaitingForMessage(Recipient.Trackers))
+        button(SendInfo.ToSelectTeams, SendInfoState.ChooseTeams())
         backButton(MenuStrings.Back)
     }
     submenu(GetStats.Button, GetStats.Message, MenuState.Curator.GetStats) {

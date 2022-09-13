@@ -13,6 +13,7 @@ import ru.spbstu.preaccelerator.telegram.notifications.protocolDeadlineNotificat
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ModuleDeadline
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ProtocolDeadline
 import java.time.LocalTime
+import java.time.ZoneId
 import kotlin.time.Duration.Companion.days
 
 val preacceleratorModule = module(createdAtStart = true) {
@@ -36,4 +37,5 @@ val preacceleratorModule = module(createdAtStart = true) {
             5.days afterFirstMeetingSend ProtocolDeadline::inLessThanTwoDays
         }
     }
+    single { ZoneId.of("Asia/Yekaterinburg") }
 }
