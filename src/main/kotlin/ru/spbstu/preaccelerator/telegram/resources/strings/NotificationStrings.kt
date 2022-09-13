@@ -34,7 +34,7 @@ object NotificationStrings : KoinComponent {
         """.trimMargin()
 
         fun inTwoHoursForTracker(meeting: Meeting, team: Team) = """
-            |Через 2 часа ${dateTimeFormatter.format(meeting.timestamp)} у вас состоится встреча с командой ${team.name}
+            |Через 2 часа у вас состоится встреча с командой ${team.name}
             |${dateTimeFormatter.format(meeting.timestamp)}
             |${meeting.url}
         """.trimMargin()

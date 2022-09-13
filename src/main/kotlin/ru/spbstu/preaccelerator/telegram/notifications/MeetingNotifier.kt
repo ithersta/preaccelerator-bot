@@ -39,22 +39,24 @@ class MeetingNotifier(
         scheduler.setJobFactory { _, _ -> Job(this) }
         val job = newJob(Job::class.java).storeDurably().build()
         scheduler.addJob(job, false)
-        meetingRepository.getAllAsFlow().onEach { meetings ->
-            val now = OffsetDateTime.now()
-            meetings.forEach { meeting ->
-                val triggerKey = TriggerKey("$TRIGGER_KEY_PREFIX ${meeting.id}")
-                val at = meeting.timestamp - config.duration
-                if (scheduler.checkExists(triggerKey).not() && at.isAfter(now)) {
-                    val trigger = newTrigger()
-                        .withIdentity(triggerKey)
-                        .usingJobData(MEETING_ID, meeting.id.value)
-                        .forJob(job.key)
-                        .startAt(Date.from(at.toInstant()))
-                        .build()
-                    scheduler.scheduleJob(trigger)
+        launch {
+            meetingRepository.getAllAsFlow().collect { meetings ->
+                val now = OffsetDateTime.now()
+                meetings.forEach { meeting ->
+                    val triggerKey = TriggerKey("$TRIGGER_KEY_PREFIX ${meeting.id}")
+                    val at = meeting.timestamp - config.duration
+                    if (scheduler.checkExists(triggerKey).not() && at.isAfter(now)) {
+                        val trigger = newTrigger()
+                            .withIdentity(triggerKey)
+                            .usingJobData(MEETING_ID, meeting.id.value)
+                            .forJob(job.key)
+                            .startAt(Date.from(at.toInstant()))
+                            .build()
+                        scheduler.scheduleJob(trigger)
+                    }
                 }
             }
-        }.launchIn(this)
+        }
     }
 
     inner class Job(private val behaviourContext: BehaviourContext) : org.quartz.Job {
