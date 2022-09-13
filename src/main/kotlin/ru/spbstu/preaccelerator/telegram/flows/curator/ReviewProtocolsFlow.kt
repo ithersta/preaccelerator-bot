@@ -52,6 +52,16 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
         }
     }
     anyState {
+        onDataCallbackQuery(Regex("do review \\d+ \\d+")) {
+            val tokens = it.data.split(" ")
+            sendTextMessage(
+                it.from, MessageStrings.Tracker.ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
+                    protocolStatus = protocolStatusRepository.get(
+                        Team.Id(tokens[2].toLong()), Module.Number(tokens[3].toInt())
+                    )
+                )
+            )
+        }
         onDataCallbackQuery(Regex("protocol team (\\d+|all)")) { query ->
             val teamId = query.data.split(" ").last().toLongOrNull()?.let { Team.Id(it) }
             if (protocolStatusRepository.getSent(teamId) != null) {
@@ -148,7 +158,7 @@ private fun text(team: Team, protocolStatus: ProtocolStatus): TextSourcesList {
     )
 }
 
-fun declineOrAcceptKeyboard(protocolStatus: ProtocolStatus): InlineKeyboardMarkup = inlineKeyboard {
+private fun declineOrAcceptKeyboard(protocolStatus: ProtocolStatus): InlineKeyboardMarkup = inlineKeyboard {
     if (protocolStatus.value == ProtocolStatus.Value.Sent) {
         row {
             dataButton(

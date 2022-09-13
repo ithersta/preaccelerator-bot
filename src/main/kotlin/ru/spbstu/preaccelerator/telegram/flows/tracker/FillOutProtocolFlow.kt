@@ -85,35 +85,23 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<SendDiskUrl> {
             onTransition { chatId ->
                 sendTextMessage(chatId, InputGoogleDiskUrl)
-            }
-            onText { message ->
-                val googleDiskLink = message.content.text
-                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
-                    protocolRepository.add(state.teamId, googleDiskLink)
-                    setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
-                } else {
-                    sendTextMessage(message.chat, ProtocolHasBeenSent)
-                    setState(EmptyState)
-                }
+                setState(ChooseProtocol(state.teamId, state.moduleNumber, protocolRepository.get(state.teamId)))
             }
         }
         state<ChooseProtocol> {
-            onTransition { chatId ->
-                when (statusRepository.get(state.teamId, state.moduleNumber).value) {
-                    ProtocolStatus.Value.Unsent -> {
-                        setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
-                    }
-
-                    ProtocolStatus.Value.Declined -> {
+            onTransition {
+                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
+                    setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
+                } else {
+                    val status = statusRepository.get(state.teamId, state.moduleNumber)
+                    if (status.value == ProtocolStatus.Value.Declined) {
                         setState(FixWrongProtocol(state.teamId, state.moduleNumber))
                     }
-
-                    else -> {
-                        sendTextMessage(chatId, ProtocolHasBeenSent)
-                        setState(EmptyState)
-                    }
+                    sendTextMessage(it, ProtocolHasBeenSent)
+                    setState(EmptyState)
                 }
             }
+
         }
 
         state<FixWrongProtocol> {
@@ -153,23 +141,18 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     sendTextMessage(
                         it.userId,
                         ReadyCheck,
-                        replyMarkup = replyKeyboard {
+                        replyMarkup = inlineKeyboard {
                             row {
-                                simpleButton(ButtonStrings.Option.Yes)
-                                simpleButton(ButtonStrings.Option.No)
+                                dataButton(
+                                    ButtonStrings.Option.Yes,
+                                    "do review ${state.teamId} ${state.moduleNumber.value}"
+                                )
+                                dataButton(ButtonStrings.Option.No, " ")
                             }
                         })
                 }
-//                sendTextMessage(
-//                    it.userId, ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
-//                        protocolStatus = statusRepository.get(
-//                            state.teamId, state.moduleNumber
-//                        )
-//                    )
-//                )
-//            }
-            setState(EmptyState)
+                setState(EmptyState)
+            }
         }
     }
-}
 }
