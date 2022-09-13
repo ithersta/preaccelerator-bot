@@ -71,7 +71,7 @@ object ModuleStrings {
     """.trimMargin()
 
     fun taskMessage(task: Task) = """
-        |Пришло время выполнить задание №${task.number.value}
+        |Пришло время выполнить задание №${task.number.value}\. Необходимо выгрузить данный шаблон\, заполнить его и прислать ссылку на новый заполненный файл\.
         |
         |${task.description}
     """.trimMargin()
