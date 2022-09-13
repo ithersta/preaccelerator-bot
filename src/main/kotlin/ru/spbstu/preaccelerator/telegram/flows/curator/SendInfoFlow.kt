@@ -29,6 +29,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.Recipient
 import ru.spbstu.preaccelerator.telegram.entities.state.SendInfoState
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.userId
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.members
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
@@ -130,6 +131,10 @@ class MassSender(
         val userIds = when (recipient) {
             Recipient.All -> memberRepository.getAll().mapNotNull { it.userId } +
                     trackerRepository.getAll().mapNotNull { it.userId }
+
+            Recipient.AllFromTracker -> (from as Tracker).teams
+                .flatMap { it.members }
+                .mapNotNull { it.userId }
 
             Recipient.Trackers -> trackerRepository.getAll()
                 .mapNotNull { it.userId }
