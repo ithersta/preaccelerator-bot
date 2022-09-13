@@ -53,8 +53,7 @@ object MessageStrings : KoinComponent {
         const val ChooseTeam = "Выберите команду"
         const val DownloadOption = "Выберите модуль, к которому относится задание"
         const val Err = "Выберите вариант из кнопочного меню"
-        fun moduleHomeworks(num: Module.Number) =
-            "Задания модуля №${num.value}"
+        fun moduleHomeworks(num: Module.Number) = "Задания модуля №${num.value}"
 
         const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
         const val ChooseModuleNumber = "Выберите номер модуля"
@@ -153,9 +152,7 @@ object MessageStrings : KoinComponent {
         const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
 
-    private val dateTimeFormatter = DateTimeFormatter
-        .ofLocalizedDateTime(FormatStyle.LONG)
-        .withZone(zoneId)
+    private val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG).withZone(zoneId)
 
     fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName
@@ -172,13 +169,16 @@ object MessageStrings : KoinComponent {
         fun textForCurator(countOfWeek: String, teamName: String) =
             "Протокол $countOfWeek недели  от команды $teamName отправлен на проверку."
 
+        fun explanationReasons(countOfWeek: String, reason: String) =
+            "Куратор не принял протокол недели $countOfWeek\nПричина: $reason"
+
         const val ProtocolHasBeenSent = "Протокол уже был отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
+        const val ProtocolChanged = "Протокол исправлен"
         const val ChooseModule = "Выберите модуль"
-        const val ChooseProtocol = "Выберите протокол"
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
         const val MessageCurator = "Оповестить куратора о готовности протокола"
-        const val Attention = "Оповещение"
+        const val Attention = "Нажмите на кнопку, чтобы отправить протокол"
         const val ViewProtocol = "Посмотреть протокол"
         const val ReadyCheck = "Готовы оценить протокол сейчас?"
     }

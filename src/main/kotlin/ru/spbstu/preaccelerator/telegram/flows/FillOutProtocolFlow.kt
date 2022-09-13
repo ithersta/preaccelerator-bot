@@ -23,14 +23,15 @@ import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InputGoogleDiskUrl
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.MessageCurator
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolChanged
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolHasBeenSent
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ReadyCheck
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ViewProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.explanationReasons
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.textForCurator
 
 
@@ -94,26 +95,40 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 }
             }
         }
-
         state<ChooseProtocol> {
             onTransition { chatId ->
-                sendTextMessage(chatId,
-                    ChooseProtocol,
-                    replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
-                        row {
-                            simpleButton(state.protocol!!.url)
-                        }
-                    })
+                when (statusRepository.get(state.teamId, state.moduleNumber).value) {
+                    ProtocolStatus.Value.Unsent -> {
+                        setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
+                    }
+
+                    ProtocolStatus.Value.Declined -> {
+                        setState(FixWrongProtocol(state.teamId, state.moduleNumber))
+                    }
+
+                    else -> {
+                        sendTextMessage(chatId, ProtocolHasBeenSent)
+                        setState(EmptyState)
+                    }
+                }
+            }
+        }
+
+        state<FixWrongProtocol> {
+            onTransition { chatId ->
+                sendTextMessage(chatId, explanationReasons(
+                    state.moduleNumber.value.toString(),
+                    statusRepository.get(state.teamId, state.moduleNumber).comment.toString()
+                ), replyMarkup = replyKeyboard {
+                    row {
+                        simpleButton(ProtocolChanged)
+                    }
+                })
             }
             onText { message ->
-                val protocol = message.content.text
-                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
-                    setState(NotificationButton(state.teamId, state.moduleNumber, protocol))
-                } else {
-                    sendTextMessage(message.chat, ProtocolHasBeenSent)
-                    setState(EmptyState)
-                }
-
+                statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
+                sendTextMessage(message.chat, ProtocolHasBeenSent)
+                setState(EmptyState)
             }
         }
         state<NotificationButton> {
@@ -134,12 +149,9 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
                         replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })
                     sendTextMessage(
-                        it.userId,
-                        ReadyCheck,
-                        replyMarkup = declineOrAcceptKeyboard(
+                        it.userId, ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
                             protocolStatus = statusRepository.get(
-                                state.teamId,
-                                state.moduleNumber
+                                state.teamId, state.moduleNumber
                             )
                         )
                     )
