@@ -7,6 +7,7 @@ import org.koin.core.context.startKoin
 import ru.spbstu.preaccelerator.telegram.CreateInitialCuratorToken
 import ru.spbstu.preaccelerator.telegram.DatabaseDumper
 import ru.spbstu.preaccelerator.telegram.notifications.Notifiers
+import ru.spbstu.preaccelerator.telegram.readToken
 
 suspend fun main() {
     val application = startKoin { modules(preacceleratorModule) }
@@ -14,7 +15,7 @@ suspend fun main() {
     val databaseDumper: DatabaseDumper by application.koin.inject()
     val createInitialCuratorToken: CreateInitialCuratorToken by application.koin.inject()
     val notifiers: Notifiers by application.koin.inject()
-    telegramBot(System.getenv("TOKEN")).buildBehaviourWithLongPolling {
+    telegramBot(readToken()).buildBehaviourWithLongPolling {
         stateMachine.run { collect() }
         databaseDumper.run { start() }
         createInitialCuratorToken.run { invoke() }

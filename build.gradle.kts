@@ -1,11 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    dependencies {
+        classpath("org.apache.commons:commons-compress:1.21")
+    }
+}
+
 plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
     id("app.cash.sqldelight") version "2.0.0-alpha03"
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
-    id("com.bmuschko.docker-java-application") version "8.0.0"
+    id("com.google.cloud.tools.jib") version "3.3.0"
     application
 }
 
@@ -18,9 +24,9 @@ repositories {
 }
 
 dependencies {
-    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.13.5")
-    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.13.5")
-    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.13.5")
+    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.13.6")
+    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.13.6")
+    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.13.6")
     implementation("dev.inmo:tgbotapi:3.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
     implementation("org.postgresql:postgresql:42.5.0")
@@ -63,9 +69,11 @@ sourceSets.main {
     java.srcDirs("build/generated/ksp/main/kotlin")
 }
 
-docker {
-    javaApplication {
-        baseImage.set("eclipse-temurin:18")
-        jvmArgs.set(listOf("-Xms256m", "-Xmx2048m"))
+jib {
+    from {
+        image = "ithersta/eclipse-temurin-postgres-client:18"
+    }
+    to {
+        image = "ithersta/preaccelerator"
     }
 }
