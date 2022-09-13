@@ -159,7 +159,7 @@ object MessageStrings : KoinComponent {
         const val Started = "Рассылка может занять некоторое время…"
         fun chosenTeams(teams: List<Team>) = "Выбранные команды: ${teams.joinToString { it.name }}"
         fun confirmation(message: String) = """
-            |Вы ввели следущее сообщение:
+            |Вы ввели следующее сообщение:
             |$message
             |Разослать его?
         """.trimMargin()
