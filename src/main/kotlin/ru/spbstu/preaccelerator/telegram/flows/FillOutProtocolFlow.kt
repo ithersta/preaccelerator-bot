@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.isFinished
 import ru.spbstu.preaccelerator.domain.entities.module.Module.Number
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
@@ -80,7 +81,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             }
             onText { message ->
                 val googleDiskLink = message.content.text
-                if (statusRepository.get(state.teamId, state.moduleNumber).value == ProtocolStatus.Value.Unsent) {
+                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                     protocolRepository.add(state.teamId, googleDiskLink)
                     setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
                 }
@@ -99,8 +100,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             }
             onText { message ->
                 val protocol = message.content.text
-                statusRepository.get(state.teamId, state.moduleNumber)
-                if (statusRepository.get(state.teamId, state.moduleNumber).value == ProtocolStatus.Value.Unsent) {
+                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                     setState(NotificationButton(state.teamId, state.moduleNumber, protocol))
                 }
             }
@@ -118,7 +118,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     })
             }
             onText(MessageCurator) { message ->
-                statusRepository.get(state.teamId, state.moduleNumber)
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 setState(EmptyState)
