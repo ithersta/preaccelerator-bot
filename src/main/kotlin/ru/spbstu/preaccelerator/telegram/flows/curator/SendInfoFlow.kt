@@ -47,7 +47,6 @@ fun StateMachineBuilder.sendInfoFlow() {
                     is Curator -> teamRepository.getAllPaginated(offset, limit) to teamRepository.countAll()
                     is Tracker -> teamRepository.getByTrackerIdPaginated(user.id, offset, limit) to
                             teamRepository.countByTrackerId(user.id)
-
                     else -> error("Only curators and trackers can use this feature")
                 }
                 inlineKeyboard {
