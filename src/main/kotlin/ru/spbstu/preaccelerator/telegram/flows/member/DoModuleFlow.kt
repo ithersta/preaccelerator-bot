@@ -250,7 +250,6 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
             }
             val newState = ModuleState(state.moduleNumber, partIndex)
             val maxPart = moduleConfig.modules.getValue(state.moduleNumber).parts.lastIndex
-            val maxModule = moduleConfig.modules.maxOf { it.key.value }
             if (state.partIndex == maxPart) {
                 sendTextMessage(
                     query.from,
