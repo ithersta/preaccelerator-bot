@@ -33,6 +33,10 @@ object MessageStrings : KoinComponent {
         fun member(team: Team) = "Ты участник команды ${team.name}"
     }
 
+    object SendStatistics {
+        const val NoTeams = "Нету команд для сбора статистики"
+    }
+
     object Cancel {
         const val Success = "Операция отменена"
         const val NothingToCancel = "Нечего отменять"
