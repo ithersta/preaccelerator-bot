@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
@@ -24,12 +25,14 @@ object NotificationStrings {
 
     object MeetingNotifications {
         fun meetingCreatedNotify(dateTime: OffsetDateTime, url: String) =
-            """|Ваш трекер запланировал новую встречу
-               |Дата встречи: ${MessageStrings.dateTimeFormatter.format(dateTime)}
-               |Ссылка на конференцию: $url
-               |
-               |За 2 часа до назначенного времени вам придёт напоминание.
-            """.trimMargin()
-
+            buildEntities {
+                regularln("Ваш трекер запланировал новую встречу")
+                bold("Дата встречи: ")
+                regularln(MessageStrings.dateTimeFormatter.format(dateTime))
+                bold("Ссылка на конференцию: ")
+                linkln(url)
+                regularln("За 2 часа до назначенного времени вам придёт напоминание")
+            }
     }
 }
+
