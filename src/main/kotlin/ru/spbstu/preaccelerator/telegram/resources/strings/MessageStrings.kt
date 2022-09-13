@@ -153,6 +153,31 @@ object MessageStrings : KoinComponent {
         const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
 
+    object SendInfo {
+        const val ChooseTeams = "Выберите команды, которым хотите разослать сообщение"
+        const val EnterMessage = "Введите текст сообщения"
+        const val Started = "Рассылка может занять некоторое время…"
+        fun chosenTeams(teams: List<Team>) = "Выбранные команды: ${teams.joinToString { it.name }}"
+        fun confirmation(message: String) = """
+            |Вы ввели следующее сообщение:
+            |$message
+            |Разослать его?
+        """.trimMargin()
+
+        fun messageFromCurator(message: String) = buildEntities {
+            boldln("Сообщение от куратора")
+            regular(message)
+        }
+
+        fun messageFromTracker(message: String) = buildEntities {
+            boldln("Сообщение от трекера")
+            regular(message)
+        }
+
+        fun success(count: Int) =
+            "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
+    }
+
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(zoneId)

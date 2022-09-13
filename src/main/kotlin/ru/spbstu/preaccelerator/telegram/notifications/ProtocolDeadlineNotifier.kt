@@ -42,7 +42,7 @@ class ProtocolDeadlineNotifier(
                         trackers.forEach { (tracker, moduleNumber) ->
                             massSendLimiter.wait()
                             runCatching {
-                                sendTextMessage(tracker.userId, text(moduleNumber))
+                                sendTextMessage(tracker.userId!!, text(moduleNumber))
                             }
                         }
                     }
