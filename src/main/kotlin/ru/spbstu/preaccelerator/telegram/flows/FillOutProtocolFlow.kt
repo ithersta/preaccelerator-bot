@@ -11,6 +11,7 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.isFinished
 import ru.spbstu.preaccelerator.domain.entities.module.Module.Number
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
+import ru.spbstu.preaccelerator.domain.repository.CuratorRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
@@ -19,22 +20,27 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
+import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InputGoogleDiskUrl
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.MessageCurator
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolHasBeenSent
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ReadyCheck
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ViewProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.textForCurator
+
 
 fun StateMachineBuilder.fillOutProtocolFlow() {
     val protocolRepository: ProtocolRepository by inject()
     val statusRepository: ProtocolStatusRepository by inject()
     val teamRepository: TeamRepository by inject()
-
+    val curatorRepository: CuratorRepository by inject()
     role<Tracker> {
         state<ChooseTeam> {
-//      команды
             onTransition { chatId ->
                 sendTextMessage(chatId, ChooseTeam, replyMarkup = inlineKeyboard {
                     user.teams.chunked(2).forEach {
@@ -49,7 +55,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 setState(ChooseModule(teamId))
             }
         }
-//      модули
         state<ChooseModule> {
             onTransition { chatId ->
                 sendTextMessage(chatId, ChooseModule, replyMarkup = inlineKeyboard {
@@ -74,7 +79,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 }
             }
         }
-//      ссылка
         state<SendDiskUrl> {
             onTransition { chatId ->
                 sendTextMessage(chatId, InputGoogleDiskUrl)
@@ -84,10 +88,13 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                     protocolRepository.add(state.teamId, googleDiskLink)
                     setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
+                } else {
+                    sendTextMessage(message.chat, ProtocolHasBeenSent)
+                    setState(EmptyState)
                 }
             }
         }
-//      если протокол есть
+
         state<ChooseProtocol> {
             onTransition { chatId ->
                 sendTextMessage(chatId,
@@ -102,11 +109,13 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 val protocol = message.content.text
                 if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                     setState(NotificationButton(state.teamId, state.moduleNumber, protocol))
+                } else {
+                    sendTextMessage(message.chat, ProtocolHasBeenSent)
+                    setState(EmptyState)
                 }
+
             }
         }
-//      кнопка для отправки оповещения куратору
-//      todo() оповестить куратора  - мне делать или не мне не понятно
         state<NotificationButton> {
             onTransition { chatId ->
                 sendTextMessage(chatId,
@@ -120,6 +129,21 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onText(MessageCurator) { message ->
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
+                curatorRepository.getCurators().map {
+                    sendTextMessage(it.userId,
+                        textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
+                        replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })
+                    sendTextMessage(
+                        it.userId,
+                        ReadyCheck,
+                        replyMarkup = declineOrAcceptKeyboard(
+                            protocolStatus = statusRepository.get(
+                                state.teamId,
+                                state.moduleNumber
+                            )
+                        )
+                    )
+                }
                 setState(EmptyState)
             }
         }

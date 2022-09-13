@@ -169,11 +169,17 @@ object MessageStrings : KoinComponent {
         fun confirmationProtocol(moduleNumber: String) =
             "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
 
+        fun textForCurator(countOfWeek: String, teamName: String) =
+            "Протокол $countOfWeek недели  от команды $teamName отправлен на проверку."
+
+        const val ProtocolHasBeenSent = "Протокол уже был отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
         const val ChooseModule = "Выберите модуль"
         const val ChooseProtocol = "Выберите протокол"
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
         const val MessageCurator = "Оповестить куратора о готовности протокола"
         const val Attention = "Оповещение"
+        const val ViewProtocol = "Посмотреть протокол"
+        const val ReadyCheck = "Готовы оценить протокол сейчас?"
     }
 }

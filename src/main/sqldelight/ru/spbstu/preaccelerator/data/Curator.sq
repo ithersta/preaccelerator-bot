@@ -11,6 +11,9 @@ get:
 SELECT * FROM Curator
 WHERE userId = :userId;
 
+getCurators:
+SELECT * FROM  Curator;
+
 add:
 INSERT INTO Curator
 VALUES(:userId)
