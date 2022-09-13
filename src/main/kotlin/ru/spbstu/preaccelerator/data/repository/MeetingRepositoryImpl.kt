@@ -1,5 +1,9 @@
 package ru.spbstu.preaccelerator.data.repository
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 import ru.spbstu.preaccelerator.data.AppDatabase
 import ru.spbstu.preaccelerator.domain.entities.Meeting
@@ -13,6 +17,10 @@ import java.time.OffsetDateTime
 class MeetingRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : MeetingRepository {
+    override fun getAllAsFlow(): Flow<List<Meeting>> {
+        return appDatabase.meetingQueries.getAll().asFlow().mapToList().map { list -> list.map { it.toDomainModel() } }
+    }
+
     override fun get(trackerId: Tracker.Id, moduleNumber: Module.Number): List<Meeting> {
         return appDatabase.meetingQueries.getByTrackerIdAndModuleNumber(trackerId, moduleNumber)
             .executeAsList().map { it.toDomainModel() }

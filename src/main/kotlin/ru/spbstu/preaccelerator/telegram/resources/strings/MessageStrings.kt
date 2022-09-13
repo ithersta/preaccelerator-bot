@@ -184,6 +184,7 @@ object MessageStrings : KoinComponent {
 
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
+        .withLocale(Locale.forLanguageTag("ru"))
         .withZone(zoneId)
 
     fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
