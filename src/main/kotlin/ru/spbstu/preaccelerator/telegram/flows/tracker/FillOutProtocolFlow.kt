@@ -20,6 +20,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
+import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
@@ -135,11 +136,12 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 curatorRepository.getCurators().map {
-                    sendTextMessage(it.userId,
+                    val userId = it.userId
+                    sendTextMessage(userId,
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
                         replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })
                     sendTextMessage(
-                        it.userId,
+                        userId,
                         ReadyCheck,
                         replyMarkup = inlineKeyboard {
                             row {
@@ -150,6 +152,17 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                                 dataButton(ButtonStrings.Option.No, " ")
                             }
                         })
+                    onText(ButtonStrings.Option.Yes) {
+                        sendTextMessage(
+                            userId, ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
+                                protocolStatus = statusRepository.get(
+                                    state.teamId, state.moduleNumber
+                                )
+                            )
+                        )
+                    }
+
+
                 }
                 setState(EmptyState)
             }
