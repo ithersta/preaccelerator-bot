@@ -29,6 +29,9 @@ sealed interface Recipient {
     object All : Recipient
 
     @Serializable
+    object AllFromTracker : Recipient
+
+    @Serializable
     object Trackers : Recipient
 
     @Serializable

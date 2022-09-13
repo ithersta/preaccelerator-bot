@@ -48,7 +48,12 @@ object MenuStrings {
             const val GetStats = "Получить статистику по командам"
         }
 
-        const val SendInfo = "Разослать информацию"
+        object SendInfo {
+            const val Button = "Разослать информацию"
+            const val Message = "Выберите получателей"
+            const val ToAll = "Все"
+            const val ToSelectTeams = "Выбрать отдельные команды"
+        }
     }
 
     object Member {
