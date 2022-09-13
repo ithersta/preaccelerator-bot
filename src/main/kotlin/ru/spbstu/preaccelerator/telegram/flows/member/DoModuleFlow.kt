@@ -28,7 +28,7 @@ import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additio
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.doneTaskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.goodbyeModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.lectureMessage
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.nextModule
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.module
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.taskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.welcomeModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
@@ -242,9 +242,9 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 }
             }
         }
-        onDataCallbackQuery(Regex("part \\d+")) {
-            answer(it)
-            val partIndex = it.data.split(' ').last().toInt()
+        onDataCallbackQuery(Regex("part \\d+")) { query ->
+            answer(query)
+            val partIndex = query.data.split(' ').last().toInt()
             if (partIndex <= state.partIndex) {
                 return@onDataCallbackQuery
             }
@@ -253,7 +253,7 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
             val maxModule = moduleConfig.modules.maxOf { it.key.value }
             if (state.partIndex == maxPart) {
                 sendTextMessage(
-                    it.from,
+                    query.from,
                     goodbyeModule(moduleConfig, state.moduleNumber),
                     parseMode = MarkdownV2,
                     replyMarkup = inlineKeyboard {
@@ -262,10 +262,12 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                                 DoTest,
                                 moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                             )
-                            if (state.moduleNumber.value != maxModule) {
+                            val nextModuleNumber = Module.Number(state.moduleNumber.value + 1)
+                                .takeIf { moduleConfig.modules.containsKey(it) }
+                            if (nextModuleNumber != null) {
                                 dataButton(
-                                    nextModule(state.moduleNumber),
-                                    "module ${state.moduleNumber.value + 1}"
+                                    module(nextModuleNumber),
+                                    "module ${nextModuleNumber.value}"
                                 )
                             } else {
                                 setState(EmptyState)

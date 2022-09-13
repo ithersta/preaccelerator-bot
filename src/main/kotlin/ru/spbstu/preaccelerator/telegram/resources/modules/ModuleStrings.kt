@@ -40,7 +40,7 @@ object ModuleStrings {
         |*Название*: ${module.name}
     """.trimMargin()
 
-    fun nextModule(number: Module.Number) = "Модуль ${number.value}"
+    fun module(number: Module.Number) = "Модуль ${number.value}"
 
     fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = """
         |Вы закончили изучать материалы Модуля ${number.value}\.
