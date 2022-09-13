@@ -145,7 +145,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                             row {
                                 dataButton(
                                     ButtonStrings.Option.Yes,
-                                    "do review ${state.teamId} ${state.moduleNumber.value}"
+                                    "do review ${state.teamId.value} ${state.moduleNumber.value}"
                                 )
                                 dataButton(ButtonStrings.Option.No, " ")
                             }
