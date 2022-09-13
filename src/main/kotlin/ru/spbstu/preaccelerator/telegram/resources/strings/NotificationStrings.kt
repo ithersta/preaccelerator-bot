@@ -35,9 +35,9 @@ object NotificationStrings {
                 regularln("За 2 часа до назначенного времени вам придёт напоминание")
             }
 
-        fun meetingCreatedNotifyCurator(dateTime: OffsetDateTime, url: String) =
+        fun meetingCreatedNotifyCurator(dateTime: OffsetDateTime, url: String, teamName: String) =
             buildEntities {
-                regularln("Трекер запланировал новую встречу")
+                regularln("Трекер запланировал новую встречу для команды $teamName")
                 regularln("")
                 bold("Дата встречи: ")
                 regularln(MessageStrings.dateTimeFormatter.format(dateTime))
