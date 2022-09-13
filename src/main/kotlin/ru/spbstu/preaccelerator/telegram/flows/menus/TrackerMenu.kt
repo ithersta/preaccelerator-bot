@@ -23,6 +23,7 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
         button(Teams.GetStats, NotImplementedState)
         backButton(MenuStrings.Back)
     }
+    button(MenuStrings.Tracker.SendInfo, SendInfoState.ChooseTeams())
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerMenu() {

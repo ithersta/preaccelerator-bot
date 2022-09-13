@@ -326,19 +326,21 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                     text = ModuleStrings.Error.HomeworkWasAlreadyAdded
                 )
             } else {
-                sendTextMessage(
-                    trackerRep.get(user.team.trackerId).userId,
-                    homeworkDownloaded(task.number, user.team),
-                    parseMode = MarkdownV2,
-                    replyMarkup = inlineKeyboard {
-                        row {
-                            urlButton(
-                                SeeHomework,
-                                url.toString()
-                            )
+                runCatching {
+                    sendTextMessage(
+                        trackerRep.get(user.team.trackerId).userId!!,
+                        homeworkDownloaded(task.number, user.team),
+                        parseMode = MarkdownV2,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(
+                                    SeeHomework,
+                                    url.toString()
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
             setState(state.returnTo)
         }

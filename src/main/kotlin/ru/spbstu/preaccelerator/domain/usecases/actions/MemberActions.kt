@@ -11,5 +11,5 @@ class MemberActions(
     private val phoneNumberRepository: UserPhoneNumberRepository
 ) {
     val Member.team get() = teamRepository.get(teamId)
-    val Member.userId get() = phoneNumberRepository.get(phoneNumber)!!
+    val Member.userId get() = phoneNumberRepository.get(phoneNumber)
 }
