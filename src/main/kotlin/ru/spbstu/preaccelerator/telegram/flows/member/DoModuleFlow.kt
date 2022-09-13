@@ -25,6 +25,7 @@ import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.doTest
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.doneTaskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.goodbyeModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.lectureMessage
@@ -126,8 +127,7 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 ButtonStrings.ChooseModule.DoTest -> {
                     sendTextMessage(
                         message.chat,
-                        goodbyeModule(moduleConfig, state.moduleNumber),
-                        parseMode = MarkdownV2,
+                        doTest(state.moduleNumber),
                         replyMarkup = inlineKeyboard {
                             row {
                                 urlButton(
@@ -254,7 +254,6 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 sendTextMessage(
                     query.from,
                     goodbyeModule(moduleConfig, state.moduleNumber),
-                    parseMode = MarkdownV2,
                     replyMarkup = inlineKeyboard {
                         row {
                             urlButton(
