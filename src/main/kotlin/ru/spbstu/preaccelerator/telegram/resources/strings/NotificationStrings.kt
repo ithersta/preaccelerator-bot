@@ -13,8 +13,8 @@ object NotificationStrings {
             "Ваша команда пропустила дедлайн Модуля ${moduleNumber.value}. Завершите его сейчас."
     }
 
-    fun homeworkDownloaded(taskNumb: Task.Number, team: Team) =
-        "Домашнее задание №${taskNumb.value} от команды ${team.name} загружено\\!"
+    fun homeworkUploaded(task: Task, team: Team) =
+        "Домашнее задание №${task.number.value} по Модулю ${task.moduleNumber.value} от команды ${team.name} загружено!"
 
     object ProtocolDeadline {
         fun inLessThanTwoDays(moduleNumber: Module.Number) =

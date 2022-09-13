@@ -38,12 +38,12 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkDownloaded
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkUploaded
 import java.net.URL
 
 fun RoleFilterBuilder<Member>.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
-    val trackerRep: TrackerRepository by inject()
+    val trackerRepository: TrackerRepository by inject()
 
     state<ChooseModuleState> {
         onTransition {
@@ -329,9 +329,8 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
             } else {
                 runCatching {
                     sendTextMessage(
-                        trackerRep.get(user.team.trackerId).userId!!,
-                        homeworkDownloaded(task.number, user.team),
-                        parseMode = MarkdownV2,
+                        trackerRepository.get(user.team.trackerId).userId!!,
+                        homeworkUploaded(task, user.team),
                         replyMarkup = inlineKeyboard {
                             row {
                                 urlButton(
