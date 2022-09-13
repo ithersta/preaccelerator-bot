@@ -94,8 +94,9 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     val status = statusRepository.get(state.teamId, state.moduleNumber)
                     if (status.value == ProtocolStatus.Value.Declined) {
                         setState(FixWrongProtocol(state.teamId, state.moduleNumber))
+                    } else {
+                        setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
                     }
-                    setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
                 } else {
                     sendTextMessage(it, ProtocolHasBeenSent)
                     setState(EmptyState)
@@ -112,7 +113,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                         state.moduleNumber.value.toString(),
                         statusRepository.get(state.teamId, state.moduleNumber).comment.toString()
                     ),
-                    replyMarkup = replyKeyboard {
+                    replyMarkup = replyKeyboard(resizeKeyboard = true) {
                         row {
                             simpleButton(ProtocolChanged)
                         }
@@ -120,7 +121,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 )
             }
 
-            onText { message ->
+            onText(ProtocolChanged) { message ->
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 sendTextMessage(message.chat, ProtocolHasBeenSent)
                 setState(EmptyState)

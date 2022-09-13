@@ -177,7 +177,7 @@ object MessageStrings : KoinComponent {
         fun explanationReasons(countOfWeek: String, reason: String) =
             "Куратор не принял протокол недели $countOfWeek\nПричина: $reason"
 
-        const val ProtocolHasBeenSent = "Протокол уже был отправлен и находится на проверке"
+        const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
         const val ProtocolChanged = "Протокол исправлен"
         const val ChooseModule = "Выберите модуль"
