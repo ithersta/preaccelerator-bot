@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "1.7.10"
     id("app.cash.sqldelight") version "2.0.0-alpha03"
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
+    id("com.bmuschko.docker-java-application") version "8.0.0"
     application
 }
 
@@ -60,4 +61,11 @@ sqldelight {
 
 sourceSets.main {
     java.srcDirs("build/generated/ksp/main/kotlin")
+}
+
+docker {
+    javaApplication {
+        baseImage.set("eclipse-temurin:18")
+        jvmArgs.set(listOf("-Xms256m", "-Xmx2048m"))
+    }
 }
