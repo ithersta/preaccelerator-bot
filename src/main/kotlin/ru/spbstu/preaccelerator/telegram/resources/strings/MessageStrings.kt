@@ -145,13 +145,15 @@ object MessageStrings : KoinComponent {
         const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
-        val InputDateTime = "Введите дату и время конференции в формате дд.ММ.гггг чч:мм. Часовой пояс ${zoneId.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("ru"))}."
+        val InputDateTime = "Введите дату и время конференции в формате дд.ММ.гггг чч:мм (часовой пояс ${
+            zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
+        })"
         const val MeetingIsCreated =
-            "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
 
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
-        const val InvalidDataFormat = "Введён неверный формат данных"
+        val InvalidDateTime = "Неверный формат даты. $InputDateTime"
         const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
 
