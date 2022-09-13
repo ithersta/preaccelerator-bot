@@ -188,6 +188,15 @@ fun StateMachineBuilder.sendingInfo() {
                 setState(newState)
             }
             onDataCallbackQuery(Regex("send info")) { message ->
+                sendTextMessage(
+                    chat = message.from,
+                    text = MessageStrings.MassSendInfo.StartSendInfo
+                )
+                editMessageReplyMarkup(
+                    chat = message.from,
+                    messageId = message.messageCallbackQueryOrThrow().message.messageId,
+                    replyMarkup = null
+                )
                 val massMessage = when (user) {
                     is Curator -> NotificationStrings.MassSendInfo.notificationCurator(state.massMess)
                     is Tracker -> NotificationStrings.MassSendInfo.notificationTracker(state.massMess)
@@ -203,6 +212,10 @@ fun StateMachineBuilder.sendingInfo() {
                         text = massMessage
                     )
                 }
+                sendTextMessage(
+                    chat = message.from,
+                    text = MessageStrings.MassSendInfo.FinishSendInfo
+                )
                 setState(EmptyState)
             }
         }
