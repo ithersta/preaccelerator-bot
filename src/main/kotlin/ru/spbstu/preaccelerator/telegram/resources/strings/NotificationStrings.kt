@@ -24,14 +24,25 @@ object NotificationStrings {
     }
 
     object MeetingNotifications {
-        fun meetingCreatedNotify(dateTime: OffsetDateTime, url: String) =
+        fun meetingCreatedNotifyMember(dateTime: OffsetDateTime, url: String) =
             buildEntities {
                 regularln("Ваш трекер запланировал новую встречу")
                 bold("Дата встречи: ")
                 regularln(MessageStrings.dateTimeFormatter.format(dateTime))
                 bold("Ссылка на конференцию: ")
                 linkln(url)
+                regularln("")
                 regularln("За 2 часа до назначенного времени вам придёт напоминание")
+            }
+
+        fun meetingCreatedNotifyCurator(dateTime: OffsetDateTime, url: String) =
+            buildEntities {
+                regularln("Трекер запланировал новую встречу")
+                regularln("")
+                bold("Дата встречи: ")
+                regularln(MessageStrings.dateTimeFormatter.format(dateTime))
+                bold("Ссылка на конференцию: ")
+                linkln(url)
             }
     }
 }

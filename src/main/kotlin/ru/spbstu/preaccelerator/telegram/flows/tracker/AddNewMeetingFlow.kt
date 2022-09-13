@@ -13,10 +13,7 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
-import ru.spbstu.preaccelerator.domain.repository.MemberRepository
-import ru.spbstu.preaccelerator.domain.repository.TeamRepository
-import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
+import ru.spbstu.preaccelerator.domain.repository.*
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
@@ -34,6 +31,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
     val teamRepository: TeamRepository by inject()
     val memberRepository: MemberRepository by inject()
     val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
+    val curatorRepository: CuratorRepository by inject()
     val zoneId: ZoneId by inject()
     state<NewMeetingState.WaitingForModuleNumber> {
         onTransition { chatId ->
@@ -153,8 +151,13 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             memberRepository.get(state.teamId).forEach {
                 val chatId = userPhoneNumberRepository.get(it.phoneNumber)
+
+                curatorRepository.getCurators().map {
+                    sendTextMessage (it.userId, NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(state.dateTime, state.url))
+                }
+
                 if (chatId != null) {
-                    sendTextMessage (chatId, NotificationStrings.MeetingNotifications.meetingCreatedNotify(state.dateTime, state.url))
+                    sendTextMessage (chatId, NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(state.dateTime, state.url))
                 }
             }
             setState(MenuState.Tracker.Meetings)
