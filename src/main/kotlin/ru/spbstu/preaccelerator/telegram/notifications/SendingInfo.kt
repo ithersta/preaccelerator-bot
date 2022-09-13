@@ -52,7 +52,7 @@ fun StateMachineBuilder.sendingInfo() {
                                 chatId = messeger,
                                 text = MessageStrings.MassSendInfo.ListOfTeams,
                                 replyMarkup = inlineTeams(
-                                    getListTeamsUseCase(user, messeger),
+                                    getListTeamsUseCase(user),
                                     mutableSetOf()
                                 )
                             ).messageId
@@ -64,7 +64,7 @@ fun StateMachineBuilder.sendingInfo() {
                                 chatId = messeger,
                                 messageId = state.messageIdentifier!!,
                                 replyMarkup = inlineTeams(
-                                    getListTeamsUseCase(user, messeger),
+                                    getListTeamsUseCase(user),
                                     state.setTeamId!!
                                 )
                             )
@@ -85,7 +85,7 @@ fun StateMachineBuilder.sendingInfo() {
 
                         TypeMassMess.AllFromTracker -> {
                             val mutableList = mutableListOf<UserId>()
-                            getListTeamsUseCase(user, messeger)
+                            getListTeamsUseCase(user)
                                 .forEach { team ->
                                     memberRepository.get(team.id).forEach { member ->
                                         val userId = userPhoneNumberRepository.get(member.phoneNumber)
@@ -128,7 +128,7 @@ fun StateMachineBuilder.sendingInfo() {
                     messageId = message.messageCallbackQueryOrThrow().message.messageId,
                     text = MessageStrings.MassSendInfo.listTeams(
                         state.setTeamId!!,
-                        getListTeamsUseCase(user, message.from.id).associate { it.id to it.name }
+                        getListTeamsUseCase(user).associate { it.id to it.name }
                     ),
                     replyMarkup = null
                 )
