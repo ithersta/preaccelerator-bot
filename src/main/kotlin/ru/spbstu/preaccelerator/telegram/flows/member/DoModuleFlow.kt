@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
+import org.apache.commons.validator.routines.UrlValidator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
@@ -40,7 +41,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkUploaded
-import java.net.URL
 
 fun RoleFilterBuilder<Member>.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
@@ -316,11 +316,11 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
         }
         onText { message ->
             val task = moduleConfig.tasks.first { it.number == state.taskNumber }
-            val url = runCatching { URL(message.content.text) }.getOrElse {
+            val url = message.content.text.takeIf { UrlValidator().isValid(it) } ?: run {
                 sendTextMessage(message.chat, ModuleStrings.Error.MalformedHomeworkUrl)
                 return@onText
             }
-            if (!user.team.addHomework(task.number, url.toString())) {
+            if (!user.team.addHomework(task.number, url)) {
                 sendTextMessage(
                     chat = message.chat,
                     text = ModuleStrings.Error.HomeworkWasAlreadyAdded
@@ -332,10 +332,7 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                         homeworkUploaded(task, user.team),
                         replyMarkup = inlineKeyboard {
                             row {
-                                urlButton(
-                                    SeeHomework,
-                                    url.toString()
-                                )
+                                urlButton(SeeHomework, url)
                             }
                         }
                     )
