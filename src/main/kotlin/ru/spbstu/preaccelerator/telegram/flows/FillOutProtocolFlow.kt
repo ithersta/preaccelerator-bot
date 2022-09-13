@@ -20,7 +20,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
-import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
+import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
@@ -32,6 +32,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracke
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ViewProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.explanationReasons
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.map
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.textForCurator
 
 
@@ -62,7 +63,8 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     teamRepository.get(state.teamId).availableModules.chunked(2).forEach {
                         row {
                             it.forEach {
-                                dataButton(it.name, "moduleId ${it.number.value}")
+                                val status = statusRepository.get(state.teamId, it.number)
+                                dataButton(map[status.value] + it.name, "moduleId ${it.number.value}")
                             }
                         }
                     }
@@ -149,15 +151,25 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
                         replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })
                     sendTextMessage(
-                        it.userId, ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
-                            protocolStatus = statusRepository.get(
-                                state.teamId, state.moduleNumber
-                            )
-                        )
-                    )
+                        it.userId,
+                        ReadyCheck,
+                        replyMarkup = replyKeyboard {
+                            row {
+                                simpleButton(ButtonStrings.Option.Yes)
+                                simpleButton(ButtonStrings.Option.No)
+                            }
+                        })
                 }
-                setState(EmptyState)
-            }
+//                sendTextMessage(
+//                    it.userId, ReadyCheck, replyMarkup = declineOrAcceptKeyboard(
+//                        protocolStatus = statusRepository.get(
+//                            state.teamId, state.moduleNumber
+//                        )
+//                    )
+//                )
+//            }
+            setState(EmptyState)
         }
     }
+}
 }

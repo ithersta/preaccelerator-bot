@@ -4,6 +4,7 @@ import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Protocol
+import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
@@ -163,6 +164,10 @@ object MessageStrings : KoinComponent {
 
 
     object Tracker {
+        val map = mapOf(ProtocolStatus.Value.Unsent to "✉️",
+            ProtocolStatus.Value.Declined   to "❌",
+            ProtocolStatus.Value.Sent to "\uD83D\uDCE4",
+            ProtocolStatus.Value.Accepted to "✅" )
         fun confirmationProtocol(moduleNumber: String) =
             "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
 
