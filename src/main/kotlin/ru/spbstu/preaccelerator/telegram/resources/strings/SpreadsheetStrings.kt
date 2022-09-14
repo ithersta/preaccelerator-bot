@@ -1,40 +1,34 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
+import ru.spbstu.preaccelerator.domain.entities.module.Module
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.SignStyle
+import java.time.temporal.ChronoField
 
 object SpreadsheetStrings {
     object StatisticsTable {
-        const val NameTeam = "Название команды"
-        const val DateOfComplete = "Дата сдачи домашнего задания"
-
-        data class Module(
-            val name: String,
-            val range: Int
-        )
-
-        val modules = listOf(
-            Module("Модуль 1", 4),
-            Module("Модуль 2", 4),
-            Module("Модуль 3", 2),
-            Module("Модуль 4", 3),
-            Module("Модуль 5", 1),
-            Module("Модуль 6", 1),
-            Module("Модуль 7", 1),
-            Module("Модуль 8", 1)
-        )
+        const val TeamName = "Название команды"
+        const val DateOfCompletion = "Дата сдачи домашнего задания"
         const val TotalCompleted = "Всего выполнили"
-        fun timeStampToString(dateTime: OffsetDateTime) = String.format(
-            "%04d.%02d.%02dT%02d:%02d",
-            dateTime.year,
-            dateTime.month.value,
-            dateTime.dayOfMonth,
-            dateTime.hour,
-            dateTime.minute
-        )
+        val OffsetDateTimeFormatter = DateTimeFormatterBuilder()
+            .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendLiteral('.')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('.')
+            .appendValue(ChronoField.DAY_OF_MONTH, 2)
+            .appendLiteral('T')
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(':')
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .optionalStart()
+            .appendLiteral(':')
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .optionalStart()
+            .toFormatter()
 
-
-        fun formula(column: Char, count: Int) = "COUNTA(${column}4:${column}${count + 3})"
+        fun moduleString(number: Module.Number) = "Модуль ${number.value}"
         const val FileName = "Сводка команды"
     }
 }

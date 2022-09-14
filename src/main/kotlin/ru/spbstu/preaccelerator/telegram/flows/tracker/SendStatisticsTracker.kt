@@ -1,44 +1,34 @@
 package ru.spbstu.preaccelerator.telegram.flows.tracker
 
-import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
+import com.ithersta.tgbotapi.fsm.StatefulContext
 import dev.inmo.tgbotapi.extensions.api.send.media.sendDocument
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.requests.abstracts.asMultipartFile
-import org.koin.core.component.inject
-import ru.spbstu.preaccelerator.domain.entities.user.Curator
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
+import org.koin.core.context.GlobalContext
+import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.HomeworkRepository
-import ru.spbstu.preaccelerator.domain.repository.TeamRepository
-import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
-import ru.spbstu.preaccelerator.domain.repository.UserPhoneNumberRepository
-import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
-import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.SendStatisticsTeamsState
+import ru.spbstu.preaccelerator.telegram.entities.state.DialogState
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.parsers.Xlsx
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.SpreadsheetStrings
 
-fun RoleFilterBuilder<Tracker>.sendStatisticsTracker() {
-    state<SendStatisticsTeamsState> {
-        val homeworkRepository: HomeworkRepository by inject()
-        onTransition { messager ->
-            try {
-                val spreadsheet = Xlsx.createStatisticsSpreadsheet(
-                    user.teams,
-                    homeworkRepository.getAll()
-                )
-                sendDocument(
-                    messager,
-                    spreadsheet.asMultipartFile("${SpreadsheetStrings.StatisticsTable.FileName}.xlsx")
-                )
-            } catch (error: RuntimeException) {
-                sendTextMessage(messager,MessageStrings.SendStatistics.NoTeams)
-            }
-            finally {
-                setState(EmptyState)
-            }
+val homeworkRepository: HomeworkRepository by GlobalContext.get().inject()
 
-        }
+suspend fun StatefulContext<DialogState, PreacceleratorUser, *, Tracker>.sendStatisticsTracker(message: CommonMessage<TextContent>) {
+    try {
+        val spreadsheet = Xlsx.createStatisticsSpreadsheet(
+            user.teams,
+            homeworkRepository.getAll()
+        )
+        sendDocument(
+            message.chat,
+            spreadsheet.asMultipartFile("${SpreadsheetStrings.StatisticsTable.FileName}.xlsx")
+        )
+    } catch (error: RuntimeException) {
+        sendTextMessage(message.chat, MessageStrings.SendStatistics.NoTeams)
     }
 }

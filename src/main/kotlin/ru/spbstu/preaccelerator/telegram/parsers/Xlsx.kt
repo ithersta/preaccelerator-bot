@@ -2,15 +2,18 @@ package ru.spbstu.preaccelerator.telegram.parsers
 
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
-import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.koin.core.context.GlobalContext
 import ru.spbstu.preaccelerator.domain.entities.Homework
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.Team
+import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.telegram.resources.strings.SpreadsheetStrings
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.lang.RuntimeException
+
+private val moduleConfig: ModuleConfig by GlobalContext.get().inject()
 
 const val MEMBERS_SHEET_NAME = "Участники"
 const val TEAMS_SHEET_NAME = "Команды"
@@ -79,7 +82,7 @@ object Xlsx {
     }.getOrNull()
 
     fun createStatisticsSpreadsheet(teams: List<Team>, homeworks: List<Homework>): ByteArray {
-        if (teams.isEmpty()){
+        if (teams.isEmpty()) {
             throw RuntimeException("list of teams is empty")
         }
         val workbook = XSSFWorkbook()
@@ -92,33 +95,33 @@ object Xlsx {
             }
             createRow(0).apply {
                 createCell(0).apply {
-                    setCellValue(SpreadsheetStrings.StatisticsTable.NameTeam)
+                    setCellValue(SpreadsheetStrings.StatisticsTable.TeamName)
                     cellStyle = style
                 }
                 addMergedRegion(CellRangeAddress(0, 2, 0, 0))
                 createCell(1).apply {
-                    setCellValue(SpreadsheetStrings.StatisticsTable.DateOfComplete)
+                    setCellValue(SpreadsheetStrings.StatisticsTable.DateOfCompletion)
                     cellStyle = style
                 }
                 addMergedRegion(CellRangeAddress(0, 0, 1, 17))
             }
+            var allTasks = 1
             createRow(1).apply {
-                var firstColumn = 1
-                SpreadsheetStrings.StatisticsTable.modules.forEach { module ->
-                    createCell(firstColumn).apply {
-                        setCellValue(module.name)
+                moduleConfig.modules.forEach { (number, module) ->
+                    createCell(allTasks).apply {
+                        setCellValue(SpreadsheetStrings.StatisticsTable.moduleString(number))
                         cellStyle = style
                     }
-                    if (module.range > 1) {
-                        addMergedRegion(CellRangeAddress(1, 1, firstColumn, firstColumn + module.range - 1))
+                    if (module.tasks.size > 1) {
+                        addMergedRegion(CellRangeAddress(1, 1, allTasks, allTasks + module.tasks.size - 1))
                     }
-                    firstColumn += module.range
+                    allTasks += module.tasks.size
                 }
             }
             createRow(2).apply {
-                generateSequence(1) { it + 1 }.take(17).forEach {
-                    createCell(it).apply {
-                        setCellValue("№$it")
+                for (i in 1 until allTasks) {
+                    createCell(i).apply {
+                        setCellValue("№$i")
                         cellStyle = style
                     }
                 }
@@ -133,7 +136,7 @@ object Xlsx {
                         homework.teamId == team.id
                     }.sortedBy { it.taskNumber.value }.forEachIndexed { index, homework ->
                         createCell(index + 1).apply {
-                            setCellValue(SpreadsheetStrings.StatisticsTable.timeStampToString(homework.timestamp))
+                            setCellValue(homework.timestamp.format(SpreadsheetStrings.StatisticsTable.OffsetDateTimeFormatter))
                             cellStyle = style
                         }
                     }
@@ -144,18 +147,17 @@ object Xlsx {
                     setCellValue(SpreadsheetStrings.StatisticsTable.TotalCompleted)
                     cellStyle = style
                 }
-                generateSequence('b') { it + 1 }.take(17).forEachIndexed { index, column ->
+                generateSequence(1) { it + 1 }.take(allTasks - 1).forEachIndexed { index, column ->
                     createCell(index + 1).apply {
-                        cellFormula = SpreadsheetStrings.StatisticsTable.formula(column, teams.size)
+                        setCellValue(homeworks.count { it.taskNumber.value == column }.toString())
                         cellStyle = style
                     }
                 }
             }
-            generateSequence(0) { it + 1 }.take(17).forEach {
-                autoSizeColumn(it)
+            repeat(allTasks) {
+                autoSizeColumn(it, true)
             }
         }
-        workbook.creationHelper.createFormulaEvaluator().evaluateAll()
         return ByteArrayOutputStream().apply {
             workbook.write(this)
             workbook.close()

@@ -30,7 +30,7 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
         backButton(MenuStrings.Back)
     }
     submenu(GetStats.Button, GetStats.Message, MenuState.Curator.GetStats) {
-        button(GetStats.Teams, SendStatisticsTeamsState)
+        button(GetStats.Teams) { sendStatisticsCurator() }
         button(GetStats.Trackers, NotImplementedState)
         backButton(MenuStrings.Back)
     }
@@ -44,7 +44,6 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {
     with(curatorMenu) { invoke() }
-    sendStatisticsCurator()
     addUsersFlow()
     reviewProtocolsFlow()
 }

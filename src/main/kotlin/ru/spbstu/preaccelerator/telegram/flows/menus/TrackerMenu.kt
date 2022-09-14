@@ -26,13 +26,12 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
         button(Teams.GetHomework, DownloadHomeworkState)
-        button(Teams.GetStats, SendStatisticsTeamsState)
+        button(Teams.GetStats) {sendStatisticsTracker(it)}
         backButton(MenuStrings.Back)
     }
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerMenu() {
-    sendStatisticsTracker()
     with(trackerMenu) { invoke() }
     addNewMeetingFlow()
     downloadHomeworkFlow()
