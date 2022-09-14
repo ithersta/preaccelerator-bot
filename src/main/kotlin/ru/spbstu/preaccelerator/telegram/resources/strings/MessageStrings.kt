@@ -177,8 +177,14 @@ object MessageStrings : KoinComponent {
         fun textForCurator(countOfWeek: String, teamName: String) =
             "Протокол $countOfWeek недели от команды $teamName отправлен на проверку."
 
-        fun explanationReasons(countOfWeek: String, reason: String) =
-            "Куратор не принял протокол недели $countOfWeek\nПричина: $reason"
+        fun explanationReasons(protocolStatus: ProtocolStatus, team: Team) = buildEntities {
+            regularln("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name}")
+            bold("нуждается в изменении\n\nКомментарий куратора:")
+            regularln(" ${protocolStatus.comment}\nВнесите соответствующие правки и оптравьте протокол заново на проверку.")
+        }
+//        )"""|Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name} *нуждается в изменении*//. " +
+//                    "|*Комментарий куратора:* ${protocolStatus.comment} " +
+//                    "|Внесите соответствующие правки и оптравьте протокол заново на проверку//.""".trimMargin()
 
         const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"

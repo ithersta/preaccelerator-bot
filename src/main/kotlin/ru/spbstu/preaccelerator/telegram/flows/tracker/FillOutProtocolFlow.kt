@@ -37,7 +37,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracke
 
 fun StateMachineBuilder.fillOutProtocolFlow() {
     val protocolRepository: ProtocolRepository by inject()
-    val statusRepository: ProtocolStatusRepository by inject()
+    val protocolStatusRepository: ProtocolStatusRepository by inject()
     val teamRepository: TeamRepository by inject()
     val curatorRepository: CuratorRepository by inject()
     role<Tracker> {
@@ -62,7 +62,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     teamRepository.get(state.teamId).availableModules.chunked(2).forEach {
                         row {
                             it.forEach {
-                                val status = statusRepository.get(state.teamId, it.number)
+                                val status = protocolStatusRepository.get(state.teamId, it.number)
                                 dataButton(map[status.value] + it.name, "moduleId ${it.number.value}")
                             }
                         }
@@ -73,39 +73,38 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 val moduleNumber = Number(it.data.split(' ').last().toInt())
                 protocolRepository.get(state.teamId)
                 if (protocolRepository.get(state.teamId) == null) {
-                    setState(SendDiskUrl(state.teamId, moduleNumber))
+                    setState(SendUrl(state.teamId, moduleNumber))
                 } else {
-                    setState(
-                        ChooseProtocol(state.teamId, moduleNumber)
-                    )
+                    setState(CheckProtocolStatus(state.teamId, moduleNumber))
                 }
             }
         }
-        state<SendDiskUrl> {
-            onTransition { chatId ->
-                sendTextMessage(chatId, InputGoogleDiskUrl)
+        state<SendUrl> {
+            onTransition {
+                sendTextMessage(it, InputGoogleDiskUrl)
             }
             onText { message ->
-                val googleDiskLink = message.content.text
-                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
-                    protocolRepository.add(state.teamId, googleDiskLink)
-                    setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
+                val protocolUrl = message.content.text
+                if (!protocolStatusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
+                    protocolRepository.add(state.teamId, protocolUrl)
+                    setState(NotificationButton(state.teamId, state.moduleNumber, protocolUrl))
                 } else {
                     sendTextMessage(message.chat, ProtocolHasBeenSent)
                     setState(EmptyState)
                 }
             }
         }
-        state<ChooseProtocol> {
+        state<CheckProtocolStatus> {
             onTransition {
-                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
-                    val status = statusRepository.get(state.teamId, state.moduleNumber)
+                val status = protocolStatusRepository.get(state.teamId, state.moduleNumber)
+                if (!status.isFinished()) {
                     if (status.value == ProtocolStatus.Value.Declined) {
                         setState(FixWrongProtocol(state.teamId, state.moduleNumber))
                     } else {
                         setState(
                             NotificationButton(
-                                state.teamId, state.moduleNumber,
+                                state.teamId,
+                                state.moduleNumber,
                                 protocolRepository.get(state.teamId)!!.url
                             )
                         )
@@ -115,7 +114,6 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     setState(EmptyState)
                 }
             }
-
         }
 
         state<FixWrongProtocol> {
@@ -123,8 +121,8 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                 sendTextMessage(
                     chatId,
                     explanationReasons(
-                        state.moduleNumber.value.toString(),
-                        statusRepository.get(state.teamId, state.moduleNumber).comment.toString()
+                        protocolStatusRepository.get(state.teamId,state.moduleNumber),
+                        teamRepository.get(state.teamId)
                     ),
                     replyMarkup = replyKeyboard(resizeKeyboard = true) {
                         row {
@@ -135,7 +133,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             }
 
             onText(ProtocolChanged) { message ->
-                statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
+                protocolStatusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 sendTextMessage(message.chat, ProtocolHasBeenSent)
                 setState(EmptyState)
             }
@@ -152,7 +150,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             }
             onText(MessageCurator) { message ->
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
-                statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
+                protocolStatusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
                 curatorRepository.getCurators().forEach {
                     sendTextMessage(it.userId,
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
@@ -160,7 +158,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     sendTextMessage(
                         it.userId,
                         ReadyCheck,
-                        replyMarkup = declineOrAcceptKeyboard(statusRepository.get(state.teamId, state.moduleNumber))
+                        replyMarkup = declineOrAcceptKeyboard(protocolStatusRepository.get(state.teamId, state.moduleNumber))
                     )
                 }
                 setState(EmptyState)
