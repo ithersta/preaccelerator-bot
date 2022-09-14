@@ -152,7 +152,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onText(MessageCurator) { message ->
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 protocolStatusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
-                curatorRepository.getCurators().forEach {
+                curatorRepository.getAll().forEach {
                     sendTextMessage(it.userId,
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
                         replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })

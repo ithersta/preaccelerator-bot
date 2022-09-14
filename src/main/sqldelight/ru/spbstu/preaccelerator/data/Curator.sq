@@ -11,7 +11,7 @@ get:
 SELECT * FROM Curator
 WHERE userId = :userId;
 
-getCurators:
+getAll:
 SELECT * FROM Curator;
 
 add:
