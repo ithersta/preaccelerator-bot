@@ -68,8 +68,8 @@ fun StateMachineBuilder.startFlow() {
             onTransition {
                 refreshCommands()
                 val text = when (val user = user) {
-                    is EmptyUser -> {MessageStrings.Start.NoRoleAssigned }
-                    is Curator -> {MessageStrings.Start.WelcomeCurator}
+                    is EmptyUser -> MessageStrings.Start.NoRoleAssigned
+                    is Curator -> MessageStrings.Start.WelcomeCurator
                     is Member -> MessageStrings.Start.welcomeMember(user.team)
                     is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
