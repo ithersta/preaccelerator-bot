@@ -4,14 +4,14 @@ import ru.spbstu.preaccelerator.domain.entities.Protocol;
 import ru.spbstu.preaccelerator.domain.entities.Team;
 
 CREATE TABLE Protocol (
-teamId BIGINT AS Team.Id PRIMARY KEY,
-url TEXT NOT NULL
+  teamId BIGINT AS Team.Id PRIMARY KEY,
+  url TEXT NOT NULL
 );
 
 get:
 SELECT * FROM Protocol
-WHERE teamId  = :teamId;
+WHERE teamId = :teamId;
 
 add:
-INSERT INTO Protocol(teamId,url)
-VALUES(:teamId,:url);
+INSERT INTO Protocol(teamId, url)
+VALUES(:teamId, :url);
