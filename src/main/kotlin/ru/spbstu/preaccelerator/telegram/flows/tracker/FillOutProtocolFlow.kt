@@ -122,7 +122,8 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     chatId,
                     explanationReasons(
                         protocolStatusRepository.get(state.teamId,state.moduleNumber),
-                        teamRepository.get(state.teamId)
+                        teamRepository.get(state.teamId),
+                        protocolRepository.get(state.teamId)!!
                     ),
                     replyMarkup = replyKeyboard(resizeKeyboard = true) {
                         row {
