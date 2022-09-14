@@ -20,7 +20,9 @@ object MessageStrings : KoinComponent {
     private val zoneId: ZoneId by inject()
 
     object Start {
-        const val AskContact = "TODO"
+        const val AskContact = "Добро пожаловать в телеграм\\-бот предакселератора НТИ\\.\n" +
+                "Чтобы начать путь к успешному стартапу длиной в 8 недель необходимо поделиться с нами вашим номером телефона\\. " +
+                "Это позволит нам определить, кто вы\\."
         const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
