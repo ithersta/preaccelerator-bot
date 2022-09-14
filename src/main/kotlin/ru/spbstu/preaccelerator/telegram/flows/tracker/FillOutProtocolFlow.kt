@@ -35,7 +35,6 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracke
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.map
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.textForCurator
 
-
 fun StateMachineBuilder.fillOutProtocolFlow() {
     val protocolRepository: ProtocolRepository by inject()
     val statusRepository: ProtocolStatusRepository by inject()
@@ -77,7 +76,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     setState(SendDiskUrl(state.teamId, moduleNumber))
                 } else {
                     setState(
-                        ChooseProtocol(state.teamId, moduleNumber, protocolRepository.get(state.teamId))
+                        ChooseProtocol(state.teamId, moduleNumber)
                     )
                 }
             }
@@ -85,7 +84,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<SendDiskUrl> {
             onTransition { chatId ->
                 sendTextMessage(chatId, InputGoogleDiskUrl)
-                setState(ChooseProtocol(state.teamId, state.moduleNumber, protocolRepository.get(state.teamId)))
+                setState(ChooseProtocol(state.teamId, state.moduleNumber))
             }
         }
         state<ChooseProtocol> {
@@ -95,7 +94,12 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
                     if (status.value == ProtocolStatus.Value.Declined) {
                         setState(FixWrongProtocol(state.teamId, state.moduleNumber))
                     } else {
-                        setState(NotificationButton(state.teamId, state.moduleNumber, state.protocol!!.url))
+                        setState(
+                            NotificationButton(
+                                state.teamId, state.moduleNumber,
+                                protocolRepository.get(state.teamId)!!.url
+                            )
+                        )
                     }
                 } else {
                     sendTextMessage(it, ProtocolHasBeenSent)
@@ -140,7 +144,7 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
             onText(MessageCurator) { message ->
                 sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
                 statusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
-                curatorRepository.getCurators().map {
+                curatorRepository.getCurators().forEach {
                     sendTextMessage(it.userId,
                         textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
                         replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })

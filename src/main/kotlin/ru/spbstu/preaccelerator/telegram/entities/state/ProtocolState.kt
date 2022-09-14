@@ -19,7 +19,7 @@ class ProtocolState {
     class FixWrongProtocol(val teamId: Team.Id, val moduleNumber: Number) : DialogState
 
     @Serializable
-    class ChooseProtocol(val teamId: Team.Id, val moduleNumber: Number, val protocol: Protocol?) : DialogState
+    class ChooseProtocol(val teamId: Team.Id, val moduleNumber: Number) : DialogState
 
     @Serializable
     class NotificationButton(val teamId: Team.Id, val moduleNumber: Number, val urlOrProtocol: String) : DialogState

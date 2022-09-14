@@ -172,10 +172,11 @@ object MessageStrings : KoinComponent {
         )
 
         fun confirmationProtocol(moduleNumber: String) =
-            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
+            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели." +
+                    " Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
 
         fun textForCurator(countOfWeek: String, teamName: String) =
-            "Протокол $countOfWeek недели  от команды $teamName отправлен на проверку."
+            "Протокол $countOfWeek недели от команды $teamName отправлен на проверку."
 
         fun explanationReasons(countOfWeek: String, reason: String) =
             "Куратор не принял протокол недели $countOfWeek\nПричина: $reason"
