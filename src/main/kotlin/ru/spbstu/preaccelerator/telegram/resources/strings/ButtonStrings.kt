@@ -8,6 +8,10 @@ object ButtonStrings {
         const val SendContact = "Отправить мой номер телефона"
     }
 
+    object StartNewSeason {
+        const val LaunchAccelerator = "Запустить предакселератор"
+    }
+
     object Module {
         const val WatchLecture = "Запись лекции"
         const val ShowPresentation = "Презентация"

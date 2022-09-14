@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 object MenuState {
     object Curator {
         @Serializable
+        object StartSeason : DialogState
+        @Serializable
         object SendInfo : DialogState
 
         @Serializable
