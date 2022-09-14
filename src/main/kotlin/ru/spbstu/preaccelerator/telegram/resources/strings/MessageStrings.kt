@@ -19,6 +19,10 @@ import java.util.*
 // TODO: Всё переписать
 object MessageStrings : KoinComponent {
     private val zoneId: ZoneId by inject()
+    private val dateTimeFormatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withZone(zoneId)
+        .withLocale(Locale.forLanguageTag("ru"))
 
     object Start {
         const val AskContact = "TODO"
@@ -151,13 +155,10 @@ object MessageStrings : KoinComponent {
         const val MeetingIsCreated =
             "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
 
-        //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
         val InvalidDateTime = "Неверный формат даты. $InputDateTime"
         const val InvalidModuleNumber = "Введён неверный номер модуля"
     }
-
-    private val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG).withZone(zoneId)
 
     object SendInfo {
         const val ChooseTeams = "Выберите команды, которым хотите разослать сообщение"
@@ -196,12 +197,12 @@ object MessageStrings : KoinComponent {
         val map = mapOf(
             ProtocolStatus.Value.Unsent to "✉️",
             ProtocolStatus.Value.Declined to "❌",
-            ProtocolStatus.Value.Sent to "\uD83D\uDCE4",
+            ProtocolStatus.Value.Sent to "📤",
             ProtocolStatus.Value.Accepted to "✅"
         )
 
         fun confirmationProtocol(moduleNumber: String) =
-            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели." + " Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
+            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
 
         fun textForCurator(countOfWeek: String, teamName: String) =
             "Протокол $countOfWeek недели от команды $teamName отправлен на проверку."
