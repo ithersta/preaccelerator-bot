@@ -7,7 +7,6 @@ import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -42,21 +41,13 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             )
         }
         onText { message ->
-            val moduleNumber = message.content.text.toIntOrNull()?.let { Module.Number(it) } ?: run {
-                sendTextMessage(
-                    message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputModuleNumber,
-                    parseMode = MarkdownV2
-                )
-                return@onText
-            }
-            if (moduleConfig.modules.containsKey(moduleNumber)) {
+            val moduleNumber = message.content.text.toIntOrNull()?.let { Module.Number(it) }
+            if (moduleNumber != null && moduleConfig.modules.containsKey(moduleNumber)) {
                 setState(NewMeetingState.WaitingForTeam(moduleNumber))
             } else {
                 sendTextMessage(
                     message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidModuleNumber,
-                    parseMode = MarkdownV2
+                    MessageStrings.ScheduleMeetings.InvalidModuleNumber
                 )
                 return@onText
             }
@@ -103,8 +94,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.ScheduleMeetings.InputDateTime,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.InputDateTime
             )
         }
         onText { message ->
@@ -112,11 +102,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
                 ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
             } catch (e: DateTimeParseException) {
-                sendTextMessage(
-                    message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputDateTime,
-                    parseMode = MarkdownV2
-                )
+                sendTextMessage(message.chat, MessageStrings.ScheduleMeetings.InvalidDateTime)
                 return@onText
             }
             setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, dateTime))
@@ -136,8 +122,8 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                     oneTimeKeyboard = true
                 ) {
                     row {
-                        simpleButton(ButtonStrings.Option.Yes)
                         simpleButton(ButtonStrings.Option.No)
+                        simpleButton(ButtonStrings.Option.Yes)
                     }
                 }
             )
@@ -145,8 +131,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onText(ButtonStrings.Option.Yes) { message ->
             sendTextMessage(
                 message.chat,
-                MessageStrings.ScheduleMeetings.MeetingIsCreated,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.MeetingIsCreated
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             memberRepository.get(state.teamId).forEach {
@@ -163,8 +148,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onText(ButtonStrings.Option.No) { message ->
             sendTextMessage(
                 message.chat,
-                MessageStrings.ScheduleMeetings.MeetingNotCreated,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.MeetingNotCreated
             )
             setState(NewMeetingState.WaitingForModuleNumber)
         }

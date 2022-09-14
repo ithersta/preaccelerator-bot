@@ -12,6 +12,8 @@ import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.*
 
 // TODO: Всё переписать
 object MessageStrings : KoinComponent {
@@ -143,14 +145,41 @@ object MessageStrings : KoinComponent {
         const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
-        const val InputDateTime = "Введите дату и время конференции в формате дд\\.ММ\\.гггг чч:мм"
+        val InputDateTime = "Введите дату и время конференции в формате дд.ММ.гггг чч:мм (часовой пояс ${
+            zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
+        })"
         const val MeetingIsCreated =
-            "Новая встреча с командой создана\\. Вы и участники команды получите напоминание о встрече за 2 часа до неё"
+            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
 
         //TODO написать красиво
         const val MeetingNotCreated = "Встреча не создана"
-        const val InvalidDataFormat = "Введён неверный формат данных"
+        val InvalidDateTime = "Неверный формат даты. $InputDateTime"
         const val InvalidModuleNumber = "Введён неверный номер модуля"
+    }
+
+    object SendInfo {
+        const val ChooseTeams = "Выберите команды, которым хотите разослать сообщение"
+        const val EnterMessage = "Введите текст сообщения"
+        const val Started = "Рассылка может занять некоторое время…"
+        fun chosenTeams(teams: List<Team>) = "Выбранные команды: ${teams.joinToString { it.name }}"
+        fun confirmation(message: String) = """
+            |Вы ввели следующее сообщение:
+            |$message
+            |Разослать его?
+        """.trimMargin()
+
+        fun messageFromCurator(message: String) = buildEntities {
+            boldln("Сообщение от куратора")
+            regular(message)
+        }
+
+        fun messageFromTracker(message: String) = buildEntities {
+            boldln("Сообщение от трекера")
+            regular(message)
+        }
+
+        fun success(count: Int) =
+            "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
     }
 
      val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter

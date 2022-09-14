@@ -5,6 +5,7 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 
 interface MemberRepository {
+    fun getAll(): List<Member>
     fun get(id: Member.Id): Member
     fun get(teamId: Team.Id): List<Member>
     fun get(phoneNumber: PhoneNumber): Member?
