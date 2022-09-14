@@ -19,7 +19,7 @@ import ru.spbstu.preaccelerator.telegram.flows.commands.stateCommand
 import ru.spbstu.preaccelerator.telegram.flows.commands.whoCommand
 import ru.spbstu.preaccelerator.telegram.flows.curator.sendInfoFlow
 import ru.spbstu.preaccelerator.telegram.flows.fallback
-import ru.spbstu.preaccelerator.telegram.flows.fillOutProtocolFlow
+import ru.spbstu.preaccelerator.telegram.flows.tracker.fillOutProtocolFlow
 import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.memberMenu
 import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
@@ -42,6 +42,7 @@ fun createStateMachine(
         sendTextMessage(userId, MessageStrings.Error.internal(throwable.message))
     }
     includeHelp()
+
     anyRole {
         anyState {
             cancelCommand()
@@ -49,21 +50,19 @@ fun createStateMachine(
             stateCommand()
         }
     }
+
     startFlow()
+    sendInfoFlow()
 
     role<Curator> {
         curatorMenu()
     }
-
     role<Tracker> {
         trackerMenu()
     }
-
     role<Member> {
         memberMenu()
     }
-    fillOutProtocolFlow()
-    sendInfoFlow()
 
     fallback()
 }

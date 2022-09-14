@@ -8,6 +8,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.flows.tracker.addNewMeetingFlow
 import ru.spbstu.preaccelerator.telegram.flows.tracker.downloadHomeworkFlow
+import ru.spbstu.preaccelerator.telegram.flows.tracker.fillOutProtocolFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Meetings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Teams
@@ -34,4 +35,5 @@ fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerM
     with(trackerMenu) { invoke() }
     addNewMeetingFlow()
     downloadHomeworkFlow()
+    fillOutProtocolFlow()
 }
