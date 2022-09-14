@@ -14,7 +14,8 @@ class Lecture(
 class Task(
     val number: Number,
     val description: String,
-    val templateName: String
+    val templateName: String,
+    val moduleNumber: Module.Number
 ) : ModulePart {
     @Serializable
     @JvmInline

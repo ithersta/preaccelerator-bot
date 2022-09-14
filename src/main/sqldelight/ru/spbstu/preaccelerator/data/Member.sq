@@ -10,6 +10,9 @@ CREATE TABLE Member (
 
 CREATE INDEX member_team_id ON Member(teamId);
 
+getAll:
+SELECT * FROM Member;
+
 get:
 SELECT * FROM Member
 WHERE id = :id;

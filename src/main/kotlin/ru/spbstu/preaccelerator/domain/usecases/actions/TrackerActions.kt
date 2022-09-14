@@ -11,5 +11,5 @@ class TrackerActions(
     private val phoneNumberRepository: UserPhoneNumberRepository
 ) {
     val Tracker.teams get() = teamRepository.get(id)
-    val Tracker.userId get() = phoneNumberRepository.get(phoneNumber)!!
+    val Tracker.userId get() = phoneNumberRepository.get(phoneNumber)
 }

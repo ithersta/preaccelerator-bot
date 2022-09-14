@@ -51,3 +51,10 @@ VALUES(:name, :trackerId)
 ON CONFLICT (name)
 DO UPDATE SET trackerId = :trackerId
 RETURNING id;
+
+getAllPaginated:
+SELECT * FROM Team
+LIMIT :limit OFFSET :offset;
+
+countAll:
+SELECT COUNT(*) FROM Team;

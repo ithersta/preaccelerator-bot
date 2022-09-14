@@ -17,9 +17,9 @@ repositories {
 }
 
 dependencies {
-    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.13.5")
-    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.13.5")
-    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.13.5")
+    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.14.0")
+    implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.14.0")
+    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.14.1")
     implementation("dev.inmo:tgbotapi:3.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
     implementation("org.postgresql:postgresql:42.5.0")
@@ -33,6 +33,7 @@ dependencies {
     implementation("org.apache.poi:poi:5.2.2")
     implementation("org.apache.poi:poi-ooxml:5.2.2")
     implementation("org.quartz-scheduler:quartz:2.3.2")
+    implementation("commons-validator:commons-validator:1.7")
     ksp("io.insert-koin:koin-ksp-compiler:1.0.2")
     testImplementation(kotlin("test"))
 }
