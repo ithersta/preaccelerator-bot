@@ -84,7 +84,16 @@ fun StateMachineBuilder.fillOutProtocolFlow() {
         state<SendDiskUrl> {
             onTransition { chatId ->
                 sendTextMessage(chatId, InputGoogleDiskUrl)
-                setState(ChooseProtocol(state.teamId, state.moduleNumber))
+            }
+            onText { message ->
+                val googleDiskLink = message.content.text
+                if (!statusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
+                    protocolRepository.add(state.teamId, googleDiskLink)
+                    setState(NotificationButton(state.teamId, state.moduleNumber, googleDiskLink))
+                } else {
+                    sendTextMessage(message.chat, ProtocolHasBeenSent)
+                    setState(EmptyState)
+                }
             }
         }
         state<ChooseProtocol> {
