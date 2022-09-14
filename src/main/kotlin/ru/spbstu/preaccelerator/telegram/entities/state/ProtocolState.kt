@@ -13,12 +13,13 @@ class ProtocolState {
 
     @Serializable
     class SendUrl(val teamId: Team.Id, val moduleNumber: Number) : DialogState
-    @Serializable
-    class FixWrongProtocol(val teamId: Team.Id, val moduleNumber: Number) : DialogState
 
     @Serializable
-    class CheckProtocolStatus(val teamId: Team.Id, val moduleNumber: Number) : DialogState
+    class FixWrong(val teamId: Team.Id, val moduleNumber: Number) : DialogState
 
     @Serializable
-    class NotificationButton(val teamId: Team.Id, val moduleNumber: Number, val urlOrProtocol: String) : DialogState
+    class CheckStatus(val teamId: Team.Id, val moduleNumber: Number) : DialogState
+
+    @Serializable
+    class NotificationButton(val teamId: Team.Id, val moduleNumber: Number, val url: String) : DialogState
 }

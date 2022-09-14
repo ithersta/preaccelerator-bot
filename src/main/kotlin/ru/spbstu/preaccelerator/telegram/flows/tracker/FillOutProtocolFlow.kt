@@ -74,7 +74,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
             if (protocolRepository.get(state.teamId) == null) {
                 setState(SendUrl(state.teamId, moduleNumber))
             } else {
-                setState(CheckProtocolStatus(state.teamId, moduleNumber))
+                setState(CheckStatus(state.teamId, moduleNumber))
             }
         }
     }
@@ -93,12 +93,12 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
             }
         }
     }
-    state<CheckProtocolStatus> {
+    state<CheckStatus> {
         onTransition {
             val status = protocolStatusRepository.get(state.teamId, state.moduleNumber)
             if (!status.isFinished()) {
                 if (status.value == ProtocolStatus.Value.Declined) {
-                    setState(FixWrongProtocol(state.teamId, state.moduleNumber))
+                    setState(FixWrong(state.teamId, state.moduleNumber))
                 } else {
                     setState(
                         NotificationButton(
@@ -115,7 +115,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
         }
     }
 
-    state<FixWrongProtocol> {
+    state<FixWrong> {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
@@ -154,7 +154,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
             curatorRepository.getAll().forEach {
                 sendTextMessage(it.userId,
                     textForCurator(state.moduleNumber.value.toString(), teamRepository.get(state.teamId).name),
-                    replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.urlOrProtocol) } })
+                    replyMarkup = inlineKeyboard { row { urlButton(ViewProtocol, state.url) } })
                 sendTextMessage(
                     it.userId,
                     ReadyCheck,

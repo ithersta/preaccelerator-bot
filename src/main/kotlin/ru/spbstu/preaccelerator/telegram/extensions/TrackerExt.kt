@@ -7,7 +7,7 @@ import ru.spbstu.preaccelerator.domain.usecases.actions.TrackerActions
 
 object TrackerExt : KoinComponent {
     private val actions: TrackerActions by inject()
-    val Tracker.teams get() = with(actions) { teams }
 
+    val Tracker.teams get() = with(actions) { teams }
     val Tracker.userId get() = with(actions) { userId }
 }
