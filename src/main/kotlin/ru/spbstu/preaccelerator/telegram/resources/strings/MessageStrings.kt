@@ -164,11 +164,10 @@ object MessageStrings : KoinComponent {
 
 
     object Tracker {
-        const val sim = "\uD83D\uDCE4"
         val map = mapOf(
             ProtocolStatus.Value.Unsent to "✉️",
             ProtocolStatus.Value.Declined to "❌",
-            ProtocolStatus.Value.Sent to sim,
+            ProtocolStatus.Value.Sent to "\uD83D\uDCE4",
             ProtocolStatus.Value.Accepted to "✅"
         )
 
@@ -184,14 +183,12 @@ object MessageStrings : KoinComponent {
         const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
         const val ProtocolChanged = "Протокол исправлен"
-        const val ChooseModule = """
-            Выберите модуль.
-                Значение смайликов:
-                ✉️ - работа еще не отправлена;
-                $sim - работа отправлена;
-                ❌ - работа не принята;
-                ✅ - работа принята. 
-        """
+        val ChooseModule = """|Выберите модуль.
+            |Значение смайликов:
+            |✉️ - работа еще не отправлена;
+            |📤 - работа отправлена;
+            |❌ - работа не принята;
+            |✅ - работа принята.""".trimMargin()
 
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
         const val MessageCurator = "Оповестить куратора о готовности протокола"
