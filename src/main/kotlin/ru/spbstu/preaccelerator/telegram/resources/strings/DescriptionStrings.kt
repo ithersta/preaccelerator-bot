@@ -26,7 +26,7 @@ object DescriptionStrings {
     )
 
     fun sendInfo(recipient: Roles): String = "отправить информацию ${DativeCase.getValue(recipient)}"
-    fun getStats(category: Roles) = "получить статистику по ${DativeCase.getValue(category)}"
+    fun getStats(category: Roles) = "получать статистику по ${DativeCase.getValue(category)}"
 
     object CuratorButtons {
         const val GetProtocol = "получать и проверять протоколы команд"
