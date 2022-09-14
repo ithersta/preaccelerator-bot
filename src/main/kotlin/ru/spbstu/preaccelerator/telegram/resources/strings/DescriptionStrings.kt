@@ -28,14 +28,10 @@ object DescriptionStrings {
     fun sendInfo(recipient: Roles): String = "отправить информацию ${DativeCase.getValue(recipient)}"
     fun getStats(category: Roles) = "получить статистику по ${DativeCase.getValue(category)}"
 
-    private fun isUseless(char: Char): Boolean {
-        return char == '[' || char == ']'
-    }
-
     object CuratorButtons {
         const val GetProtocol = "получать и проверять протоколы команд"
         fun addUsers(users: List<Roles>) =
-            "добавлять новых ${users.map { GenitiveCase.getValue(it) }}".filter { isUseless(it) }
+            "добавлять новых ${users.map { GenitiveCase.getValue(it) }}"
     }
 
     object TrackerButtons {
