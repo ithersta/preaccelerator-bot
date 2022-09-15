@@ -11,9 +11,10 @@ import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.telegram.resources.strings.SpreadsheetStrings
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.lang.RuntimeException
+import java.time.ZoneId
 
 private val moduleConfig: ModuleConfig by GlobalContext.get().inject()
+private val zoneId: ZoneId by GlobalContext.get().inject()
 
 const val MEMBERS_SHEET_NAME = "Участники"
 const val TEAMS_SHEET_NAME = "Команды"
@@ -93,6 +94,9 @@ object Xlsx {
                 verticalAlignment = VerticalAlignment.CENTER
                 wrapText = false
             }
+            val dateTimeStyle = style.copy().apply {
+                dataFormat = workbook.createDataFormat().getFormat("dd.MM.yyyy h:mm")
+            }
             createRow(0).apply {
                 createCell(0).apply {
                     setCellValue(SpreadsheetStrings.StatisticsTable.TeamName)
@@ -136,8 +140,8 @@ object Xlsx {
                         homework.teamId == team.id
                     }.sortedBy { it.taskNumber.value }.forEachIndexed { index, homework ->
                         createCell(index + 1).apply {
-                            setCellValue(homework.timestamp.format(SpreadsheetStrings.StatisticsTable.OffsetDateTimeFormatter))
-                            cellStyle = style
+                            setCellValue(homework.timestamp.atZoneSameInstant(zoneId).toLocalDateTime())
+                            cellStyle = dateTimeStyle
                         }
                     }
                 }
