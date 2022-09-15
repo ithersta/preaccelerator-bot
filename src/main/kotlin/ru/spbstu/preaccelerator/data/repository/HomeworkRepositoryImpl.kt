@@ -20,6 +20,10 @@ class HomeworkRepositoryImpl(
         return appDatabase.homeworkQueries.get(teamId, taskNumber).executeAsOneOrNull()?.toDomainModel()
     }
 
+    override fun getAll(): List<Homework> {
+        return appDatabase.homeworkQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     override fun add(teamId: Team.Id, taskNumber: Task.Number, url: String, timestamp: OffsetDateTime): Boolean {
         return appDatabase.homeworkQueries.add(teamId, taskNumber, url, timestamp).executeAsOneOrNull() != null
     }

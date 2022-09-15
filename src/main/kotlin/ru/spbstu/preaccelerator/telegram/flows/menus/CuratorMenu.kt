@@ -15,6 +15,7 @@ import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.extensions.CuratorExt.generateCuratorToken
 import ru.spbstu.preaccelerator.telegram.flows.curator.addUsersFlow
 import ru.spbstu.preaccelerator.telegram.flows.curator.reviewProtocolsFlow
+import ru.spbstu.preaccelerator.telegram.flows.curator.sendStatisticsCurator
 import ru.spbstu.preaccelerator.telegram.resources.strings.DescriptionStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Curator.AddUsers
@@ -41,7 +42,7 @@ val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Cur
         )
         backButton(MenuStrings.Back)
     }
-    button(GetStats.Teams, NotImplementedState, DescriptionStrings.getStats(DescriptionStrings.Roles.Teams))
+    button(GetStats.Teams, DescriptionStrings.getStats(DescriptionStrings.Roles.Teams)){ sendStatisticsCurator()}
     submenu(AddUsers.Button, AddUsers.Message, MenuState.Curator.AddUsers) {
         button(
             AddUsers.MembersAndTrackers, AddUsersState.WaitingForDocument, DescriptionStrings.CuratorButtons.addUsers(

@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.types.UserId
 import ru.spbstu.preaccelerator.domain.entities.user.PreacceleratorUser
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.entities.state.*
+import ru.spbstu.preaccelerator.telegram.flows.tracker.sendStatisticsTracker
 import ru.spbstu.preaccelerator.telegram.flows.tracker.addNewMeetingFlow
 import ru.spbstu.preaccelerator.telegram.flows.tracker.downloadHomeworkFlow
 import ru.spbstu.preaccelerator.telegram.flows.tracker.fillOutProtocolFlow
@@ -38,7 +39,10 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
         button(Teams.GetHomework, DownloadHomeworkState, DescriptionStrings.TrackerButtons.DownloadHomework)
-        button(Teams.GetStats, NotImplementedState, DescriptionStrings.getStats(DescriptionStrings.Roles.Teams))
+        button(
+            Teams.GetStats,
+            DescriptionStrings.getStats(DescriptionStrings.Roles.Teams)
+        ) { sendStatisticsTracker(it) }
         backButton(MenuStrings.Back)
     }
 }
