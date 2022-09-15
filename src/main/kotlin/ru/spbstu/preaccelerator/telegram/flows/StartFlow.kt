@@ -14,7 +14,6 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.SeasonStartRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.useCuratorToken
@@ -77,7 +76,7 @@ fun StateMachineBuilder.startFlow() {
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
                 if (seasonStartRepository.get() == null) {
                     when (user) {
-                        is Curator -> setState(MenuState.Curator.StartSeason)
+                        is Curator -> setState(StartFlowState.WaitingForStartSeason)
                         else -> setState(EmptyState)
                     }
                 }
@@ -87,7 +86,7 @@ fun StateMachineBuilder.startFlow() {
             }
         }
 
-        state<MenuState.Curator.StartSeason> {
+        state<StartFlowState.WaitingForStartSeason> {
             onTransition {
                 sendTextMessage(
                     it,

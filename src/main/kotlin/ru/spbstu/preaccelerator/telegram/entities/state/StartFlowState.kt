@@ -8,4 +8,7 @@ object StartFlowState {
 
     @Serializable
     object AfterAuthenticating : DialogState
+
+    @Serializable
+    object WaitingForStartSeason : DialogState
 }
