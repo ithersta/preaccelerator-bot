@@ -50,7 +50,7 @@ object ButtonStrings {
 
     object FillOutProtocol {
         const val Fixed = "Протокол исправлен"
-        const val Send = "Отправить протокол"
+        const val MarkAsSent = "Оповестить"
     }
 
     object Option {

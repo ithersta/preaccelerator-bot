@@ -169,7 +169,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
                     MarkAsSentQuestion,
                     replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                         simpleButton(ButtonStrings.Cancel)
-                        simpleButton(ButtonStrings.FillOutProtocol.Send)
+                        simpleButton(ButtonStrings.FillOutProtocol.MarkAsSent)
                     }
                 )
             }
@@ -177,7 +177,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
         onText(ButtonStrings.Cancel) {
             setState(state.returnTo)
         }
-        onText(ButtonStrings.FillOutProtocol.Send, ButtonStrings.FillOutProtocol.Fixed) { message ->
+        onText(ButtonStrings.FillOutProtocol.MarkAsSent, ButtonStrings.FillOutProtocol.Fixed) { message ->
             sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
             val team = teamRepository.get(state.teamId)
             val protocolStatus = protocolStatusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
