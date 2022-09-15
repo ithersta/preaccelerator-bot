@@ -182,7 +182,7 @@ object MessageStrings : KoinComponent {
             "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
     }
 
-    private val dateTimeFormatter = DateTimeFormatter
+    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
         .withZone(zoneId)
 
