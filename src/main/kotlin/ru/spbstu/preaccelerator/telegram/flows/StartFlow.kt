@@ -10,7 +10,10 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
-import ru.spbstu.preaccelerator.domain.entities.user.*
+import ru.spbstu.preaccelerator.domain.entities.user.Curator
+import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
+import ru.spbstu.preaccelerator.domain.entities.user.Member
+import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
@@ -71,19 +74,13 @@ fun StateMachineBuilder.startFlow() {
                     is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
-                if (!(user is  EmptyUser)) {
+                if (user !is EmptyUser) {
                     val menu = when (user) {
-                        is Curator -> {
-                            curatorMenu
-                        }
-                        is Member -> {
-                            memberMenu
-                        }
-                        else -> {
-                            trackerMenu
-                        }
+                        is Curator -> curatorMenu
+                        is Member -> memberMenu
+                        else -> trackerMenu
                     }
-                    sendTextMessage(it,functionalDescription(menu), parseMode = MarkdownV2)
+                    sendTextMessage(it, functionalDescription(menu), parseMode = MarkdownV2)
                 }
                 setState(EmptyState)
             }

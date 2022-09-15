@@ -24,20 +24,41 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
 val curatorMenu = menu<DialogState, PreacceleratorUser, Curator>(MenuStrings.Curator.Message, EmptyState) {
     submenu(SendInfo.Button, SendInfo.Message, MenuState.Curator.SendInfo) {
-        button(SendInfo.ToAll, SendInfoState.WaitingForMessage(Recipient.All), DescriptionStrings.sendInfo(DescriptionStrings.Roles.Users))
-        button(SendInfo.ToTrackers, SendInfoState.WaitingForMessage(Recipient.Trackers), DescriptionStrings.sendInfo(DescriptionStrings.Roles.Trackers))
-        button(SendInfo.ToSelectTeams, SendInfoState.ChooseTeams(), DescriptionStrings.sendInfo(DescriptionStrings.Roles.Teams))
+        button(
+            SendInfo.ToAll,
+            SendInfoState.WaitingForMessage(Recipient.All),
+            DescriptionStrings.sendInfo(DescriptionStrings.Roles.Users)
+        )
+        button(
+            SendInfo.ToTrackers,
+            SendInfoState.WaitingForMessage(Recipient.Trackers),
+            DescriptionStrings.sendInfo(DescriptionStrings.Roles.Trackers)
+        )
+        button(
+            SendInfo.ToSelectTeams,
+            SendInfoState.ChooseTeams(),
+            DescriptionStrings.sendInfo(DescriptionStrings.Roles.Teams)
+        )
         backButton(MenuStrings.Back)
     }
     button(GetStats.Teams, NotImplementedState, DescriptionStrings.getStats(DescriptionStrings.Roles.Teams))
     submenu(AddUsers.Button, AddUsers.Message, MenuState.Curator.AddUsers) {
-        button(AddUsers.MembersAndTrackers, AddUsersState.WaitingForDocument, DescriptionStrings.CuratorButtons.addUsers(
-            listOf(DescriptionStrings.Roles.Members, DescriptionStrings.Roles.Trackers)
-        ))
-        button(AddUsers.Curator, DescriptionStrings.CuratorButtons.addUsers(listOf(DescriptionStrings.Roles.Curators))) { handleAddCurator(it) }
+        button(
+            AddUsers.MembersAndTrackers, AddUsersState.WaitingForDocument, DescriptionStrings.CuratorButtons.addUsers(
+                listOf(DescriptionStrings.Roles.Members, DescriptionStrings.Roles.Trackers)
+            )
+        )
+        button(
+            AddUsers.Curator,
+            DescriptionStrings.CuratorButtons.addUsers(listOf(DescriptionStrings.Roles.Curators))
+        ) { handleAddCurator(it) }
         backButton(MenuStrings.Back)
     }
-    button(MenuStrings.Curator.GetProtocols, ReviewProtocolsState.ChooseTeam, DescriptionStrings.CuratorButtons.GetProtocol)
+    button(
+        MenuStrings.Curator.GetProtocols,
+        ReviewProtocolsState.ChooseTeam,
+        DescriptionStrings.CuratorButtons.GetProtocol
+    )
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Curator, UserId>.curatorMenu() {

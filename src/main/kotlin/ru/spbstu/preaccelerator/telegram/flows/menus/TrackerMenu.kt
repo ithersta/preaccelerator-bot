@@ -27,7 +27,11 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
         backButton(MenuStrings.Back)
     }
     submenu(Meetings.Button, Meetings.Message, MenuState.Tracker.Meetings) {
-        button(Meetings.Schedule, NewMeetingState.WaitingForModuleNumber, DescriptionStrings.TrackerButtons.ScheduleMeeting)
+        button(
+            Meetings.Schedule,
+            NewMeetingState.WaitingForModuleNumber,
+            DescriptionStrings.TrackerButtons.ScheduleMeeting
+        )
         button(Meetings.SendProtocol, NotImplementedState, DescriptionStrings.TrackerButtons.SendProtocol)
         backButton(MenuStrings.Back)
     }

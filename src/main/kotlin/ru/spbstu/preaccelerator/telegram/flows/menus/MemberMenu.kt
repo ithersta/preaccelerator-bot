@@ -16,7 +16,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 
 val memberMenu = menu<DialogState, PreacceleratorUser, Member>(MenuStrings.Member.Message, EmptyState) {
     button(MenuStrings.Member.SelectModule, ChooseModuleState, DescriptionStrings.MemberButtons.DoModules)
-    button(MenuStrings.Member.GetProtocol, GetProtocolState,DescriptionStrings.MemberButtons.GetProtocol)
+    button(MenuStrings.Member.GetProtocol, GetProtocolState, DescriptionStrings.MemberButtons.GetProtocol)
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Member, UserId>.memberMenu() {
