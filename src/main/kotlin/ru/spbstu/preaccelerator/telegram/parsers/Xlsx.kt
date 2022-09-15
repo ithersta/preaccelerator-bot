@@ -103,7 +103,7 @@ object Xlsx {
                     setCellValue(SpreadsheetStrings.StatisticsTable.DateOfCompletion)
                     cellStyle = style
                 }
-                addMergedRegion(CellRangeAddress(0, 0, 1, 17))
+                addMergedRegion(CellRangeAddress(0, 0, 1, moduleConfig.tasks.size))
             }
             var allTasks = 1
             createRow(1).apply {
@@ -147,9 +147,9 @@ object Xlsx {
                     setCellValue(SpreadsheetStrings.StatisticsTable.TotalCompleted)
                     cellStyle = style
                 }
-                generateSequence(1) { it + 1 }.take(allTasks - 1).forEachIndexed { index, column ->
-                    createCell(index + 1).apply {
-                        setCellValue(homeworks.count { it.taskNumber.value == column }.toString())
+                for (i in 1 until allTasks) {
+                    createCell(i).apply {
+                        setCellValue(homeworks.count { it.taskNumber.value == i }.toString())
                         cellStyle = style
                     }
                 }

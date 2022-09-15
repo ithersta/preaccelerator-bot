@@ -12,21 +12,7 @@ object SpreadsheetStrings {
         const val TeamName = "Название команды"
         const val DateOfCompletion = "Дата сдачи домашнего задания"
         const val TotalCompleted = "Всего выполнили"
-        val OffsetDateTimeFormatter = DateTimeFormatterBuilder()
-            .appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-            .appendLiteral('.')
-            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
-            .appendLiteral('.')
-            .appendValue(ChronoField.DAY_OF_MONTH, 2)
-            .appendLiteral('T')
-            .appendValue(ChronoField.HOUR_OF_DAY, 2)
-            .appendLiteral(':')
-            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-            .optionalStart()
-            .appendLiteral(':')
-            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .optionalStart()
-            .toFormatter()
+        val OffsetDateTimeFormatter = DateTimeFormatter.ofPattern("uuuu.MM.dd;kk:mmx")
 
         fun moduleString(number: Module.Number) = "Модуль ${number.value}"
         const val FileName = "Сводка команды"

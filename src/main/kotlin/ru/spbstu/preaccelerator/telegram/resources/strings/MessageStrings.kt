@@ -42,7 +42,7 @@ object MessageStrings : KoinComponent {
     }
 
     object SendStatistics {
-        const val NoTeams = "Нету команд для сбора статистики"
+        const val NoTeams = "Нет команд для сбора статистики"
     }
 
     object Cancel {
