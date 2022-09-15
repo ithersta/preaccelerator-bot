@@ -36,16 +36,16 @@ import ru.spbstu.preaccelerator.telegram.flows.curator.reviewProtocolText
 import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InputGoogleDiskUrl
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InvalidProtocolUrl
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.MarkAsSentQuestion
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.NewProtocol
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolHasBeenSent
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.chooseModule
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.emoji
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.explanationReasons
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.ChooseTeam
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.InputGoogleDiskUrl
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.InvalidProtocolUrl
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.MarkAsSentQuestion
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.NewProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.ProtocolHasBeenSent
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.chooseModule
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.confirmationProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.emoji
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.FillOutProtocol.explanationReasons
 
 fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
     val protocolRepository: ProtocolRepository by inject()

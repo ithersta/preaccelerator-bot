@@ -202,8 +202,14 @@ object MessageStrings : KoinComponent {
            |Всё верно?
         """.trimMargin()
 
+    object FillOutProtocol {
+        const val InvalidProtocolUrl = "Неверный формат ссылки"
+        const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
+        const val ChooseTeam = "Выберите команду"
+        const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
+        const val MarkAsSentQuestion = "Оповестить куратора о готовности протокола?"
+        const val NewProtocol = "Новый протокол отправлен на проверку"
 
-    object Tracker {
         val ProtocolStatus.Value.emoji
             get() = when (this) {
                 ProtocolStatus.Value.Unsent -> "✉️"
@@ -221,9 +227,6 @@ object MessageStrings : KoinComponent {
             regularln(" ${protocolStatus.comment}\nНажмите на кнопку, если протокол был исправлен.")
         }
 
-        const val InvalidProtocolUrl = "Неверный формат ссылки"
-        const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
-        const val ChooseTeam = "Выберите команду"
         fun chooseModule(teamName: String) = """
             |Протоколы команды $teamName
             |${ProtocolStatus.Value.Unsent.emoji} – протокол ещё не отправлен
@@ -231,9 +234,5 @@ object MessageStrings : KoinComponent {
             |${ProtocolStatus.Value.Accepted.emoji} – протокол принят
             |${ProtocolStatus.Value.Declined.emoji} – протокол отклонён
         """.trimMargin()
-
-        const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
-        const val MarkAsSentQuestion = "Оповестить куратора о готовности протокола?"
-        const val NewProtocol = "Новый протокол"
     }
 }
