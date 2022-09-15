@@ -123,28 +123,27 @@ object MessageStrings : KoinComponent {
             moduleNumber: Module.Number,
             status: String?,
             comment: String?
-        ) =
-            buildEntities {
-                prefix?.let { regularln(it) }
-                if (status != null) {
-                    regular(status)
-                    regular(" ")
-                }
-                bold("Модуль ${moduleNumber.value}")
-                regular(" | ")
-                bold("Команда: ")
-                regularln(team.name)
-                if (protocol != null) {
-                    bold("Протокол: ")
-                    linkln(protocol.url)
-                } else {
-                    regularln("Ссылка на протокол не установлена")
-                }
-                if (comment != null) {
-                    bold("Комментарий: ")
-                    regularln(comment)
-                }
+        ) = buildEntities {
+            prefix?.let { regularln(it) }
+            if (status != null) {
+                regular(status)
+                regular(" ")
             }
+            bold("Модуль ${moduleNumber.value}")
+            regular(" | ")
+            bold("Команда: ")
+            regularln(team.name)
+            if (protocol != null) {
+                bold("Протокол: ")
+                linkln(protocol.url)
+            } else {
+                regularln("Ссылка на протокол не установлена")
+            }
+            if (comment != null) {
+                bold("Комментарий: ")
+                regularln(comment)
+            }
+        }
     }
 
     object Error {
