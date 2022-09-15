@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.row
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import kotlinx.coroutines.launch
 import org.apache.commons.validator.routines.UrlValidator
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
@@ -190,14 +191,16 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
                 )
             }
             setState(state.returnTo)
-            curatorRepository.getAll().forEach {
-                runCatching {
-                    massSendLimiter.wait()
-                    sendTextMessage(
-                        it.userId,
-                        reviewProtocolText(team, protocolStatus, NewProtocol),
-                        replyMarkup = declineOrAcceptKeyboard(protocolStatus)
-                    )
+            coroutineScope.launch {
+                curatorRepository.getAll().forEach {
+                    runCatching {
+                        massSendLimiter.wait()
+                        sendTextMessage(
+                            it.userId,
+                            reviewProtocolText(team, protocolStatus, NewProtocol),
+                            replyMarkup = declineOrAcceptKeyboard(protocolStatus)
+                        )
+                    }
                 }
             }
         }
