@@ -72,11 +72,8 @@ fun StateMachineBuilder.startFlow() {
                     is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
-                if (seasonStartRepository.get() == null) {
-                    when (user) {
-                        is Curator -> setState(StartFlowState.WaitingForStartSeason)
-                        else -> setState(EmptyState)
-                    }
+                if ((seasonStartRepository.get() == null) && (user is Curator)) {
+                    setState(StartFlowState.WaitingForStartSeason)
                 }
                 else {
                     setState(EmptyState)
