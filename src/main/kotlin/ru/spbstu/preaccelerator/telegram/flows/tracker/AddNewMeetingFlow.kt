@@ -136,6 +136,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 MessageStrings.ScheduleMeetings.MeetingIsCreated
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
+            setState(MenuState.Tracker.Meetings)
             memberRepository.get(state.teamId).forEach { member ->
                 val chatId = userPhoneNumberRepository.get(member.phoneNumber)
                 if (chatId != null) {
@@ -164,7 +165,6 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                     )
                 }
             }
-            setState(MenuState.Tracker.Meetings)
         }
         onText(ButtonStrings.Option.No) { message ->
             sendTextMessage(
