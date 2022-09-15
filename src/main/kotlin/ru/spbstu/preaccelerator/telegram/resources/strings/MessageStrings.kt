@@ -211,14 +211,11 @@ object MessageStrings : KoinComponent {
             }
 
         fun confirmationProtocol(moduleNumber: String) =
-            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
-
-        fun textForCurator(countOfWeek: String, teamName: String) =
-            "Протокол $countOfWeek недели от команды $teamName отправлен на проверку."
+            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение в случае, если он найдёт недочёты."
 
         fun explanationReasons(protocolStatus: ProtocolStatus, team: Team, protocol: Protocol) = buildEntities {
             link("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name}", protocol.url)
-            bold("нуждается в изменении\n\nКомментарий куратора:")
+            bold(" нуждается в изменении\n\nКомментарий куратора:")
             regularln(" ${protocolStatus.comment}\nНажмите на кнопку, если протокол был исправлен.")
         }
 
