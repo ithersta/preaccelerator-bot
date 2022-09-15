@@ -7,5 +7,5 @@ interface CuratorRepository {
     fun isEmpty(): Boolean
     fun add(userId: UserId)
     fun get(userId: UserId): Curator?
-    fun getCurators(): List<Curator>
+    fun getAll(): List<Curator>
 }

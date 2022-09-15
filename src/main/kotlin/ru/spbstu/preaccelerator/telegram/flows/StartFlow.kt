@@ -32,7 +32,6 @@ fun StateMachineBuilder.startFlow() {
                 if (!user.useCuratorToken(token)) {
                     sendTextMessage(message.chat, MessageStrings.Start.InvalidDeepLink)
                 } else {
-                    //TODO
                     setState(StartFlowState.AfterAuthenticating)
                 }
             }
