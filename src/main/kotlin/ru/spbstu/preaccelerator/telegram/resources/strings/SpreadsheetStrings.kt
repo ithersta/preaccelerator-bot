@@ -1,10 +1,7 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.Module
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 object SpreadsheetStrings : KoinComponent {
     object StatisticsTable {
