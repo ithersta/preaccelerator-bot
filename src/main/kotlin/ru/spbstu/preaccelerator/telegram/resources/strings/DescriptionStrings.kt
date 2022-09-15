@@ -47,11 +47,6 @@ object DescriptionStrings {
 
     const val PossibleActions = "Функционал бота позволяет вам:\n"
 
-    fun functionalDescription(menu: Menu<DialogState, PreacceleratorUser, out PreacceleratorUser>): String {
-        var description = PossibleActions
-        for (action in menu.descriptions) {
-            description += listOf("• ", action, "\n").joinToString("")
-        }
-        return description
-    }
+    fun functionalDescription(menu: Menu<DialogState, PreacceleratorUser, out PreacceleratorUser>)=
+        "${PossibleActions}${menu.descriptions.joinToString (separator = "\n"){"• $it"}}"
 }
