@@ -25,11 +25,15 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.StartNe
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Start.StartSeason
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun StateMachineBuilder.startFlow() {
     val seasonStartRepository: SeasonStartRepository by inject()
+    val zoneId: ZoneId by inject()
     role<EmptyUser> {
         state<EmptyState> {
             onDeepLink { (message, token) ->
@@ -99,8 +103,7 @@ fun StateMachineBuilder.startFlow() {
                 )
             }
             onDataCallbackQuery(Regex("data")){
-                //TODO исправить время на +5 часов, а не -5
-                seasonStartRepository.set(Date(System.currentTimeMillis()).toInstant().atOffset(ZoneOffset.ofHours(5)))
+                seasonStartRepository.set(ZonedDateTime.now(zoneId).toOffsetDateTime())
                 setState(EmptyState)
             }
         }
