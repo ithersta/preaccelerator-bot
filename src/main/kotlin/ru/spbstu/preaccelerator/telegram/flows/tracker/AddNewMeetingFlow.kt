@@ -50,7 +50,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             }
         }
     }
-    val teamPager = inlineKeyboardPager("addNewMeetingFlow") { offset, limit ->
+    val teamPager = inlineKeyboardPager("addNewMeetingFlow") {
         val teams = teamRepository.getByTrackerIdPaginated(user.id, offset, limit)
         val count = teamRepository.countByTrackerId(user.id)
         inlineKeyboard {

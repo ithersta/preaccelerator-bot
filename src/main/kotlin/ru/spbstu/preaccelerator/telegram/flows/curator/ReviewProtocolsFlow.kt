@@ -36,7 +36,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     val teamRepository: TeamRepository by inject()
     val protocolStatusRepository: ProtocolStatusRepository by inject()
-    val teamPager = inlineKeyboardPager("reviewProtocolsFlow") { offset, limit ->
+    val teamPager = inlineKeyboardPager("reviewProtocolsFlow") {
         val teams = teamRepository.getPaginatedWithSentProtocols(offset, limit)
         val count = teamRepository.countWithSentProtocols()
         inlineKeyboard {
@@ -137,13 +137,14 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     }
 }
 
-fun reviewProtocolText(team: Team, protocolStatus: ProtocolStatus): TextSourcesList {
+fun reviewProtocolText(team: Team, protocolStatus: ProtocolStatus, prefix: String? = null): TextSourcesList {
     val status = when (protocolStatus.value) {
         ProtocolStatus.Value.Accepted -> MessageStrings.ReviewProtocols.Accepted
         ProtocolStatus.Value.Declined -> MessageStrings.ReviewProtocols.Declined
         else -> null
     }
     return MessageStrings.ReviewProtocols.protocol(
+        prefix,
         team.protocol,
         team,
         protocolStatus.moduleNumber,

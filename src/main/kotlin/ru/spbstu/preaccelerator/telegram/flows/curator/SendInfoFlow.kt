@@ -43,7 +43,7 @@ fun StateMachineBuilder.sendInfoFlow() {
         state<SendInfoState.ChooseTeams> {
             val teamPager = statefulInlineKeyboardPager("sendInfoFlow",
                 onPagerStateChanged = { state.copy(pagerState = it) }
-            ) { offset, limit ->
+            ) {
                 val (teams, count) = when (val user = user) {
                     is Curator -> teamRepository.getAllPaginated(offset, limit) to teamRepository.countAll()
                     is Tracker -> teamRepository.getByTrackerIdPaginated(user.id, offset, limit) to

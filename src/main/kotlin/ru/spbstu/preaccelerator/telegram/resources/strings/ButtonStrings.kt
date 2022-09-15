@@ -48,6 +48,11 @@ object ButtonStrings {
         const val ChangeMessage = "Ввести другое сообщение"
     }
 
+    object FillOutProtocol {
+        const val Fixed = "Протокол исправлен"
+        const val Send = "Отправить протокол"
+    }
+
     object Option {
         const val Yes = "Да"
         const val No = "Нет"

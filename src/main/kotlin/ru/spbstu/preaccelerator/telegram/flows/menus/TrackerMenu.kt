@@ -21,7 +21,7 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
     }
     submenu(Meetings.Button, Meetings.Message, MenuState.Tracker.Meetings) {
         button(Meetings.Schedule, NewMeetingState.WaitingForModuleNumber)
-        button(Meetings.SendProtocol, ProtocolState.ChooseTeam())
+        button(Meetings.SendProtocol, FillOutProtocolState.ChooseTeam)
         backButton(MenuStrings.Back)
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {

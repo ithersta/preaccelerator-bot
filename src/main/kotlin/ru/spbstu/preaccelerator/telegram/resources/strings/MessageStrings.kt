@@ -114,8 +114,16 @@ object MessageStrings : KoinComponent {
         const val NoUnreviewedProtocols = "Непроверенных протоколов нет"
         const val ChooseTeam = "Выберите команду, у которой хотите проверить протоколы"
 
-        fun protocol(protocol: Protocol?, team: Team, moduleNumber: Module.Number, status: String?, comment: String?) =
+        fun protocol(
+            prefix: String?,
+            protocol: Protocol?,
+            team: Team,
+            moduleNumber: Module.Number,
+            status: String?,
+            comment: String?
+        ) =
             buildEntities {
+                prefix?.let { regularln(it) }
                 if (status != null) {
                     regular(status)
                     regular(" ")
@@ -209,7 +217,7 @@ object MessageStrings : KoinComponent {
             "Протокол $countOfWeek недели от команды $teamName отправлен на проверку."
 
         fun explanationReasons(protocolStatus: ProtocolStatus, team: Team, protocol: Protocol) = buildEntities {
-            link("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name} ", protocol.url)
+            link("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name}", protocol.url)
             bold("нуждается в изменении\n\nКомментарий куратора:")
             regularln(" ${protocolStatus.comment}\nНажмите не кнопку, если протокол был исправлен.")
         }
@@ -217,7 +225,6 @@ object MessageStrings : KoinComponent {
         const val InvalidProtocolUrl = "Неверный формат ссылки"
         const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
-        const val ProtocolChanged = "Протокол исправлен"
         fun chooseModule(teamName: String) = """
             |Протоколы команды $teamName
             |${ProtocolStatus.Value.Unsent.emoji} – протокол ещё не отправлен
@@ -227,9 +234,7 @@ object MessageStrings : KoinComponent {
         """.trimMargin()
 
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
-        const val MessageCurator = "Оповестить куратора о готовности протокола"
         const val MarkAsSentQuestion = "Оповестить куратора о готовности протокола?"
-        const val ViewProtocol = "Посмотреть протокол"
-        const val ReadyCheck = "Готовы оценить протокол сейчас?"
+        const val NewProtocol = "Новый протокол"
     }
 }
