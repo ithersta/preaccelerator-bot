@@ -19,7 +19,7 @@ repositories {
 dependencies {
     implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.15.1")
     implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.15.0")
-    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.15.2")
+    implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.16.0")
     implementation("dev.inmo:tgbotapi:3.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.4.0")
     implementation("org.postgresql:postgresql:42.5.0")
@@ -43,7 +43,6 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs += "-Xcontext-receivers"
 }
 
 application {

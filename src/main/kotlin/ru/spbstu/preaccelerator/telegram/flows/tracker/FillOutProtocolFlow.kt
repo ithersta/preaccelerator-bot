@@ -90,7 +90,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
                 editMessageText(
                     query.messageCallbackQueryOrThrow().message.withContentOrThrow(),
                     ChooseTeam,
-                    replyMarkup = teamPager.page(data.page)
+                    replyMarkup = with(teamPager) { page(data.page) }
                 )
             }
             answer(query)
@@ -125,7 +125,7 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
 
     state<FillOutProtocolState.ChooseTeam> {
         onTransition { chatId ->
-            sendTextMessage(chatId, ChooseTeam, replyMarkup = teamPager.firstPage)
+            sendTextMessage(chatId, ChooseTeam, replyMarkup = with(teamPager) { firstPage })
             setStateQuiet(MenuState.Tracker.Meetings)
         }
     }

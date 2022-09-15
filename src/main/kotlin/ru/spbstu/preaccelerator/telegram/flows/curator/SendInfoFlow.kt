@@ -73,7 +73,7 @@ fun StateMachineBuilder.sendInfoFlow() {
                 }
             }
             onTransition {
-                teamPager.sendOrEditMessage(it, SendInfo.ChooseTeams, state.pagerState)
+                with(teamPager) { sendOrEditMessage(it, SendInfo.ChooseTeams, state.pagerState) }
             }
             onDataCallbackQuery(Regex("team (select|unselect) \\d+")) {
                 val tokens = it.data.split(" ")

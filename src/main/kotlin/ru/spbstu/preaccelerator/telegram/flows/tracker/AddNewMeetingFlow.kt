@@ -73,7 +73,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             sendTextMessage(
                 chatId,
                 MessageStrings.ScheduleMeetings.ChooseTeam,
-                replyMarkup = teamPager.firstPage
+                replyMarkup = with(teamPager) { firstPage }
             )
         }
         onDataCallbackQuery(Regex("team \\d+")) {

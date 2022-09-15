@@ -91,7 +91,7 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     }
     state<ReviewProtocolsState.ChooseTeam> {
         onTransition {
-            sendTextMessage(it, MessageStrings.ReviewProtocols.ChooseTeam, replyMarkup = teamPager.firstPage)
+            sendTextMessage(it, MessageStrings.ReviewProtocols.ChooseTeam, replyMarkup = with(teamPager) { firstPage })
             setStateQuiet(EmptyState)
         }
     }
