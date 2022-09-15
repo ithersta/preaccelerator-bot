@@ -107,40 +107,12 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
         onDataCallbackQuery(FillOutProtocolQuery.OnModuleClicked::class) { (data, query) ->
             val messageId = query.messageCallbackQueryOrThrow().message.messageId
             if (protocolRepository.get(data.teamId) == null) {
-                setState(
-                    FillOutProtocolState.WaitingForUrl(
-                        data.teamId,
-                        data.moduleNumber,
-                        messageId,
-                        data.page,
-                        state
-                    )
-                )
+                setState(FillOutProtocolState.WaitingForUrl(data.teamId, data.moduleNumber, messageId, data.page, state))
                 answer(query)
             } else {
                 val status = protocolStatusRepository.get(data.teamId, data.moduleNumber)
                 if (!status.isFinished()) {
-                    if (status.value == ProtocolStatus.Value.Declined) {
-                        setState(
-                            FillOutProtocolState.FixWrong(
-                                data.teamId,
-                                data.moduleNumber,
-                                messageId,
-                                data.page,
-                                state
-                            )
-                        )
-                    } else {
-                        setState(
-                            FillOutProtocolState.NotificationButton(
-                                data.teamId,
-                                data.moduleNumber,
-                                messageId,
-                                data.page,
-                                state
-                            )
-                        )
-                    }
+                    setState(FillOutProtocolState.WaitingForConfirmation(data.teamId, data.moduleNumber, messageId, data.page, state))
                     answer(query)
                 } else {
                     answer(query, text = ProtocolHasBeenSent)
@@ -166,66 +138,45 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
             if (!protocolStatusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                 protocolRepository.add(state.teamId, protocolUrl)
                 setState(
-                    FillOutProtocolState.NotificationButton(
-                        state.teamId,
-                        state.moduleNumber,
-                        state.messageId,
-                        state.page,
-                        state.returnTo
-                    )
+                    FillOutProtocolState.WaitingForConfirmation(state.teamId, state.moduleNumber, state.messageId, state.page, state.returnTo)
                 )
             } else {
                 sendTextMessage(message.chat, ProtocolHasBeenSent)
             }
         }
     }
-    state<FillOutProtocolState.FixWrong> {
+    val massSendLimiter: MassSendLimiter by inject()
+    state<FillOutProtocolState.WaitingForConfirmation> {
         onTransition { chatId ->
-            sendTextMessage(
-                chatId,
-                explanationReasons(
-                    protocolStatusRepository.get(state.teamId, state.moduleNumber),
-                    teamRepository.get(state.teamId),
-                    protocolRepository.get(state.teamId)!!
-                ),
-                replyMarkup = flatReplyKeyboard(resizeKeyboard = true) {
-                    simpleButton(ButtonStrings.Cancel)
-                    simpleButton(ButtonStrings.FillOutProtocol.Fixed)
-                }
-            )
-        }
-        onText(ButtonStrings.Cancel) {
-            setState(state.returnTo)
-        }
-        onText(ButtonStrings.FillOutProtocol.Fixed) { message ->
-            val team = teamRepository.get(state.teamId)
-            protocolStatusRepository.set(state.teamId, state.moduleNumber, ProtocolStatus.Value.Sent)
-            sendTextMessage(message.chat, ProtocolHasBeenSent)
-            runCatching {
-                editMessageText(
-                    message.chat,
-                    state.messageId,
-                    chooseModule(team.name),
-                    replyMarkup = protocolsKeyboard(state.page, state.teamId)
+            val protocolStatus = protocolStatusRepository.get(state.teamId, state.moduleNumber)
+            if (protocolStatus.value == ProtocolStatus.Value.Declined) {
+                sendTextMessage(
+                    chatId,
+                    explanationReasons(
+                        protocolStatus,
+                        teamRepository.get(state.teamId),
+                        protocolRepository.get(state.teamId)!!
+                    ),
+                    replyMarkup = flatReplyKeyboard(resizeKeyboard = true) {
+                        simpleButton(ButtonStrings.Cancel)
+                        simpleButton(ButtonStrings.FillOutProtocol.Fixed)
+                    }
+                )
+            } else {
+                sendTextMessage(
+                    chatId,
+                    MarkAsSentQuestion,
+                    replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
+                        simpleButton(ButtonStrings.Cancel)
+                        simpleButton(ButtonStrings.FillOutProtocol.Send)
+                    }
                 )
             }
-            setState(state.returnTo)
         }
-    }
-    state<FillOutProtocolState.NotificationButton> {
-        onTransition { chatId ->
-            sendTextMessage(chatId,
-                MarkAsSentQuestion,
-                replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
-                    simpleButton(ButtonStrings.Cancel)
-                    simpleButton(ButtonStrings.FillOutProtocol.Send)
-                })
-        }
-        val massSendLimiter: MassSendLimiter by inject()
         onText(ButtonStrings.Cancel) {
             setState(state.returnTo)
         }
-        onText(ButtonStrings.FillOutProtocol.Send) { message ->
+        onText(ButtonStrings.FillOutProtocol.Send, ButtonStrings.FillOutProtocol.Fixed) { message ->
             sendTextMessage(message.chat, confirmationProtocol(state.moduleNumber.value.toString()))
             val team = teamRepository.get(state.teamId)
             val protocolStatus =

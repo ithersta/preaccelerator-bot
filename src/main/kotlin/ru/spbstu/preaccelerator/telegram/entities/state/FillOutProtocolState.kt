@@ -19,16 +19,7 @@ class FillOutProtocolState {
     ) : DialogState
 
     @Serializable
-    class FixWrong(
-        val teamId: Team.Id,
-        val moduleNumber: Number,
-        val messageId: MessageIdentifier,
-        val page: Int,
-        val returnTo: DialogState
-    ) : DialogState
-
-    @Serializable
-    class NotificationButton(
+    class WaitingForConfirmation(
         val teamId: Team.Id,
         val moduleNumber: Number,
         val messageId: MessageIdentifier,

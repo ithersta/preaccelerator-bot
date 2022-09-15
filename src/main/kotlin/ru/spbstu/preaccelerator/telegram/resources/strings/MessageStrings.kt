@@ -219,7 +219,7 @@ object MessageStrings : KoinComponent {
         fun explanationReasons(protocolStatus: ProtocolStatus, team: Team, protocol: Protocol) = buildEntities {
             link("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name}", protocol.url)
             bold("нуждается в изменении\n\nКомментарий куратора:")
-            regularln(" ${protocolStatus.comment}\nНажмите не кнопку, если протокол был исправлен.")
+            regularln(" ${protocolStatus.comment}\nНажмите на кнопку, если протокол был исправлен.")
         }
 
         const val InvalidProtocolUrl = "Неверный формат ссылки"
