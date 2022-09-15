@@ -7,6 +7,7 @@ import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -55,7 +56,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             }
         }
     }
-    val teamPager = inlineKeyboardPager("addNewMeetingFlow") { offset, limit ->
+    val teamPager = inlineKeyboardPager("addNewMeetingFlow") {
         val teams = teamRepository.getByTrackerIdPaginated(user.id, offset, limit)
         val count = teamRepository.countByTrackerId(user.id)
         inlineKeyboard {
@@ -72,7 +73,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             sendTextMessage(
                 chatId,
                 MessageStrings.ScheduleMeetings.ChooseTeam,
-                replyMarkup = teamPager.firstPage
+                replyMarkup = with(teamPager) { firstPage }
             )
         }
         onDataCallbackQuery(Regex("team \\d+")) {
@@ -114,7 +115,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.meetingCreationConfirmation(
+                MessageStrings.ScheduleMeetings.meetingCreationConfirmation(
                     teamRepository.get(state.teamId).name,
                     state.dateTime,
                     state.url
@@ -137,34 +138,36 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             setState(MenuState.Tracker.Meetings)
-            memberRepository.get(state.teamId).forEach { member ->
-                val chatId = userPhoneNumberRepository.get(member.phoneNumber)
-                if (chatId != null) {
+            coroutineScope.launch {
+                memberRepository.get(state.teamId).forEach { member ->
+                    val chatId = userPhoneNumberRepository.get(member.phoneNumber)
+                    if (chatId != null) {
+                        massSendLimiter.wait()
+                        runCatching {
+                            sendTextMessage(
+                                chatId,
+                                NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(
+                                    state.dateTime,
+                                    state.url
+                                )
+                            )
+                        }
+                    }
+                }
+                curatorRepository.getAll().forEach { curator ->
                     massSendLimiter.wait()
                     runCatching {
                         sendTextMessage(
-                            chatId,
-                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(
+                            curator.userId,
+                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
                                 state.dateTime,
-                                state.url
-                            )
+                                state.url,
+                                teamRepository.get(state.teamId).name
+                            ),
+                            disableNotification = true,
+                            disableWebPagePreview = true
                         )
                     }
-                }
-            }
-            curatorRepository.getAll().forEach { curator ->
-                massSendLimiter.wait()
-                runCatching {
-                    sendTextMessage(
-                        curator.userId,
-                        NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
-                            state.dateTime,
-                            state.url,
-                            teamRepository.get(state.teamId).name
-                        ),
-                        disableNotification = true,
-                        disableWebPagePreview = true
-                    )
                 }
             }
         }
