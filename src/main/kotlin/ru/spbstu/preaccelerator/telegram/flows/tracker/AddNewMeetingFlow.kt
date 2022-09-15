@@ -115,7 +115,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.meetingCreationConfirmation(
+                MessageStrings.ScheduleMeetings.meetingCreationConfirmation(
                     teamRepository.get(state.teamId).name,
                     state.dateTime,
                     state.url

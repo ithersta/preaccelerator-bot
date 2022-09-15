@@ -159,15 +159,21 @@ object MessageStrings : KoinComponent {
         const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
+        const val MeetingIsCreated =
+            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
+        const val MeetingNotCreated = "Встреча не создана"
+        const val InvalidModuleNumber = "Введён неверный номер модуля"
         val InputDateTime = "Введите дату и время конференции в формате дд.ММ.гггг чч:мм (часовой пояс ${
             zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
         })"
-        const val MeetingIsCreated =
-            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
-
-        const val MeetingNotCreated = "Встреча не создана"
         val InvalidDateTime = "Неверный формат даты. $InputDateTime"
-        const val InvalidModuleNumber = "Введён неверный номер модуля"
+
+        fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
+            """|Запланировать встречу с командой $teamName
+           |на ${dateTimeFormatter.format(dateTime)}
+           |ссылка на конференцию: $url
+           |Всё верно?
+        """.trimMargin()
     }
 
     object SendInfo {
@@ -194,13 +200,6 @@ object MessageStrings : KoinComponent {
         fun success(count: Int) =
             "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
     }
-
-    fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
-        """|Запланировать встречу с командой $teamName
-           |на ${dateTimeFormatter.format(dateTime)}
-           |ссылка на конференцию: $url
-           |Всё верно?
-        """.trimMargin()
 
     object FillOutProtocol {
         const val InvalidProtocolUrl = "Неверный формат ссылки"
