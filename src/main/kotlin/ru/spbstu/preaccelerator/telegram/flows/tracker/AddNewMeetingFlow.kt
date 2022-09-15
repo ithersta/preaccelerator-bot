@@ -161,7 +161,9 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                             state.dateTime,
                             state.url,
                             teamRepository.get(state.teamId).name
-                        )
+                        ),
+                        disableNotification = true,
+                        disableWebPagePreview = true
                     )
                 }
             }
