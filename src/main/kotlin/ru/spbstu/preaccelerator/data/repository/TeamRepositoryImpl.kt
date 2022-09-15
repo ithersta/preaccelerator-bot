@@ -49,6 +49,15 @@ class TeamRepositoryImpl(
         return appDatabase.teamQueries.countByTrackerId(trackerId).executeAsOne().toInt()
     }
 
+    override fun getAllPaginated(offset: Int, limit: Int): List<Team> {
+        return appDatabase.teamQueries.getAllPaginated(limit = limit.toLong(), offset = offset.toLong())
+            .executeAsList().map { it.toDomainModel() }
+    }
+
+    override fun countAll(): Int {
+        return appDatabase.teamQueries.countAll().executeAsOne().toInt()
+    }
+
     private fun ru.spbstu.preaccelerator.data.Team.toDomainModel() = Team(
         id = id,
         name = name,

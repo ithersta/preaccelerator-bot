@@ -1,6 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.entities.state
 
-import dev.inmo.tgbotapi.types.MessageIdentifier
+import dev.inmo.tgbotapi.types.MessageId
 import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -18,7 +18,7 @@ object ReviewProtocolsState {
     class WaitingForComment(
         val teamId: Team.Id,
         val moduleNumber: Module.Number,
-        val messageId: MessageIdentifier,
+        val messageId: MessageId,
         val returnTo: DialogState
     ) : DialogState
 }

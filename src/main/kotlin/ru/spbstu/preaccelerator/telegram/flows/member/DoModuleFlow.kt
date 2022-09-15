@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
+import org.apache.commons.validator.routines.UrlValidator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.module.*
@@ -25,10 +26,11 @@ import ru.spbstu.preaccelerator.telegram.flows.member.ModuleStateExt.part
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.SendHomework
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.additionalInfoMessage
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.doTest
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.doneTaskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.goodbyeModule
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.lectureMessage
-import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.nextModule
+import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.module
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.taskMessage
 import ru.spbstu.preaccelerator.telegram.resources.modules.ModuleStrings.welcomeModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
@@ -38,12 +40,11 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.ShowPresentation
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.Module.WatchLecture
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkDownloaded
-import java.net.URL
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.homeworkUploaded
 
 fun RoleFilterBuilder<Member>.doModuleFlow() {
     val moduleConfig: ModuleConfig by inject()
-    val trackerRep: TrackerRepository by inject()
+    val trackerRepository: TrackerRepository by inject()
 
     state<ChooseModuleState> {
         onTransition {
@@ -126,8 +127,7 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 ButtonStrings.ChooseModule.DoTest -> {
                     sendTextMessage(
                         message.chat,
-                        goodbyeModule(moduleConfig, state.moduleNumber),
-                        parseMode = MarkdownV2,
+                        doTest(state.moduleNumber),
                         replyMarkup = inlineKeyboard {
                             row {
                                 urlButton(
@@ -242,30 +242,30 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 }
             }
         }
-        onDataCallbackQuery(Regex("part \\d+")) {
-            answer(it)
-            val partIndex = it.data.split(' ').last().toInt()
+        onDataCallbackQuery(Regex("part \\d+")) { query ->
+            answer(query)
+            val partIndex = query.data.split(' ').last().toInt()
             if (partIndex <= state.partIndex) {
                 return@onDataCallbackQuery
             }
             val newState = ModuleState(state.moduleNumber, partIndex)
             val maxPart = moduleConfig.modules.getValue(state.moduleNumber).parts.lastIndex
-            val maxModule = moduleConfig.modules.maxOf { it.key.value }
             if (state.partIndex == maxPart) {
                 sendTextMessage(
-                    it.from,
+                    query.from,
                     goodbyeModule(moduleConfig, state.moduleNumber),
-                    parseMode = MarkdownV2,
                     replyMarkup = inlineKeyboard {
                         row {
                             urlButton(
                                 DoTest,
                                 moduleConfig.modules.getValue(state.moduleNumber).finalTestUrl
                             )
-                            if (state.moduleNumber.value != maxModule) {
+                            val nextModuleNumber = Module.Number(state.moduleNumber.value + 1)
+                                .takeIf { moduleConfig.modules.containsKey(it) }
+                            if (nextModuleNumber != null) {
                                 dataButton(
-                                    nextModule(state.moduleNumber),
-                                    "module ${state.moduleNumber.value + 1}"
+                                    module(nextModuleNumber),
+                                    "module ${nextModuleNumber.value}"
                                 )
                             } else {
                                 setState(EmptyState)
@@ -316,29 +316,27 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
         }
         onText { message ->
             val task = moduleConfig.tasks.first { it.number == state.taskNumber }
-            val url = runCatching { URL(message.content.text) }.getOrElse {
+            val url = message.content.text.takeIf { UrlValidator().isValid(it) } ?: run {
                 sendTextMessage(message.chat, ModuleStrings.Error.MalformedHomeworkUrl)
                 return@onText
             }
-            if (!user.team.addHomework(task.number, url.toString())) {
+            if (!user.team.addHomework(task.number, url)) {
                 sendTextMessage(
                     chat = message.chat,
                     text = ModuleStrings.Error.HomeworkWasAlreadyAdded
                 )
             } else {
-                sendTextMessage(
-                    trackerRep.get(user.team.trackerId).userId,
-                    homeworkDownloaded(task.number, user.team),
-                    parseMode = MarkdownV2,
-                    replyMarkup = inlineKeyboard {
-                        row {
-                            urlButton(
-                                SeeHomework,
-                                url.toString()
-                            )
+                runCatching {
+                    sendTextMessage(
+                        trackerRepository.get(user.team.trackerId).userId!!,
+                        homeworkUploaded(task, user.team),
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                urlButton(SeeHomework, url)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
             setState(state.returnTo)
         }

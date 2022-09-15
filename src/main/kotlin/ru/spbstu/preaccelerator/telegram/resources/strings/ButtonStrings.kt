@@ -46,10 +46,19 @@ object ButtonStrings {
         const val All = "⏭️ Все непроверенные протоколы"
     }
 
+    object SendInfo {
+        const val FinishChoosingTeams = "Отправить выбранным командам"
+        const val Confirm = "Разослать"
+        const val ChangeMessage = "Ввести другое сообщение"
+    }
+
     object Option {
         const val Yes = "Да"
         const val No = "Нет"
     }
 
     const val Cancel = "Отменить"
+
+    fun selected(text: String) = "✅ $text"
+    fun unselected(text: String) = text
 }

@@ -73,7 +73,7 @@ class ModuleDeadlineNotifier(
                     members.forEach { member ->
                         massSendLimiter.wait()
                         runCatching {
-                            sendTextMessage(member.userId, text)
+                            sendTextMessage(member.userId!!, text)
                         }
                     }
                 }

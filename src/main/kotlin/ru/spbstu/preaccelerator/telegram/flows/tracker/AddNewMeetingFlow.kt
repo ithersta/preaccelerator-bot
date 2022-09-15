@@ -7,19 +7,19 @@ import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.types.message.MarkdownV2
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
-import ru.spbstu.preaccelerator.domain.repository.TeamRepository
+import ru.spbstu.preaccelerator.domain.repository.*
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
+import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -29,6 +29,10 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
     val meetingRepository: MeetingRepository by inject()
     val teamRepository: TeamRepository by inject()
+    val memberRepository: MemberRepository by inject()
+    val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
+    val curatorRepository: CuratorRepository by inject()
+    val massSendLimiter: MassSendLimiter by inject()
     val zoneId: ZoneId by inject()
     state<NewMeetingState.WaitingForModuleNumber> {
         onTransition { chatId ->
@@ -39,21 +43,13 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             )
         }
         onText { message ->
-            val moduleNumber = message.content.text.toIntOrNull()?.let { Module.Number(it) } ?: run {
-                sendTextMessage(
-                    message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputModuleNumber,
-                    parseMode = MarkdownV2
-                )
-                return@onText
-            }
-            if (moduleConfig.modules.containsKey(moduleNumber)) {
+            val moduleNumber = message.content.text.toIntOrNull()?.let { Module.Number(it) }
+            if (moduleNumber != null && moduleConfig.modules.containsKey(moduleNumber)) {
                 setState(NewMeetingState.WaitingForTeam(moduleNumber))
             } else {
                 sendTextMessage(
                     message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidModuleNumber,
-                    parseMode = MarkdownV2
+                    MessageStrings.ScheduleMeetings.InvalidModuleNumber
                 )
                 return@onText
             }
@@ -100,8 +96,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
-                MessageStrings.ScheduleMeetings.InputDateTime,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.InputDateTime
             )
         }
         onText { message ->
@@ -109,11 +104,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
                 ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
             } catch (e: DateTimeParseException) {
-                sendTextMessage(
-                    message.chat,
-                    MessageStrings.ScheduleMeetings.InvalidDataFormat + MessageStrings.ScheduleMeetings.InputDateTime,
-                    parseMode = MarkdownV2
-                )
+                sendTextMessage(message.chat, MessageStrings.ScheduleMeetings.InvalidDateTime)
                 return@onText
             }
             setState(NewMeetingState.CheckCorrect(state.moduleNumber, state.teamId, state.url, dateTime))
@@ -133,8 +124,8 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                     oneTimeKeyboard = true
                 ) {
                     row {
-                        simpleButton(ButtonStrings.Option.Yes)
                         simpleButton(ButtonStrings.Option.No)
+                        simpleButton(ButtonStrings.Option.Yes)
                     }
                 }
             )
@@ -142,17 +133,45 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
         onText(ButtonStrings.Option.Yes) { message ->
             sendTextMessage(
                 message.chat,
-                MessageStrings.ScheduleMeetings.MeetingIsCreated,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.MeetingIsCreated
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             setState(MenuState.Tracker.Meetings)
+            memberRepository.get(state.teamId).forEach { member ->
+                val chatId = userPhoneNumberRepository.get(member.phoneNumber)
+                if (chatId != null) {
+                    massSendLimiter.wait()
+                    runCatching {
+                        sendTextMessage(
+                            chatId,
+                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(
+                                state.dateTime,
+                                state.url
+                            )
+                        )
+                    }
+                }
+            }
+            curatorRepository.getAll().forEach { curator ->
+                massSendLimiter.wait()
+                runCatching {
+                    sendTextMessage(
+                        curator.userId,
+                        NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
+                            state.dateTime,
+                            state.url,
+                            teamRepository.get(state.teamId).name
+                        ),
+                        disableNotification = true,
+                        disableWebPagePreview = true
+                    )
+                }
+            }
         }
         onText(ButtonStrings.Option.No) { message ->
             sendTextMessage(
                 message.chat,
-                MessageStrings.ScheduleMeetings.MeetingNotCreated,
-                parseMode = MarkdownV2
+                MessageStrings.ScheduleMeetings.MeetingNotCreated
             )
             setState(NewMeetingState.WaitingForModuleNumber)
         }

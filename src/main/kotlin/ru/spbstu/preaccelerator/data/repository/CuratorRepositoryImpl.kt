@@ -22,6 +22,10 @@ class CuratorRepositoryImpl(
         return appDatabase.curatorQueries.get(userId).executeAsOneOrNull()?.toDomainModel()
     }
 
+    override fun getAll(): List<Curator> {
+        return appDatabase.curatorQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     private fun UserId.toDomainModel() = Curator(
         userId = this
     )
