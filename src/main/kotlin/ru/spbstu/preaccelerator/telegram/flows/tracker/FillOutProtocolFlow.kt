@@ -197,7 +197,6 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
                         it.userId,
                         reviewProtocolText(team, protocolStatus, NewProtocol),
                         replyMarkup = declineOrAcceptKeyboard(protocolStatus),
-                        disableNotification = true
                     )
                 }
             }
