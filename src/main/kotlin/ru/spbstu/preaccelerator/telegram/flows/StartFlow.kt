@@ -26,10 +26,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Start.StartSeason
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 fun StateMachineBuilder.startFlow() {
     val seasonStartRepository: SeasonStartRepository by inject()
