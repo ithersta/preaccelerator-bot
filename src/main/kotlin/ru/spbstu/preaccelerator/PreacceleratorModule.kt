@@ -42,8 +42,10 @@ val preacceleratorModule = module(createdAtStart = true) {
     }
     single {
         meetingNotifications {
-            2.hours beforeMeetingSendToTeam MeetingStart::inTwoHoursForTeam sendToTracker
-                    MeetingStart::inTwoHoursForTracker
+            2.hours.beforeMeetingSend(
+                toTeam = MeetingStart::inTwoHoursForTeam,
+                toTracker = MeetingStart::inTwoHoursForTracker
+            )
         }
     }
     single { ZoneId.of("Asia/Yekaterinburg") }
