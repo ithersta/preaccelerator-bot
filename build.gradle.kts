@@ -28,7 +28,7 @@ dependencies {
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha03")
     implementation("io.insert-koin:koin-core:3.2.1")
     implementation("io.insert-koin:koin-annotations:1.0.2")
-    implementation("org.slf4j:slf4j-simple:2.0.0")
+    implementation("org.slf4j:slf4j-simple:2.0.1")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     implementation("org.apache.poi:poi:5.2.2")
     implementation("org.apache.poi:poi-ooxml:5.2.2")
