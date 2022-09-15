@@ -18,6 +18,10 @@ import java.util.*
 // TODO: Всё переписать
 object MessageStrings : KoinComponent {
     private val zoneId: ZoneId by inject()
+    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withLocale(Locale.forLanguageTag("ru"))
+        .withZone(zoneId)
 
     object Start {
         const val AskContact = "TODO"
@@ -181,10 +185,6 @@ object MessageStrings : KoinComponent {
         fun success(count: Int) =
             "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
     }
-
-    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter
-        .ofLocalizedDateTime(FormatStyle.LONG)
-        .withZone(zoneId)
 
     fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
         """|Запланировать встречу с командой $teamName

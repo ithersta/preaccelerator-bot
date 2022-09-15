@@ -27,3 +27,6 @@ add:
 INSERT INTO Meeting(teamId, moduleNumber,timestamp, url)
 VALUES(:teamId, :moduleNumber, :timestamp, :url)
 RETURNING id;
+
+getAll:
+SELECT * FROM Meeting;
