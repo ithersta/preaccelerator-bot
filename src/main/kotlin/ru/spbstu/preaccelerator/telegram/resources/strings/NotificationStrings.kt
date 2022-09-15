@@ -1,9 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.bold
-import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
-import dev.inmo.tgbotapi.extensions.utils.formatting.linkln
-import dev.inmo.tgbotapi.extensions.utils.formatting.regularln
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Meeting
@@ -12,9 +9,12 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 object NotificationStrings : KoinComponent {
+    private val zoneId: ZoneId by inject()
 
     object ModuleDeadline {
         fun inOneDay(moduleNumber: Module.Number) =
@@ -25,17 +25,25 @@ object NotificationStrings : KoinComponent {
     }
 
     object MeetingStart {
-        fun inTwoHoursForTeam(meeting: Meeting) = """
-            |Через 2 часа у вашей команды состоится встреча с трекером
-            |${MessageStrings.dateTimeFormatter.format(meeting.timestamp)}
-            |${meeting.url}
-        """.trimMargin()
+        private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm v")
+            .withZone(zoneId)
+            .withLocale(Locale.forLanguageTag("ru"))
 
-        fun inTwoHoursForTracker(meeting: Meeting, team: Team) = """
-            |Через 2 часа у вас состоится встреча с командой ${team.name}
-            |${MessageStrings.dateTimeFormatter.format(meeting.timestamp)}
-            |${meeting.url}
-        """.trimMargin()
+        fun inTwoHoursForTeam(meeting: Meeting) = buildEntities {
+            regular("Через ")
+            bold("2 часа")
+            regularln(" (в ${timeFormatter.format(meeting.timestamp)}) у вашей команды состоится встреча с трекером")
+            bold("Ссылка на конференцию: ")
+            regularln(meeting.url)
+        }
+
+        fun inTwoHoursForTracker(meeting: Meeting, team: Team) = buildEntities {
+            regular("Через ")
+            bold("2 часа")
+            regularln(" (в ${timeFormatter.format(meeting.timestamp)}) у вас состоится встреча с командой ${team.name}")
+            bold("Ссылка на конференцию: ")
+            regularln(meeting.url)
+        }
     }
 
     fun homeworkUploaded(task: Task, team: Team) =
@@ -55,7 +63,7 @@ object NotificationStrings : KoinComponent {
                 bold("Ссылка на конференцию: ")
                 linkln(url)
                 regularln("")
-                regularln("За 2 часа до назначенного времени вам придёт напоминание")
+                regularln("За 2 часа до назначенного времени вам придёт сообщение")
             }
 
         fun meetingCreatedNotifyCurator(dateTime: OffsetDateTime, url: String, teamName: String) =

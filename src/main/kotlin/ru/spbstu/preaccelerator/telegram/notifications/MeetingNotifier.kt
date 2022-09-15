@@ -2,6 +2,7 @@ package ru.spbstu.preaccelerator.telegram.notifications
 
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
+import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.quartz.JobBuilder.newJob
@@ -82,15 +83,15 @@ class MeetingNotifier(
 
     class Config(
         val duration: java.time.Duration,
-        val memberMessage: (Meeting) -> String,
-        val trackerMessage: (Meeting, Team) -> String
+        val memberMessage: (Meeting) -> TextSourcesList,
+        val trackerMessage: (Meeting, Team) -> TextSourcesList
     ) {
         class Builder {
             private var config: Config? = null
 
             fun Duration.beforeMeetingSend(
-                toTeam: (Meeting) -> String,
-                toTracker: (Meeting, Team) -> String
+                toTeam: (Meeting) -> TextSourcesList,
+                toTracker: (Meeting, Team) -> TextSourcesList
             ) {
                 check(config == null)
                 config = Config(toJavaDuration(), toTeam, toTracker)
