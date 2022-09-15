@@ -4,6 +4,7 @@ import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Protocol
+import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.AddUsersUseCase
@@ -61,8 +62,7 @@ object MessageStrings : KoinComponent {
         const val ChooseTeam = "Выберите команду"
         const val DownloadOption = "Выберите модуль, к которому относится задание"
         const val Err = "Выберите вариант из кнопочного меню"
-        fun moduleHomeworks(num: Module.Number) =
-            "Задания модуля №${num.value}"
+        fun moduleHomeworks(num: Module.Number) = "Задания модуля №${num.value}"
 
         const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
         const val ChooseModuleNumber = "Выберите номер модуля"
@@ -116,27 +116,34 @@ object MessageStrings : KoinComponent {
         const val NoUnreviewedProtocols = "Непроверенных протоколов нет"
         const val ChooseTeam = "Выберите команду, у которой хотите проверить протоколы"
 
-        fun protocol(protocol: Protocol?, team: Team, moduleNumber: Module.Number, status: String?, comment: String?) =
-            buildEntities {
-                if (status != null) {
-                    regular(status)
-                    regular(" ")
-                }
-                bold("Модуль ${moduleNumber.value}")
-                regular(" | ")
-                bold("Команда: ")
-                regularln(team.name)
-                if (protocol != null) {
-                    bold("Протокол: ")
-                    linkln(protocol.url)
-                } else {
-                    regularln("Ссылка на протокол не установлена")
-                }
-                if (comment != null) {
-                    bold("Комментарий: ")
-                    regularln(comment)
-                }
+        fun protocol(
+            prefix: String?,
+            protocol: Protocol?,
+            team: Team,
+            moduleNumber: Module.Number,
+            status: String?,
+            comment: String?
+        ) = buildEntities {
+            prefix?.let { regularln(it) }
+            if (status != null) {
+                regular(status)
+                regular(" ")
             }
+            bold("Модуль ${moduleNumber.value}")
+            regular(" | ")
+            bold("Команда: ")
+            regularln(team.name)
+            if (protocol != null) {
+                bold("Протокол: ")
+                linkln(protocol.url)
+            } else {
+                regularln("Ссылка на протокол не установлена")
+            }
+            if (comment != null) {
+                bold("Комментарий: ")
+                regularln(comment)
+            }
+        }
     }
 
     object Error {
@@ -151,16 +158,21 @@ object MessageStrings : KoinComponent {
         const val InputModuleNumber = "Укажите номер модуля, соответствующий теме встречи"
         const val ChooseTeam = "Выберите команду"
         const val InputUrl = "Введите ссылку на конференцию"
+        const val MeetingIsCreated =
+            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
+        const val MeetingNotCreated = "Встреча не создана"
+        const val InvalidModuleNumber = "Введён неверный номер модуля"
         val InputDateTime = "Введите дату и время конференции в формате дд.ММ.гггг чч:мм (часовой пояс ${
             zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
         })"
-        const val MeetingIsCreated =
-            "Новая встреча с командой создана. Вы и участники команды получите напоминание о встрече за 2 часа до неё."
-
-        //TODO написать красиво
-        const val MeetingNotCreated = "Встреча не создана"
         val InvalidDateTime = "Неверный формат даты. $InputDateTime"
-        const val InvalidModuleNumber = "Введён неверный номер модуля"
+
+        fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
+            """|Запланировать встречу с командой $teamName
+           |на ${dateTimeFormatter.format(dateTime)}
+           |ссылка на конференцию: $url
+           |Всё верно?
+        """.trimMargin()
     }
 
     object SendInfo {
@@ -188,11 +200,37 @@ object MessageStrings : KoinComponent {
             "Сообщение разослано $count ${pluralize(count, "пользователю", "пользователям", "пользователям")}"
     }
 
-    fun meetingCreationConfirmation(teamName: String, dateTime: OffsetDateTime, url: String) =
-        """|Запланировать встречу с командой $teamName
-           |на ${dateTimeFormatter.format(dateTime)}
-           |ссылка на конференцию: $url
-           |Всё верно?
-        """.trimMargin()
+    object FillOutProtocol {
+        const val InvalidProtocolUrl = "Неверный формат ссылки"
+        const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
+        const val ChooseTeam = "Выберите команду"
+        const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
+        const val MarkAsSentQuestion = "Оповестить куратора о готовности протокола?"
+        const val NewProtocol = "Новый протокол отправлен на проверку"
 
+        val ProtocolStatus.Value.emoji
+            get() = when (this) {
+                ProtocolStatus.Value.Unsent -> "✉️"
+                ProtocolStatus.Value.Sent -> "📤"
+                ProtocolStatus.Value.Accepted -> "✅"
+                ProtocolStatus.Value.Declined -> "❌"
+            }
+
+        fun confirmationProtocol(moduleNumber: String) =
+            "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение в случае, если он найдёт недочёты."
+
+        fun explanationReasons(protocolStatus: ProtocolStatus, team: Team, protocol: Protocol) = buildEntities {
+            link("Протокол ${protocolStatus.moduleNumber.value} недели с командой ${team.name}", protocol.url)
+            bold(" нуждается в изменении\n\nКомментарий куратора:")
+            regularln(" ${protocolStatus.comment}\nНажмите на кнопку, если протокол был исправлен.")
+        }
+
+        fun chooseModule(teamName: String) = """
+            |Протоколы команды $teamName
+            |${ProtocolStatus.Value.Unsent.emoji} – протокол ещё не отправлен
+            |${ProtocolStatus.Value.Sent.emoji} – протокол отправлен
+            |${ProtocolStatus.Value.Accepted.emoji} – протокол принят
+            |${ProtocolStatus.Value.Declined.emoji} – протокол отклонён
+        """.trimMargin()
+    }
 }

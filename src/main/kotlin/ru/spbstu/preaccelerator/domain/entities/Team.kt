@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.domain.entities
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 

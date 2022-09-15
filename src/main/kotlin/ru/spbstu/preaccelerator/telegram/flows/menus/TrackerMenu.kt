@@ -9,6 +9,7 @@ import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.telegram.entities.state.*
 import ru.spbstu.preaccelerator.telegram.flows.tracker.addNewMeetingFlow
 import ru.spbstu.preaccelerator.telegram.flows.tracker.downloadHomeworkFlow
+import ru.spbstu.preaccelerator.telegram.flows.tracker.fillOutProtocolFlow
 import ru.spbstu.preaccelerator.telegram.resources.strings.DescriptionStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings.Tracker.Meetings
@@ -32,7 +33,7 @@ val trackerMenu = menu<DialogState, PreacceleratorUser, Tracker>(MenuStrings.Tra
             NewMeetingState.WaitingForModuleNumber,
             DescriptionStrings.TrackerButtons.ScheduleMeeting
         )
-        button(Meetings.SendProtocol, NotImplementedState, DescriptionStrings.TrackerButtons.SendProtocol)
+        button(Meetings.SendProtocol, FillOutProtocolState.ChooseTeam, DescriptionStrings.TrackerButtons.SendProtocol)
         backButton(MenuStrings.Back)
     }
     submenu(Teams.Button, Teams.Message, MenuState.Tracker.Teams) {
@@ -46,4 +47,5 @@ fun RoleFilterBuilder<DialogState, PreacceleratorUser, Tracker, UserId>.trackerM
     with(trackerMenu) { invoke() }
     addNewMeetingFlow()
     downloadHomeworkFlow()
+    fillOutProtocolFlow()
 }
