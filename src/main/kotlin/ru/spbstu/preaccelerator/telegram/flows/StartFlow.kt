@@ -20,10 +20,8 @@ import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.useCuratorToken
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings.StartNewSeason.LaunchAccelerator
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Start.StartSeason
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -90,10 +88,10 @@ fun StateMachineBuilder.startFlow() {
             onTransition {
                 sendTextMessage(
                     it,
-                    StartSeason,
+                    MessageStrings.Start.StartSeason,
                     replyMarkup = inlineKeyboard {
                         row {
-                            dataButton(LaunchAccelerator, "data")
+                            dataButton(ButtonStrings.StartNewSeason.LaunchAccelerator, "data")
                         }
                     }
                 )
