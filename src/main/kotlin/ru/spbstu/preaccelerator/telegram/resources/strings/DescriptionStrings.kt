@@ -50,7 +50,7 @@ object DescriptionStrings {
     fun functionalDescription(menu: Menu<DialogState, PreacceleratorUser, out PreacceleratorUser>): String {
         var description = PossibleActions
         for (action in menu.descriptions) {
-            description += "• " + action + "\n"
+            description += listOf("• ", action, "\n").joinToString("")
         }
         return description
     }
