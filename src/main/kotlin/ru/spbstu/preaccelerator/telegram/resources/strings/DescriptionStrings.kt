@@ -25,7 +25,7 @@ object DescriptionStrings {
         Roles.Trackers to "трекеров",
     )
 
-    fun sendInfo(recipient: Roles): String = "отправить информацию ${DativeCase.getValue(recipient)}"
+    fun sendInfo(recipient: Roles): String = "отправлять информацию ${DativeCase.getValue(recipient)}"
     fun getStats(category: Roles) = "получать статистику по ${DativeCase.getValue(category)}"
 
     object CuratorButtons {
