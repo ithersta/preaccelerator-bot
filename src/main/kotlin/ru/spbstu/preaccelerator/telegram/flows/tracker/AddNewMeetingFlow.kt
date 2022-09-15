@@ -137,21 +137,9 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             memberRepository.get(state.teamId).forEach { member ->
-                curatorRepository.getAll().forEach {
-                    massSendLimiter.wait()
-                    runCatching {
-                        sendTextMessage(
-                            it.userId,
-                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
-                                state.dateTime,
-                                state.url,
-                                teamRepository.get(state.teamId).name
-                            )
-                        )
-                    }
-                }
                 val chatId = userPhoneNumberRepository.get(member.phoneNumber)
                 if (chatId != null) {
+                    massSendLimiter.wait()
                     runCatching {
                         sendTextMessage(
                             chatId,
@@ -161,6 +149,19 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                             )
                         )
                     }
+                }
+            }
+            curatorRepository.getAll().forEach { curator ->
+                massSendLimiter.wait()
+                runCatching {
+                    sendTextMessage(
+                        curator.userId,
+                        NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
+                            state.dateTime,
+                            state.url,
+                            teamRepository.get(state.teamId).name
+                        )
+                    )
                 }
             }
             setState(MenuState.Tracker.Meetings)
