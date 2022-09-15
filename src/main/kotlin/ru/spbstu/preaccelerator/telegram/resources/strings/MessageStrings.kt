@@ -194,12 +194,13 @@ object MessageStrings : KoinComponent {
 
 
     object Tracker {
-        val map = mapOf(
-            ProtocolStatus.Value.Unsent to "✉️",
-            ProtocolStatus.Value.Declined to "❌",
-            ProtocolStatus.Value.Sent to "📤",
-            ProtocolStatus.Value.Accepted to "✅"
-        )
+        val ProtocolStatus.Value.emoji
+            get() = when (this) {
+                ProtocolStatus.Value.Unsent -> "✉️"
+                ProtocolStatus.Value.Sent -> "📤"
+                ProtocolStatus.Value.Accepted -> "✅"
+                ProtocolStatus.Value.Declined -> "❌"
+            }
 
         fun confirmationProtocol(moduleNumber: String) =
             "Вы завершили заполнение протокола $moduleNumber (номер модуля) недели. Куратор будет уведомлён об этом. Вы получите оповещение случае, если он найдёт недочёты."
@@ -213,19 +214,21 @@ object MessageStrings : KoinComponent {
             regularln(" ${protocolStatus.comment}\nНажмите не кнопку, если протокол был исправлен.")
         }
 
+        const val InvalidProtocolUrl = "Неверный формат ссылки"
         const val ProtocolHasBeenSent = "Протокол отправлен и находится на проверке"
         const val ChooseTeam = "Выберите команду"
         const val ProtocolChanged = "Протокол исправлен"
-        val ChooseModule = """|Выберите модуль.
-            |Значение смайликов:
-            |✉️ - работа еще не отправлена;
-            |📤 - работа отправлена;
-            |❌ - работа не принята;
-            |✅ - работа принята.""".trimMargin()
+        fun chooseModule(teamName: String) = """
+            |Протоколы команды $teamName
+            |${ProtocolStatus.Value.Unsent.emoji} – протокол ещё не отправлен
+            |${ProtocolStatus.Value.Sent.emoji} – протокол отправлен
+            |${ProtocolStatus.Value.Accepted.emoji} – протокол принят
+            |${ProtocolStatus.Value.Declined.emoji} – протокол отклонён
+        """.trimMargin()
 
         const val InputGoogleDiskUrl = "Введите ссылку на Google док с протоколом встречи"
         const val MessageCurator = "Оповестить куратора о готовности протокола"
-        const val Attention = "Нажмите на кнопку, чтобы отправить протокол"
+        const val MarkAsSentQuestion = "Оповестить куратора о готовности протокола?"
         const val ViewProtocol = "Посмотреть протокол"
         const val ReadyCheck = "Готовы оценить протокол сейчас?"
     }

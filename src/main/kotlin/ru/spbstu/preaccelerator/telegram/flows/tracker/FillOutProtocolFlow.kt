@@ -1,38 +1,44 @@
 package ru.spbstu.preaccelerator.telegram.flows.tracker
 
+import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
+import com.ithersta.tgbotapi.pagination.inlineKeyboardPager
+import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
+import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import org.apache.commons.validator.routines.UrlValidator
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
-import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.isFinished
-import ru.spbstu.preaccelerator.domain.entities.module.Module.Number
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
 import ru.spbstu.preaccelerator.domain.repository.CuratorRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolRepository
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
+import ru.spbstu.preaccelerator.telegram.entities.query.FillOutProtocolQuery
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
-import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState.*
+import ru.spbstu.preaccelerator.telegram.entities.state.ProtocolState
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.availableModules
-import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
 import ru.spbstu.preaccelerator.telegram.flows.curator.declineOrAcceptKeyboard
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.Attention
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ChooseTeam
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InputGoogleDiskUrl
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.InvalidProtocolUrl
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.MarkAsSentQuestion
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.MessageCurator
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolChanged
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ProtocolHasBeenSent
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ReadyCheck
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.ViewProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.chooseModule
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.confirmationProtocol
+import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.emoji
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.explanationReasons
-import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.map
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.Tracker.textForCurator
 
 fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
@@ -40,82 +46,97 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
     val protocolStatusRepository: ProtocolStatusRepository by inject()
     val teamRepository: TeamRepository by inject()
     val curatorRepository: CuratorRepository by inject()
-    state<ChooseTeam> {
-        onTransition { chatId ->
-            sendTextMessage(chatId, ChooseTeam, replyMarkup = inlineKeyboard {
-                user.teams.chunked(2).forEach {
-                    row {
-                        it.forEach { dataButton(it.name, "teamId ${it.id.value}") }
-                    }
+
+    val teamPager = inlineKeyboardPager("fillOutProtocolFlow") { offset, limit ->
+        val teams = teamRepository.getByTrackerIdPaginated(user.id, offset, limit)
+        val count = teamRepository.countByTrackerId(user.id)
+        inlineKeyboard {
+            teams.forEach {
+                row {
+                    dataButton(it.name, FillOutProtocolQuery.OnTeamClicked(it.id))
                 }
-            })
-        }
-        onDataCallbackQuery(Regex("teamId \\d+")) {
-            val teamId = Team.Id(it.data.split(" ").last().toLong())
-            setState(ChooseModule(teamId))
+            }
+            navigationRow(count)
         }
     }
-    state<ChooseModule> {
+    anyState {
+        onDataCallbackQuery(FillOutProtocolQuery.OnTeamClicked::class) { (data, query) ->
+            setState(ProtocolState.ChooseModule(data.teamId, query.messageCallbackQueryOrThrow().message.messageId))
+        }
+        onDataCallbackQuery(FillOutProtocolQuery.OnModuleClicked::class) { (data, query) ->
+            if (protocolRepository.get(data.teamId) == null) {
+                setState(ProtocolState.WaitingForUrl(data.teamId, data.moduleNumber, state))
+            } else {
+                val status = protocolStatusRepository.get(data.teamId, data.moduleNumber)
+                if (!status.isFinished()) {
+                    if (status.value == ProtocolStatus.Value.Declined) {
+                        setState(ProtocolState.FixWrong(data.teamId, data.moduleNumber))
+                    } else {
+                        setState(
+                            ProtocolState.NotificationButton(
+                                data.teamId,
+                                data.moduleNumber,
+                                protocolRepository.get(data.teamId)!!.url
+                            )
+                        )
+                    }
+                } else {
+                    sendTextMessage(query.from, ProtocolHasBeenSent)
+                }
+            }
+        }
+    }
+    state<ProtocolState.ChooseTeam> {
         onTransition { chatId ->
-            sendTextMessage(chatId, ChooseModule, replyMarkup = inlineKeyboard {
+            state.messageId?.let {
+                runCatching { editMessageReplyMarkup(chatId, it, replyMarkup = teamPager.firstPage) }
+            } ?: run {
+                sendTextMessage(chatId, ChooseTeam, replyMarkup = teamPager.firstPage)
+            }
+        }
+    }
+    state<ProtocolState.ChooseModule> {
+        onTransition { chatId ->
+            val team = teamRepository.get(state.teamId)
+            val replyMarkup = inlineKeyboard {
                 teamRepository.get(state.teamId).availableModules.chunked(2).forEach {
                     row {
                         it.forEach {
                             val status = protocolStatusRepository.get(state.teamId, it.number)
-                            dataButton(map[status.value] + it.name, "moduleId ${it.number.value}")
+                            dataButton(
+                                "${status.value.emoji} ${it.name}",
+                                FillOutProtocolQuery.OnModuleClicked(state.teamId, it.number)
+                            )
                         }
                     }
                 }
-            })
-        }
-        onDataCallbackQuery(Regex("moduleId \\d+")) {
-            val moduleNumber = Number(it.data.split(' ').last().toInt())
-            protocolRepository.get(state.teamId)
-            if (protocolRepository.get(state.teamId) == null) {
-                setState(SendUrl(state.teamId, moduleNumber))
-            } else {
-                setState(CheckStatus(state.teamId, moduleNumber))
+            }
+            state.messageId?.let {
+                runCatching { editMessageText(chatId, it, chooseModule(team.name), replyMarkup = replyMarkup) }
+            } ?: run {
+                sendTextMessage(chatId, chooseModule(team.name), replyMarkup = replyMarkup)
             }
         }
     }
-    state<SendUrl> {
+    state<ProtocolState.WaitingForUrl> {
         onTransition {
-            sendTextMessage(it, InputGoogleDiskUrl)
+            sendTextMessage(it, InputGoogleDiskUrl, replyMarkup = ReplyKeyboardRemove())
         }
         onText { message ->
-            val protocolUrl = message.content.text
+            val protocolUrl = message.content.text.takeIf { UrlValidator().isValid(it) } ?: run {
+                sendTextMessage(message.chat, InvalidProtocolUrl)
+                return@onText
+            }
             if (!protocolStatusRepository.get(state.teamId, state.moduleNumber).isFinished()) {
                 protocolRepository.add(state.teamId, protocolUrl)
-                setState(NotificationButton(state.teamId, state.moduleNumber, protocolUrl))
+                setState(ProtocolState.NotificationButton(state.teamId, state.moduleNumber, protocolUrl))
             } else {
                 sendTextMessage(message.chat, ProtocolHasBeenSent)
-                setState(EmptyState)
+                setState(state.returnTo)
             }
         }
     }
-    state<CheckStatus> {
-        onTransition {
-            val status = protocolStatusRepository.get(state.teamId, state.moduleNumber)
-            if (!status.isFinished()) {
-                if (status.value == ProtocolStatus.Value.Declined) {
-                    setState(FixWrong(state.teamId, state.moduleNumber))
-                } else {
-                    setState(
-                        NotificationButton(
-                            state.teamId,
-                            state.moduleNumber,
-                            protocolRepository.get(state.teamId)!!.url
-                        )
-                    )
-                }
-            } else {
-                sendTextMessage(it, ProtocolHasBeenSent)
-                setState(EmptyState)
-            }
-        }
-    }
-
-    state<FixWrong> {
+    state<ProtocolState.FixWrong> {
         onTransition { chatId ->
             sendTextMessage(
                 chatId,
@@ -138,10 +159,10 @@ fun RoleFilterBuilder<Tracker>.fillOutProtocolFlow() {
             setState(EmptyState)
         }
     }
-    state<NotificationButton> {
+    state<ProtocolState.NotificationButton> {
         onTransition { chatId ->
             sendTextMessage(chatId,
-                Attention,
+                MarkAsSentQuestion,
                 replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     row {
                         simpleButton(MessageCurator)
