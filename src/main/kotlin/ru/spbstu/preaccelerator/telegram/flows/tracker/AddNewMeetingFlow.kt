@@ -16,6 +16,7 @@ import ru.spbstu.preaccelerator.domain.repository.*
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
+import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
@@ -31,6 +32,7 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
     val memberRepository: MemberRepository by inject()
     val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
     val curatorRepository: CuratorRepository by inject()
+    val massSendLimiter: MassSendLimiter by inject()
     val zoneId: ZoneId by inject()
     state<NewMeetingState.WaitingForModuleNumber> {
         onTransition { chatId ->
@@ -134,13 +136,31 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
                 MessageStrings.ScheduleMeetings.MeetingIsCreated
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
-            memberRepository.get(state.teamId).forEach {
-                curatorRepository.getAll().map {
-                    sendTextMessage (it.userId, NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(state.dateTime, state.url, teamRepository.get(state.teamId).name))
+            memberRepository.get(state.teamId).forEach { member ->
+                curatorRepository.getAll().forEach {
+                    massSendLimiter.wait()
+                    runCatching {
+                        sendTextMessage(
+                            it.userId,
+                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
+                                state.dateTime,
+                                state.url,
+                                teamRepository.get(state.teamId).name
+                            )
+                        )
+                    }
                 }
-                val chatId = userPhoneNumberRepository.get(it.phoneNumber)
+                val chatId = userPhoneNumberRepository.get(member.phoneNumber)
                 if (chatId != null) {
-                    sendTextMessage (chatId, NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(state.dateTime, state.url))
+                    runCatching {
+                        sendTextMessage(
+                            chatId,
+                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(
+                                state.dateTime,
+                                state.url
+                            )
+                        )
+                    }
                 }
             }
             setState(MenuState.Tracker.Meetings)
