@@ -1,6 +1,9 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.extensions.utils.formatting.bold
+import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
+import dev.inmo.tgbotapi.extensions.utils.formatting.linkln
+import dev.inmo.tgbotapi.extensions.utils.formatting.regularln
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.Task
