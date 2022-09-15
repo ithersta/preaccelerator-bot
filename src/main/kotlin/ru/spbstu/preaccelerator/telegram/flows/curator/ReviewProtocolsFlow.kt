@@ -25,10 +25,12 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
+import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ReviewProtocolsState
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.protocol
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
@@ -36,6 +38,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     val teamRepository: TeamRepository by inject()
     val protocolStatusRepository: ProtocolStatusRepository by inject()
+    val trackerRepository: TrackerRepository by inject()
     val teamPager = inlineKeyboardPager("reviewProtocolsFlow") { offset, limit ->
         val teams = teamRepository.getPaginatedWithSentProtocols(offset, limit)
         val count = teamRepository.countWithSentProtocols()
@@ -124,6 +127,17 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
                     text(team, protocolStatus),
                     replyMarkup = keyboard(protocolStatus),
                     disableWebPagePreview = true
+                )
+            }
+            trackerRepository.get(team.trackerId).userId?.let { it1 ->
+                sendTextMessage(
+                    it1,
+                    MessageStrings.ReviewProtocols.declinedProtocol(
+                        protocolStatus.moduleNumber,
+                        team,
+                        team.protocol,
+                        message.content.text
+                    )
                 )
             }
             delete(message)
