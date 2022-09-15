@@ -12,13 +12,14 @@ import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
-import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
-import ru.spbstu.preaccelerator.domain.repository.TeamRepository
+import ru.spbstu.preaccelerator.domain.repository.*
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.MenuState
 import ru.spbstu.preaccelerator.telegram.entities.state.NewMeetingState
+import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -28,6 +29,10 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
     val moduleConfig: ModuleConfig by inject()
     val meetingRepository: MeetingRepository by inject()
     val teamRepository: TeamRepository by inject()
+    val memberRepository: MemberRepository by inject()
+    val userPhoneNumberRepository: UserPhoneNumberRepository by inject()
+    val curatorRepository: CuratorRepository by inject()
+    val massSendLimiter: MassSendLimiter by inject()
     val zoneId: ZoneId by inject()
     state<NewMeetingState.WaitingForModuleNumber> {
         onTransition { chatId ->
@@ -132,6 +137,36 @@ fun RoleFilterBuilder<Tracker>.addNewMeetingFlow() {
             )
             meetingRepository.add(state.teamId, state.moduleNumber, state.dateTime, state.url)
             setState(MenuState.Tracker.Meetings)
+            memberRepository.get(state.teamId).forEach { member ->
+                val chatId = userPhoneNumberRepository.get(member.phoneNumber)
+                if (chatId != null) {
+                    massSendLimiter.wait()
+                    runCatching {
+                        sendTextMessage(
+                            chatId,
+                            NotificationStrings.MeetingNotifications.meetingCreatedNotifyMember(
+                                state.dateTime,
+                                state.url
+                            )
+                        )
+                    }
+                }
+            }
+            curatorRepository.getAll().forEach { curator ->
+                massSendLimiter.wait()
+                runCatching {
+                    sendTextMessage(
+                        curator.userId,
+                        NotificationStrings.MeetingNotifications.meetingCreatedNotifyCurator(
+                            state.dateTime,
+                            state.url,
+                            teamRepository.get(state.teamId).name
+                        ),
+                        disableNotification = true,
+                        disableWebPagePreview = true
+                    )
+                }
+            }
         }
         onText(ButtonStrings.Option.No) { message ->
             sendTextMessage(

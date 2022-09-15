@@ -8,13 +8,16 @@ import ru.spbstu.preaccelerator.data.readDatabaseCredentials
 import ru.spbstu.preaccelerator.domain.entities.module.ModuleConfig
 import ru.spbstu.preaccelerator.telegram.createModuleConfig
 import ru.spbstu.preaccelerator.telegram.createStateMachine
+import ru.spbstu.preaccelerator.telegram.notifications.meetingNotifications
 import ru.spbstu.preaccelerator.telegram.notifications.moduleDeadlineNotifications
 import ru.spbstu.preaccelerator.telegram.notifications.protocolDeadlineNotifications
+import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.MeetingStart
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ModuleDeadline
 import ru.spbstu.preaccelerator.telegram.resources.strings.NotificationStrings.ProtocolDeadline
 import java.time.LocalTime
 import java.time.ZoneId
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 
 val preacceleratorModule = module(createdAtStart = true) {
     includes(defaultModule)
@@ -35,6 +38,14 @@ val preacceleratorModule = module(createdAtStart = true) {
     single {
         protocolDeadlineNotifications(LocalTime.of(19, 0)) {
             5.days afterFirstMeetingSend ProtocolDeadline::inLessThanTwoDays
+        }
+    }
+    single {
+        meetingNotifications {
+            2.hours.beforeMeetingSend(
+                toTeam = MeetingStart::inTwoHoursForTeam,
+                toTracker = MeetingStart::inTwoHoursForTracker
+            )
         }
     }
     single { ZoneId.of("Asia/Yekaterinburg") }
