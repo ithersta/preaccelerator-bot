@@ -160,7 +160,7 @@ object MessageStrings : KoinComponent {
                     regularln(comment)
                 }
                 regularln(" ")
-                regularln("Внесите соответствующие изменения и заново оправьте протокол")
+                regularln("Внесите соответствующие изменения и заново отправьте протокол")
             }
     }
 

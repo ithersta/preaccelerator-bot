@@ -18,6 +18,7 @@ import dev.inmo.tgbotapi.types.buttons.ReplyForce
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.PreviewFeature
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
@@ -133,19 +134,21 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
                     disableWebPagePreview = true
                 )
             }
-            trackerRepository.get(team.trackerId).userId?.let { it1 ->
-                sendTextMessage(
-                    it1,
-                    MessageStrings.ReviewProtocols.declinedProtocol(
-                        protocolStatus.moduleNumber,
-                        team,
-                        team.protocol,
-                        message.content.text
+            coroutineScope.launch {
+                trackerRepository.get(team.trackerId).userId?.let { trackerChatId ->
+                    sendTextMessage(
+                        trackerChatId,
+                        MessageStrings.ReviewProtocols.declinedProtocol(
+                            protocolStatus.moduleNumber,
+                            team,
+                            team.protocol,
+                            message.content.text
+                        )
                     )
-                )
+                }
+                delete(message)
+                message.replyTo?.let { delete(it) }
             }
-            delete(message)
-            message.replyTo?.let { delete(it) }
             setState(state.returnTo)
         }
     }
