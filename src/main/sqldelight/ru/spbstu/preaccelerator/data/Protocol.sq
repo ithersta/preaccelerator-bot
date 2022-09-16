@@ -11,3 +11,7 @@ CREATE TABLE Protocol (
 get:
 SELECT * FROM Protocol
 WHERE teamId = :teamId;
+
+add:
+INSERT INTO Protocol(teamId, url)
+VALUES(:teamId, :url);

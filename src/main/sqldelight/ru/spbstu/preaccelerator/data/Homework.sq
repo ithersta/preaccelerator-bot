@@ -23,3 +23,6 @@ WHERE teamId = :teamId;
 get:
 SELECT * FROM Homework
 WHERE teamId = :teamId AND taskNumber = :taskNumber;
+
+getAll:
+SELECT * FROM Homework;

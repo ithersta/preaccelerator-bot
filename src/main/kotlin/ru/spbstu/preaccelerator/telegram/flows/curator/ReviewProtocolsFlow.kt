@@ -39,7 +39,7 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     val teamRepository: TeamRepository by inject()
     val protocolStatusRepository: ProtocolStatusRepository by inject()
     val trackerRepository: TrackerRepository by inject()
-    val teamPager = inlineKeyboardPager("reviewProtocolsFlow") { offset, limit ->
+    val teamPager = inlineKeyboardPager("reviewProtocolsFlow") {
         val teams = teamRepository.getPaginatedWithSentProtocols(offset, limit)
         val count = teamRepository.countWithSentProtocols()
         inlineKeyboard {
@@ -79,8 +79,8 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
             runCatching {
                 editMessageText(
                     message,
-                    text(team, protocolStatus),
-                    replyMarkup = keyboard(protocolStatus),
+                    reviewProtocolText(team, protocolStatus),
+                    replyMarkup = declineOrAcceptKeyboard(protocolStatus),
                     disableWebPagePreview = true
                 )
             }
@@ -94,7 +94,7 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     }
     state<ReviewProtocolsState.ChooseTeam> {
         onTransition {
-            sendTextMessage(it, MessageStrings.ReviewProtocols.ChooseTeam, replyMarkup = teamPager.firstPage)
+            sendTextMessage(it, MessageStrings.ReviewProtocols.ChooseTeam, replyMarkup = with(teamPager) { firstPage })
             setStateQuiet(EmptyState)
         }
     }
@@ -106,7 +106,11 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
                 return@onTransition
             }
             val team = teamRepository.get(protocolStatus.teamId)
-            sendTextMessage(it, text(team, protocolStatus), replyMarkup = keyboard(protocolStatus))
+            sendTextMessage(
+                it,
+                reviewProtocolText(team, protocolStatus),
+                replyMarkup = declineOrAcceptKeyboard(protocolStatus)
+            )
         }
     }
     state<ReviewProtocolsState.WaitingForComment> {
@@ -124,8 +128,8 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
                 editMessageText(
                     message.chat,
                     state.messageId,
-                    text(team, protocolStatus),
-                    replyMarkup = keyboard(protocolStatus),
+                    reviewProtocolText(team, protocolStatus),
+                    replyMarkup = declineOrAcceptKeyboard(protocolStatus),
                     disableWebPagePreview = true
                 )
             }
@@ -147,13 +151,14 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     }
 }
 
-private fun text(team: Team, protocolStatus: ProtocolStatus): TextSourcesList {
+fun reviewProtocolText(team: Team, protocolStatus: ProtocolStatus, prefix: String? = null): TextSourcesList {
     val status = when (protocolStatus.value) {
         ProtocolStatus.Value.Accepted -> MessageStrings.ReviewProtocols.Accepted
         ProtocolStatus.Value.Declined -> MessageStrings.ReviewProtocols.Declined
         else -> null
     }
     return MessageStrings.ReviewProtocols.protocol(
+        prefix,
         team.protocol,
         team,
         protocolStatus.moduleNumber,
@@ -162,7 +167,7 @@ private fun text(team: Team, protocolStatus: ProtocolStatus): TextSourcesList {
     )
 }
 
-private fun keyboard(protocolStatus: ProtocolStatus): InlineKeyboardMarkup = inlineKeyboard {
+fun declineOrAcceptKeyboard(protocolStatus: ProtocolStatus): InlineKeyboardMarkup = inlineKeyboard {
     if (protocolStatus.value == ProtocolStatus.Value.Sent) {
         row {
             dataButton(

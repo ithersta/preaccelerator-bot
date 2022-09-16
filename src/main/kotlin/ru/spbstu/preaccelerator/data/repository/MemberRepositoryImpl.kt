@@ -11,6 +11,10 @@ import ru.spbstu.preaccelerator.domain.repository.MemberRepository
 class MemberRepositoryImpl(
     private val appDatabase: AppDatabase
 ) : MemberRepository {
+    override fun getAll(): List<Member> {
+        return appDatabase.memberQueries.getAll().executeAsList().map { it.toDomainModel() }
+    }
+
     override fun get(id: Member.Id): Member {
         return appDatabase.memberQueries.get(id).executeAsOne().toDomainModel()
     }

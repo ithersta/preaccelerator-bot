@@ -17,10 +17,10 @@ class TeamActions(
     private val protocolRepository: ProtocolRepository,
     private val protocolStatusRepository: ProtocolStatusRepository
 ) {
+    val Team.protocol get() = protocolRepository.get(id)
     val Team.members get() = memberRepository.get(id)
     val Team.meetings get() = meetingRepository.get(id)
     val Team.availableModules get() = getAvailableModules(id)
-    val Team.protocol get() = protocolRepository.get(id)
 
     fun Team.addHomework(taskNumber: Task.Number, url: String, at: OffsetDateTime) =
         homeworkRepository.add(id, taskNumber, url, at)

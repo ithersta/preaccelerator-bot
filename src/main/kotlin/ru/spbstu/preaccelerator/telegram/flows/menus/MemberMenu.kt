@@ -11,11 +11,12 @@ import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.GetProtocolState
 import ru.spbstu.preaccelerator.telegram.flows.member.doModuleFlow
 import ru.spbstu.preaccelerator.telegram.flows.member.getProtocolFlow
+import ru.spbstu.preaccelerator.telegram.resources.strings.DescriptionStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MenuStrings
 
 val memberMenu = menu<DialogState, PreacceleratorUser, Member>(MenuStrings.Member.Message, EmptyState) {
-    button(MenuStrings.Member.SelectModule, ChooseModuleState)
-    button(MenuStrings.Member.GetProtocol, GetProtocolState)
+    button(MenuStrings.Member.SelectModule, ChooseModuleState, DescriptionStrings.MemberButtons.DoModules)
+    button(MenuStrings.Member.GetProtocol, GetProtocolState, DescriptionStrings.MemberButtons.GetProtocol)
 }
 
 fun RoleFilterBuilder<DialogState, PreacceleratorUser, Member, UserId>.memberMenu() {
