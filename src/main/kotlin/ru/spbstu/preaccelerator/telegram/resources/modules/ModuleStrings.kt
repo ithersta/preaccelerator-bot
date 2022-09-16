@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.modules
 
+import dev.inmo.tgbotapi.utils.extensions.escapeMarkdownV2Common
 import ru.spbstu.preaccelerator.domain.entities.module.*
 
 object ModuleStrings {
@@ -37,21 +38,26 @@ object ModuleStrings {
 
     fun welcomeModule(module: Module) = """
         |*Модуль ${module.number.value}*
-        |*Название*: ${module.name}
+        |*Название*: ${module.name.escapeMarkdownV2Common()}
     """.trimMargin()
 
-    fun nextModule(number: Module.Number) = "Модуль ${number.value}"
+    fun module(number: Module.Number) = "Модуль ${number.value}"
 
-    fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = """
-        |Вы закончили изучать материалы Модуля ${number.value}\.
+    fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number): String {
+        val nextModule = Module.Number(number.value + 1).takeIf { moduleConfig.modules.containsKey(it) }
+        return """
+        |Вы закончили изучать материалы Модуля ${number.value}.
         |${
-        if (number.value != moduleConfig.modules.keys.maxOf { it.value }) {
-            "Пройдите короткий тест и приступайте к изучению Модуля ${number.value + 1}\\!"
-        } else {
-            Congrats
+            if (nextModule != null) {
+                "Пройдите короткий тест и приступайте к изучению Модуля ${nextModule.value}!"
+            } else {
+                Congrats
+            }
         }
-    }
     """.trimMargin()
+    }
+
+    fun doTest(number: Module.Number) = "Пройдите короткий тест Модуля ${number.value}"
 
     fun lectureMessage(lecture: Lecture) = """
         |*Тема лекции*: ${lecture.name}
@@ -66,7 +72,7 @@ object ModuleStrings {
     """.trimMargin()
 
     fun taskMessage(task: Task) = """
-        |Пришло время выполнить задание №${task.number.value}
+        |Пришло время выполнить задание №${task.number.value}\. Необходимо выгрузить данный шаблон\, заполнить его и прислать ссылку на новый заполненный файл\.
         |
         |${task.description}
     """.trimMargin()

@@ -21,7 +21,11 @@ import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.setPhoneNumber
 import ru.spbstu.preaccelerator.telegram.extensions.EmptyUserExt.useCuratorToken
 import ru.spbstu.preaccelerator.telegram.extensions.MemberExt.team
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.teams
+import ru.spbstu.preaccelerator.telegram.flows.menus.curatorMenu
+import ru.spbstu.preaccelerator.telegram.flows.menus.memberMenu
+import ru.spbstu.preaccelerator.telegram.flows.menus.trackerMenu
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
+import ru.spbstu.preaccelerator.telegram.resources.strings.DescriptionStrings.functionalDescription
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
@@ -70,6 +74,14 @@ fun StateMachineBuilder.startFlow() {
                     is Tracker -> MessageStrings.Start.welcomeTracker(user.teams)
                 }
                 sendTextMessage(it, text, replyMarkup = ReplyKeyboardRemove())
+                if (user !is EmptyUser) {
+                    val menu = when (user) {
+                        is Curator -> curatorMenu
+                        is Member -> memberMenu
+                        else -> trackerMenu
+                    }
+                    sendTextMessage(it, functionalDescription(menu), parseMode = MarkdownV2)
+                }
                 setState(EmptyState)
             }
         }

@@ -15,10 +15,7 @@ object MenuStrings {
         }
 
         object GetStats {
-            const val Button = "Получить статистику"
-            const val Message = "Выберите, какую статистику выгрузить"
             const val Teams = "Выгрузить прогресс команд"
-            const val Trackers = "Выгрузить прогресс трекеров"
         }
 
         object AddUsers {
@@ -46,6 +43,13 @@ object MenuStrings {
             const val Message = "Выберите действие"
             const val GetHomework = "Выгрузить домашнее задание"
             const val GetStats = "Получить статистику по командам"
+        }
+
+        object SendInfo {
+            const val Button = "Разослать информацию"
+            const val Message = "Выберите получателей"
+            const val ToAll = "Все"
+            const val ToSelectTeams = "Выбрать отдельные команды"
         }
     }
 
