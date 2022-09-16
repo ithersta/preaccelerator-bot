@@ -31,6 +31,11 @@ object MessageStrings : KoinComponent {
         const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
+        const val NotStartedSeason = "На данный момент сезон не начался"
+        val InputDateTime = "Введите дату и время начала предакселератора в формате дд.ММ.гггг чч:мм (часовой пояс ${
+            zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
+        })"
+        const val StartSeasonSuccesfully = "Новый поток предакселератора запущен 🎉"
         fun welcomeTracker(teams: List<Team>) = "Добро пожаловать! Вы трекер команд ${teams.joinToString { it.name }}."
         fun welcomeMember(team: Team) = "Добро пожаловать! Ты участник команды ${team.name}."
     }
@@ -64,12 +69,11 @@ object MessageStrings : KoinComponent {
 
     object DownloadHomework {
         const val ChooseTeam = "Выберите команду"
-        const val DownloadOption = "Выберите модуль, к которому относится задание"
-        const val Err = "Выберите вариант из кнопочного меню"
-        fun moduleHomeworks(num: Module.Number) = "Задания модуля №${num.value}"
-
         const val NoHomeworksDone = "Команда ещё не выполнила ни одного задания из этого модуля"
-        const val ChooseModuleNumber = "Выберите номер модуля"
+
+        fun chooseModuleNumber(teamName: String) = "Команда ${teamName}. Выберите номер модуля."
+        fun moduleHomeworks(teamName: String, moduleNumber: Module.Number) =
+            "Задания модуля №${moduleNumber.value} команды $teamName"
     }
 
     object GetProtocol {
@@ -148,6 +152,20 @@ object MessageStrings : KoinComponent {
                 regularln(comment)
             }
         }
+
+        fun declinedProtocol(moduleNumber: Module.Number, team: Team, protocol: Protocol?, comment: String?) =
+            buildEntities {
+                if (protocol != null)
+                    link("Протокол ${moduleNumber.value} недели с командой ${team.name}", protocol.url)
+                regular(" не принят.")
+                regularln(" ")
+                if (comment != null) {
+                    bold("Комментарий куратора: ")
+                    regularln(comment)
+                }
+                regularln(" ")
+                regularln("Внесите соответствующие изменения и заново отправьте протокол")
+            }
     }
 
     object Error {

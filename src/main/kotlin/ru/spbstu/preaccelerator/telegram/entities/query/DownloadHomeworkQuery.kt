@@ -5,22 +5,22 @@ import kotlinx.serialization.Serializable
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 
-object FillOutProtocolQuery {
+object DownloadHomeworkQuery {
     @Serializable
-    @SerialName("fpb")
+    @SerialName("hwb")
     class BackToTeams(
         val page: Int
     ) : Query
 
     @Serializable
-    @SerialName("fpt")
+    @SerialName("hwt")
     class OnTeamClicked(
         val page: Int,
         val teamId: Team.Id
     ) : Query
 
     @Serializable
-    @SerialName("fpm")
+    @SerialName("hwm")
     class OnModuleClicked(
         val page: Int,
         val teamId: Team.Id,
