@@ -30,7 +30,7 @@ object MessageStrings : KoinComponent {
         const val InvalidDeepLink = "Некорректная ссылка или она уже была использована"
         const val NoRoleAssigned = "Твоего номера нет в базе или обучение ещё не началось"
         const val WelcomeCurator = "Добро пожаловать! Вы куратор."
-        const val NotStartedSeason = "На данный момент старт сезона не начался"
+        const val NotStartedSeason = "На данный момент сезон не начался"
          val InputDateTime = "Введите дату и время начала предакселератора в формате дд.ММ.гггг чч:мм (часовой пояс ${
             zoneId.getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("ru"))
         })"
