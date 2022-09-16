@@ -28,6 +28,8 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.startFlow() {
     val seasonStartRepository: SeasonStartRepository by inject()
@@ -97,7 +99,7 @@ fun StateMachineBuilder.startFlow() {
             onTransition {
                 sendTextMessage(
                     it,
-                    MessageStrings.Start.StartSeason,
+                    MessageStrings.Start.NotStartedSeason,
                     replyMarkup = inlineKeyboard {
                         row {
                             dataButton(ButtonStrings.StartNewSeason.LaunchAccelerator, "data")
@@ -106,9 +108,31 @@ fun StateMachineBuilder.startFlow() {
                 )
             }
             onDataCallbackQuery(Regex("data")){
-                seasonStartRepository.set(ZonedDateTime.now(zoneId).toOffsetDateTime())
+                //seasonStartRepository.set(ZonedDateTime.now(zoneId).toOffsetDateTime())
+                setState(StartFlowState.WaitingForInputDate)
+            }
+        }
+
+        state<StartFlowState.WaitingForInputDate>{
+            onTransition{
+                sendTextMessage(
+                    it,
+                    MessageStrings.Start.InputDateTime
+                )
+            }
+            onText{message->
+                val dateTime = try {
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
+                    ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
+                } catch (e: DateTimeParseException) {
+                    sendTextMessage(message.chat, MessageStrings.ScheduleMeetings.InvalidDateTime)
+                    return@onText
+                }
+                seasonStartRepository.set(dateTime)
+                sendTextMessage(message.chat, MessageStrings.Start.StartSeasonSuccesfully)
                 setState(EmptyState)
             }
+
         }
         state<EmptyState> {
             onCommand("start", description = null) {
