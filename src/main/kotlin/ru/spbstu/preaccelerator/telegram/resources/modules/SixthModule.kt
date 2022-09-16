@@ -5,7 +5,7 @@ import kotlin.time.Duration.Companion.days
 
 fun ModuleConfigBuilder.sixthModule() {
     module(
-        "Юридические основы\\. Управление проектами\\.", 7.days,
+        "Юридические основы. Управление проектами.", 7.days,
         "https://docs.google.com/forms/d/e/1FAIpQLScL-gqj7sasamzgQ1lKPo1VXC2rwuRle0TlyNTgk8SE6BuVFg/viewform?usp=sf_link"
     ) {
         lecture(
