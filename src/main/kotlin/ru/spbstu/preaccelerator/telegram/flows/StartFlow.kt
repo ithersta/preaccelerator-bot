@@ -1,19 +1,17 @@
 package ru.spbstu.preaccelerator.telegram.flows
 
-import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
-import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
-import com.ithersta.tgbotapi.fsm.entities.triggers.onDeepLink
-import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
+import com.ithersta.tgbotapi.fsm.entities.triggers.*
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
+import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.PhoneNumber
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.entities.user.EmptyUser
 import ru.spbstu.preaccelerator.domain.entities.user.Member
 import ru.spbstu.preaccelerator.domain.entities.user.Tracker
+import ru.spbstu.preaccelerator.domain.repository.SeasonStartRepository
 import ru.spbstu.preaccelerator.telegram.StateMachineBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.StartFlowState
@@ -28,8 +26,14 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.DescriptionStrings.functionalDescription
 import ru.spbstu.preaccelerator.telegram.resources.strings.HelpStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder.startFlow() {
+    val seasonStartRepository: SeasonStartRepository by inject()
+    val zoneId: ZoneId by inject()
     role<EmptyUser> {
         state<EmptyState> {
             onDeepLink { (message, token) ->
@@ -82,6 +86,48 @@ fun StateMachineBuilder.startFlow() {
                     }
                     sendTextMessage(it, functionalDescription(menu), parseMode = MarkdownV2)
                 }
+                if ((seasonStartRepository.get() == null) && (user is Curator)) {
+                    setState(StartFlowState.WaitingForStartSeason)
+                } else {
+                    setState(EmptyState)
+                }
+            }
+        }
+
+        state<StartFlowState.WaitingForStartSeason> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MessageStrings.Start.NotStartedSeason,
+                    replyMarkup = inlineKeyboard {
+                        row {
+                            dataButton(ButtonStrings.StartNewSeason.LaunchAccelerator, "data")
+                        }
+                    }
+                )
+            }
+            onDataCallbackQuery(Regex("data")) {
+                setState(StartFlowState.WaitingForInputDate)
+            }
+        }
+
+        state<StartFlowState.WaitingForInputDate> {
+            onTransition {
+                sendTextMessage(
+                    it,
+                    MessageStrings.Start.InputDateTime
+                )
+            }
+            onText { message ->
+                val dateTime = try {
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
+                    ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
+                } catch (e: DateTimeParseException) {
+                    sendTextMessage(message.chat, MessageStrings.ScheduleMeetings.InvalidDateTime)
+                    return@onText
+                }
+                seasonStartRepository.set(dateTime)
+                sendTextMessage(message.chat, MessageStrings.Start.StartSeasonSuccesfully)
                 setState(EmptyState)
             }
         }
