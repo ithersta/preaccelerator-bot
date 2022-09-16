@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.15.1")
+    implementation("com.ithersta.tgbotapi:tgbotapi-fsm:0.16.0")
     implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.15.0")
     implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.16.0")
     implementation("dev.inmo:tgbotapi:3.2.3")
