@@ -1,17 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    dependencies {
-        classpath("org.apache.commons:commons-compress:1.21")
-    }
-}
-
 plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.serialization") version "1.7.10"
     id("app.cash.sqldelight") version "2.0.0-alpha03"
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
-    id("com.google.cloud.tools.jib") version "3.3.0"
     application
 }
 
@@ -66,13 +59,4 @@ sqldelight {
 
 sourceSets.main {
     java.srcDirs("build/generated/ksp/main/kotlin")
-}
-
-jib {
-    from {
-        image = "ithersta/eclipse-temurin-postgres-client:18"
-    }
-    to {
-        image = "ithersta/preaccelerator"
-    }
 }

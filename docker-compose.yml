@@ -1,11 +1,11 @@
-version: '3.8'
+version: '3.9'
 
 secrets:
   telegram_token:
     file: .token
 
 services:
-  postgres:
+  db:
     image: "postgres:14"
     environment:
       POSTGRES_DB: preaccelerator
@@ -13,7 +13,6 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres:/var/lib/postgresql/data/
-    network_mode: host
 
   pgadmin:
     image: "dpage/pgadmin4:6.13"
@@ -26,22 +25,22 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     depends_on:
-      - postgres
-    network_mode: host
+      - db
 
   app:
-    image: "ithersta/preaccelerator"
+    build: .
+    restart: always
     depends_on:
-      - postgres
+      - db
     secrets:
       - telegram_token
     environment:
       DATABASE_NAME: preaccelerator
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
+      DATABASE_SERVER: db
       DUMP_USER_ID: 105293829
       TOKEN_FILE: /run/secrets/telegram_token
-    network_mode: host
 
 volumes:
   postgres:
