@@ -153,6 +153,20 @@ object MessageStrings : KoinComponent {
                 regularln(comment)
             }
         }
+
+        fun declinedProtocol(moduleNumber: Module.Number, team: Team, protocol: Protocol?, comment: String?) =
+            buildEntities {
+                if (protocol != null)
+                    link("Протокол ${moduleNumber.value} недели с командой ${team.name}", protocol.url)
+                regular(" не принят.")
+                regularln(" ")
+                if (comment != null) {
+                    bold("Комментарий куратора: ")
+                    regularln(comment)
+                }
+                regularln(" ")
+                regularln("Внесите соответствующие изменения и заново отправьте протокол")
+            }
     }
 
     object Error {
