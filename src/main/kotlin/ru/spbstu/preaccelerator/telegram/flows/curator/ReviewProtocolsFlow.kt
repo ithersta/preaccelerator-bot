@@ -18,6 +18,7 @@ import dev.inmo.tgbotapi.types.buttons.ReplyForce
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.PreviewFeature
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.ProtocolStatus
 import ru.spbstu.preaccelerator.domain.entities.Team
@@ -25,10 +26,12 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.entities.user.Curator
 import ru.spbstu.preaccelerator.domain.repository.ProtocolStatusRepository
 import ru.spbstu.preaccelerator.domain.repository.TeamRepository
+import ru.spbstu.preaccelerator.domain.repository.TrackerRepository
 import ru.spbstu.preaccelerator.telegram.RoleFilterBuilder
 import ru.spbstu.preaccelerator.telegram.entities.state.EmptyState
 import ru.spbstu.preaccelerator.telegram.entities.state.ReviewProtocolsState
 import ru.spbstu.preaccelerator.telegram.extensions.TeamExt.protocol
+import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 
@@ -36,6 +39,7 @@ import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings
 fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
     val teamRepository: TeamRepository by inject()
     val protocolStatusRepository: ProtocolStatusRepository by inject()
+    val trackerRepository: TrackerRepository by inject()
     val teamPager = inlineKeyboardPager("reviewProtocolsFlow") {
         val teams = teamRepository.getPaginatedWithSentProtocols(offset, limit)
         val count = teamRepository.countWithSentProtocols()
@@ -130,8 +134,21 @@ fun RoleFilterBuilder<Curator>.reviewProtocolsFlow() {
                     disableWebPagePreview = true
                 )
             }
-            delete(message)
-            message.replyTo?.let { delete(it) }
+            coroutineScope.launch {
+                trackerRepository.get(team.trackerId).userId?.let { trackerChatId ->
+                    sendTextMessage(
+                        trackerChatId,
+                        MessageStrings.ReviewProtocols.declinedProtocol(
+                            protocolStatus.moduleNumber,
+                            team,
+                            team.protocol,
+                            message.content.text
+                        )
+                    )
+                }
+                delete(message)
+                message.replyTo?.let { delete(it) }
+            }
             setState(state.returnTo)
         }
     }
