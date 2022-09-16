@@ -7,23 +7,23 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 
 object DownloadHomeworkQuery {
     @Serializable
-    @SerialName("HomeworkBackToTeams")
+    @SerialName("hwb")
     class BackToTeams(
-        @SerialName("p") val page: Int
+        val page: Int
     ) : Query
 
     @Serializable
-    @SerialName("HomeworkTeam")
+    @SerialName("hwt")
     class OnTeamClicked(
-        @SerialName("p") val page: Int,
-        @SerialName("t") val teamId: Team.Id
+        val page: Int,
+        val teamId: Team.Id
     ) : Query
 
     @Serializable
-    @SerialName("HomeworkModule")
+    @SerialName("hwm")
     class OnModuleClicked(
-        @SerialName("p") val page: Int,
-        @SerialName("t") val teamId: Team.Id,
-        @SerialName("m") val moduleNumber: Module.Number
+        val page: Int,
+        val teamId: Team.Id,
+        val moduleNumber: Module.Number
     ) : Query
 }

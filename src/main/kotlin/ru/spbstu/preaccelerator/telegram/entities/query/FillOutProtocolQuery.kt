@@ -7,23 +7,23 @@ import ru.spbstu.preaccelerator.domain.entities.module.Module
 
 object FillOutProtocolQuery {
     @Serializable
-    @SerialName("ProtocolBackToTeams")
+    @SerialName("fpb")
     class BackToTeams(
-        @SerialName("p") val page: Int
+        val page: Int
     ) : Query
 
     @Serializable
-    @SerialName("ProtocolTeam")
+    @SerialName("fpt")
     class OnTeamClicked(
-        @SerialName("p") val page: Int,
-        @SerialName("t") val teamId: Team.Id
+        val page: Int,
+        val teamId: Team.Id
     ) : Query
 
     @Serializable
-    @SerialName("ProtocolModule")
+    @SerialName("fpm")
     class OnModuleClicked(
-        @SerialName("p") val page: Int,
-        @SerialName("t") val teamId: Team.Id,
-        @SerialName("m") val moduleNumber: Module.Number
+        val page: Int,
+        val teamId: Team.Id,
+        val moduleNumber: Module.Number
     ) : Query
 }
