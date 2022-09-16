@@ -39,7 +39,7 @@ fun createStateMachine(
 ) = stateMachine({ getUser(it, OffsetDateTime.now()) }, stateRepository) {
     onException { userId, throwable ->
         logger.info(throwable) { userId }
-        sendTextMessage(userId, MessageStrings.Error.internal(throwable.message))
+        sendTextMessage(userId, MessageStrings.Error.internal(throwable::class.toString()))
     }
     includeHelp()
 
