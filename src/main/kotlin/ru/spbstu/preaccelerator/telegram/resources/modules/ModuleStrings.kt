@@ -1,5 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.modules
 
+import dev.inmo.tgbotapi.utils.extensions.escapeMarkdownV2Common
 import ru.spbstu.preaccelerator.domain.entities.module.*
 
 object ModuleStrings {
@@ -37,7 +38,7 @@ object ModuleStrings {
 
     fun welcomeModule(module: Module) = """
         |*Модуль ${module.number.value}*
-        |*Название*: ${module.name}
+        |*Название*: ${module.name.escapeMarkdownV2Common()}
     """.trimMargin()
 
     fun module(number: Module.Number) = "Модуль ${number.value}"
