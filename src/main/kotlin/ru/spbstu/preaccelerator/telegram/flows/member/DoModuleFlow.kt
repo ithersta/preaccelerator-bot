@@ -112,10 +112,7 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                             moduleConfig.modules.getValue(state.moduleNumber).parts.forEach { part ->
                                 if (part is Lecture) {
                                     row {
-                                        urlButton(
-                                            part.name,
-                                            part.url
-                                        )
+                                        urlButton(part.name, part.url)
                                     }
                                 }
                             }

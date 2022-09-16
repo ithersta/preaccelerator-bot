@@ -9,7 +9,7 @@ fun ModuleConfigBuilder.fourthModule() {
         "https://docs.google.com/forms/d/e/1FAIpQLSdimYv8sKlNjPZB7ZqNGZ2qJfDAuXocEFHfChAdDzQbCUoCaw/viewform?usp=sf_link"
     ) {
         lecture(
-            "Бизнес\\-модель проекта и модели монетизации",
+            "Бизнес-модель проекта и модели монетизации",
             ModuleStrings.Speaker.AlexanderMalecev,
             "https://drive.google.com/file/d/1sOm6Hc1Xom8AoeajJJI1dBI8SQGOSuU1/view?usp=sharing",
             "https://drive.google.com/file/d/1xXx8KxrHq4-NDCGtynzKdAV6byZumZ5-/view?usp=sharing"

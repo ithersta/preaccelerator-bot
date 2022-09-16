@@ -60,7 +60,7 @@ object ModuleStrings {
     fun doTest(number: Module.Number) = "Пройдите короткий тест Модуля ${number.value}"
 
     fun lectureMessage(lecture: Lecture) = """
-        |*Тема лекции*: ${lecture.name}
+        |*Тема лекции*: ${lecture.name.escapeMarkdownV2Common()}
         |
         |*Спикер*: ${lecture.speaker}
     """.trimMargin()
