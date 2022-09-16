@@ -108,7 +108,6 @@ fun StateMachineBuilder.startFlow() {
                 )
             }
             onDataCallbackQuery(Regex("data")){
-                //seasonStartRepository.set(ZonedDateTime.now(zoneId).toOffsetDateTime())
                 setState(StartFlowState.WaitingForInputDate)
             }
         }
