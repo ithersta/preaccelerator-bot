@@ -88,8 +88,7 @@ fun StateMachineBuilder.startFlow() {
                 }
                 if ((seasonStartRepository.get() == null) && (user is Curator)) {
                     setState(StartFlowState.WaitingForStartSeason)
-                }
-                else {
+                } else {
                     setState(EmptyState)
                 }
             }
@@ -107,19 +106,19 @@ fun StateMachineBuilder.startFlow() {
                     }
                 )
             }
-            onDataCallbackQuery(Regex("data")){
+            onDataCallbackQuery(Regex("data")) {
                 setState(StartFlowState.WaitingForInputDate)
             }
         }
 
-        state<StartFlowState.WaitingForInputDate>{
-            onTransition{
+        state<StartFlowState.WaitingForInputDate> {
+            onTransition {
                 sendTextMessage(
                     it,
                     MessageStrings.Start.InputDateTime
                 )
             }
-            onText{message->
+            onText { message ->
                 val dateTime = try {
                     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(zoneId)
                     ZonedDateTime.parse(message.content.text, formatter).toOffsetDateTime()
@@ -131,7 +130,6 @@ fun StateMachineBuilder.startFlow() {
                 sendTextMessage(message.chat, MessageStrings.Start.StartSeasonSuccesfully)
                 setState(EmptyState)
             }
-
         }
         state<EmptyState> {
             onCommand("start", description = null) {
