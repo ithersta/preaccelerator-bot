@@ -30,7 +30,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.1")
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
     implementation("org.apache.poi:poi:5.2.3")
-    implementation("org.apache.poi:poi-ooxml:5.2.2")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("org.quartz-scheduler:quartz:2.3.2")
     implementation("commons-validator:commons-validator:1.7")
     implementation("io.ktor:ktor-client-okhttp:2.1.1")
