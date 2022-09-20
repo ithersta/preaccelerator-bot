@@ -155,7 +155,6 @@ fun RoleFilterBuilder<Member>.doModuleFlow() {
                 sendTextMessage(
                     it,
                     welcomeModule(state.module),
-                    parseMode = MarkdownV2,
                     replyMarkup = ReplyKeyboardRemove()
                 )
             }
