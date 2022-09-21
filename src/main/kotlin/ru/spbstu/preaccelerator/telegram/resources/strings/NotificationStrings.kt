@@ -1,6 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Meeting
@@ -10,7 +10,6 @@ import ru.spbstu.preaccelerator.domain.entities.module.Task
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 object NotificationStrings : KoinComponent {

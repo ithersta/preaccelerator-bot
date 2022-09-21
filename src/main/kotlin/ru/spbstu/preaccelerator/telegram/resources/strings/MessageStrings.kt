@@ -1,6 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.strings
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.spbstu.preaccelerator.domain.entities.Protocol
