@@ -11,6 +11,12 @@ fun ModuleConfigBuilder.sixthModule() {
         lecture(
             "Как защитить интеллектуальную собственность?",
             ModuleStrings.Speaker.DaryaZern,
+            "https://drive.google.com/file/d/1piD6um7Rckrq9RrMrjRTJW_WbaFI3OcG/view?usp=sharing",
+            "https://drive.google.com/file/d/1lB6L8S3iTt6lIDyJIHAT_cmgQf1zfqJc/view?usp=sharing"
+        )
+        lecture(
+            "Регистрация юридического лица, распределение долей, структура управления",
+            ModuleStrings.Speaker.DaryaZern,
             "https://drive.google.com/file/d/1BcsawEwy8593BMAzgP-YskzvZshDAzyg/view?usp=sharing",
             "https://drive.google.com/file/d/1IFX5wGSIltZ6xp1_OyZ0i1K2f5tKHUdw/view?usp=sharing"
         )

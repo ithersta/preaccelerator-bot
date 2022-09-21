@@ -1,6 +1,6 @@
 package ru.spbstu.preaccelerator.telegram.resources.modules
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.*
+import dev.inmo.tgbotapi.utils.*
 import dev.inmo.tgbotapi.utils.extensions.escapeMarkdownV2Common
 import ru.spbstu.preaccelerator.domain.entities.module.*
 import ru.spbstu.preaccelerator.telegram.resources.strings.pluralize

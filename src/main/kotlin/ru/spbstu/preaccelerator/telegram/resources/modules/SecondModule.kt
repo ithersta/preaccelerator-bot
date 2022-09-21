@@ -12,7 +12,7 @@ fun ModuleConfigBuilder.secondModule() {
             "Идея - Проблема - Решение",
             ModuleStrings.Speaker.AnastasiaRyl,
             "https://drive.google.com/file/d/1MME7LtJ22Gj5_uLoLFVHWi-aqbk9TMMf/view?usp=sharing",
-            "https://drive.google.com/file/d/1D_i31Z6jwEAWp4lFZvOqjYdmwQiHDtZI/view?usp=sharing"
+            "https://drive.google.com/file/d/17L1x8naaGVbPgTarWBhWQk0HnAgb4LAs/view?usp=sharing"
         )
         task(
             "1\\. Проанализируйте ваш продукт/проект\n" +
@@ -24,7 +24,7 @@ fun ModuleConfigBuilder.secondModule() {
             "Целевая аудитория и сегментация",
             ModuleStrings.Speaker.AnastasiaOrz,
             "https://drive.google.com/file/d/1488EbK94FAnEa8Q2xEq1Q6nno45y1M1w/view?usp=sharing",
-            "https://drive.google.com/file/d/19GloXpaj_7BAnYcoFk4IeGZxLTpCFXni/view?usp=sharing"
+            "https://drive.google.com/file/d/1D_i31Z6jwEAWp4lFZvOqjYdmwQiHDtZI/view?usp=sharing"
         )
         additionalInfo(
             "• [Как составить портрет целевой аудитории и внедрить его в работу: готовый пример с job story](https://vc.ru/marketing/227648-kak-sostavit-portret-celevoy-auditorii-i-vnedrit-ego-v-rabotu-gotovyy-primer-s-job-story)\n" +
@@ -35,7 +35,7 @@ fun ModuleConfigBuilder.secondModule() {
             "Разработка ценностного предложения",
             ModuleStrings.Speaker.AnastasiaOrz,
             "https://drive.google.com/file/d/1fueTQvK9ObtBuzaEXkERH6lRTl8ZeUZW/view?usp=sharing",
-            "https://drive.google.com/drive/folders/1rwIBSEApQ3JvXpdo48mIAb3AH9hFmFMY"
+            "https://drive.google.com/file/d/19GloXpaj_7BAnYcoFk4IeGZxLTpCFXni/view?usp=sharing"
         )
         additionalInfo(
             "• [Как создать ценностное предложение в b2b и привлечь покупателей\\. Принципы, методы, инструменты](https://vc.ru/marketing/178634-kak-sozdat-cennostnoe-predlozhenie-v-b2b-i-privlech-pokupateley-principy-metody-instrumenty)\n" +
