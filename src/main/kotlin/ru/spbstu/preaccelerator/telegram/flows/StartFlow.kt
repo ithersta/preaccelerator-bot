@@ -65,6 +65,7 @@ fun StateMachineBuilder.startFlow() {
                 user.setPhoneNumber(PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!)
                 setState(StartFlowState.AfterAuthenticating)
             }
+            onText { sendTextMessage(it.chat, MessageStrings.Start.NoContactReceived) }
         }
     }
     anyRole {
