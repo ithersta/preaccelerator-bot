@@ -1,7 +1,9 @@
 package ru.spbstu.preaccelerator.telegram.resources.modules
 
+import dev.inmo.tgbotapi.extensions.utils.formatting.*
 import dev.inmo.tgbotapi.utils.extensions.escapeMarkdownV2Common
 import ru.spbstu.preaccelerator.domain.entities.module.*
+import ru.spbstu.preaccelerator.telegram.resources.strings.pluralize
 
 object ModuleStrings {
     object Speaker {
@@ -36,10 +38,19 @@ object ModuleStrings {
         |Отрепетируйте ваш питч и до встречи на демо\-дне\!
     """.trimMargin()
 
-    fun welcomeModule(module: Module) = """
-        |*Модуль ${module.number.value}*
-        |*Название*: ${module.name.escapeMarkdownV2Common()}
-    """.trimMargin()
+    fun welcomeModule(module: Module) = buildEntities {
+        bold("Модуль ${module.number.value}")
+        module.lectures.size.let {
+            regular(": $it ${pluralize(it, "лекция", "лекции", "лекций")}")
+        }
+        module.tasks.size.takeIf { it > 0 }?.let {
+            regular(", $it ${pluralize(it, "шаблон", "шаблона", "шаблонов")}")
+        }
+        add(newLine)
+        bold("Название")
+        regular(": ")
+        regularln(module.name)
+    }
 
     fun module(number: Module.Number) = "Модуль ${number.value}"
 
@@ -60,7 +71,7 @@ object ModuleStrings {
     fun doTest(number: Module.Number) = "Пройдите короткий тест Модуля ${number.value}"
 
     fun lectureMessage(lecture: Lecture) = """
-        |*Тема лекции*: ${lecture.name}
+        |*Тема лекции*: ${lecture.name.escapeMarkdownV2Common()}
         |
         |*Спикер*: ${lecture.speaker}
     """.trimMargin()

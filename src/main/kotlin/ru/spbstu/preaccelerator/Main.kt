@@ -19,7 +19,7 @@ suspend fun main() {
     val createInitialCuratorToken: CreateInitialCuratorToken by application.koin.inject()
     val notifiers: Notifiers by application.koin.inject()
     telegramBot(readToken()) {
-        requestsLimiter = CommonLimiter()
+        requestsLimiter = CommonLimiter(lockCount = 30, regenTime = 1000)
         client = HttpClient(OkHttp)
     }.buildBehaviourWithLongPolling {
         stateMachine.run { collect() }

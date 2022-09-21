@@ -9,7 +9,7 @@ fun ModuleConfigBuilder.secondModule() {
         "https://docs.google.com/forms/d/e/1FAIpQLSdmePLdpDhublloE7rn0K1hwuqwf4uMTwBBfi2XWehrOBwqfQ/viewform?usp=sf_link"
     ) {
         lecture(
-            "Идея \\- Проблема \\- Решение",
+            "Идея - Проблема - Решение",
             ModuleStrings.Speaker.AnastasiaRyl,
             "https://drive.google.com/file/d/1MME7LtJ22Gj5_uLoLFVHWi-aqbk9TMMf/view?usp=sharing",
             "https://drive.google.com/file/d/1D_i31Z6jwEAWp4lFZvOqjYdmwQiHDtZI/view?usp=sharing"

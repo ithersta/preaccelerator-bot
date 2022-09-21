@@ -2,7 +2,7 @@ version: '3.9'
 
 secrets:
   telegram_token:
-    file: /home/ithersta/preacc/.token
+    file: /home/www/preaccelerator/.token
 
 services:
   db:
