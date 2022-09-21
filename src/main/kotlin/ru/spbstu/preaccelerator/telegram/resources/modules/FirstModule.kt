@@ -18,13 +18,13 @@ fun ModuleConfigBuilder.firstModule() {
             "Жизненный цикл проекта",
             ModuleStrings.Speaker.AlenaFranc,
             "https://drive.google.com/file/d/1uYKtiaqFS5Ay5sYbFoS-kjYdL-uHkSSZ/view?usp=sharing",
-            "https://drive.google.com/file/d/1C0FNZGTwePKNRNWT9Yh26HA_6aLwixHn/view?usp=sharing"
+            "https://drive.google.com/file/d/1S9T4Ws7KuYTDWNUyaME1uwINuhRdS2se/view?usp=sharing"
         )
         lecture(
             "Команда проекта",
             ModuleStrings.Speaker.AlenaFranc,
             "https://drive.google.com/file/d/1Gd4BXDR1qtUTDYkUy16YSHsW7BYlJIVF/view?usp=sharing",
-            "https://drive.google.com/drive/folders/1rwIBSEApQ3JvXpdo48mIAb3AH9hFmFMY"
+            "https://drive.google.com/file/d/1C0FNZGTwePKNRNWT9Yh26HA_6aLwixHn/view?usp=sharing"
         )
         task(
             "1\\. Проанализируйте вашу команду\n" +
