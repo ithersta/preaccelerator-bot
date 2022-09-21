@@ -33,11 +33,6 @@ object ModuleStrings {
     const val SendHomework = "Пришлите ссылку на выполненное задание в чат"
     const val HomeworkNotSentAlert = "Ваша команда ещё не отправила это задание"
 
-    private val Congrats = """
-        |Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть\-чуть…
-        |Отрепетируйте ваш питч и до встречи на демо\-дне\!
-    """.trimMargin()
-
     fun welcomeModule(module: Module) = buildEntities {
         bold("Модуль ${module.number.value}")
         module.lectures.size.let {
@@ -54,18 +49,15 @@ object ModuleStrings {
 
     fun module(number: Module.Number) = "Модуль ${number.value}"
 
-    fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number): String {
+    fun goodbyeModule(moduleConfig: ModuleConfig, number: Module.Number) = buildEntities {
         val nextModule = Module.Number(number.value + 1).takeIf { moduleConfig.modules.containsKey(it) }
-        return """
-        |Вы закончили изучать материалы Модуля ${number.value}.
-        |${
-            if (nextModule != null) {
-                "Пройдите короткий тест и приступайте к изучению Модуля ${nextModule.value}!"
-            } else {
-                Congrats
-            }
+        regularln("Вы закончили изучать материалы Модуля ${number.value}.")
+        if (nextModule != null) {
+            regularln("Пройдите короткий тест и приступайте к изучению Модуля ${nextModule.value}!")
+        } else {
+            regularln("Мы вас поздравляем, вы прошли всю акселерационную программу, осталось совсем чуть-чуть…")
+            regularln("Отрепетируйте ваш питч и до встречи на демо-дне!")
         }
-    """.trimMargin()
     }
 
     fun doTest(number: Module.Number) = "Пройдите короткий тест Модуля ${number.value}"
