@@ -34,7 +34,7 @@ dependencies {
     implementation("org.quartz-scheduler:quartz:2.3.2")
     implementation("commons-validator:commons-validator:1.7")
     implementation("io.ktor:ktor-client-okhttp:2.1.1")
-    ksp("io.insert-koin:koin-ksp-compiler:1.0.2")
+    ksp("io.insert-koin:koin-ksp-compiler:1.0.3")
     testImplementation(kotlin("test"))
 }
 
