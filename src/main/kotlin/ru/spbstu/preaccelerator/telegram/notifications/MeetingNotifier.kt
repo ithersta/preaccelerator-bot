@@ -7,9 +7,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.quartz.JobBuilder.newJob
 import org.quartz.JobExecutionContext
-import org.quartz.Scheduler
 import org.quartz.TriggerBuilder.newTrigger
 import org.quartz.TriggerKey
+import org.quartz.impl.StdSchedulerFactory
 import ru.spbstu.preaccelerator.domain.entities.Meeting
 import ru.spbstu.preaccelerator.domain.entities.Team
 import ru.spbstu.preaccelerator.domain.repository.MeetingRepository
@@ -34,7 +34,8 @@ class MeetingNotifier(
     private val trackerRepository: TrackerRepository,
     private val config: Config
 ) {
-    fun BehaviourContext.setupJobs(scheduler: Scheduler) {
+    fun BehaviourContext.setupScheduler() {
+        val scheduler = createScheduler(this@MeetingNotifier.javaClass.canonicalName)
         scheduler.setJobFactory { _, _ -> Job(this) }
         val job = newJob(Job::class.java).storeDurably().build()
         scheduler.addJob(job, false)
@@ -56,6 +57,7 @@ class MeetingNotifier(
                 }
             }
         }
+        scheduler.start()
     }
 
     inner class Job(private val behaviourContext: BehaviourContext) : org.quartz.Job {

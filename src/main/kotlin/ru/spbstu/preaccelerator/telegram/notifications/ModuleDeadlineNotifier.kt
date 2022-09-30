@@ -9,7 +9,6 @@ import org.koin.core.annotation.Single
 import org.quartz.JobBuilder.newJob
 import org.quartz.JobExecutionContext
 import org.quartz.JobKey
-import org.quartz.Scheduler
 import org.quartz.Trigger
 import org.quartz.TriggerBuilder.newTrigger
 import ru.spbstu.preaccelerator.domain.entities.module.Module
@@ -34,7 +33,8 @@ class ModuleDeadlineNotifier(
     private val getModuleDeadlines: GetModuleDeadlinesUseCase,
     private val getUnfinishedMembers: GetUnfinishedMembersUseCase
 ) {
-    fun BehaviourContext.setupJobs(scheduler: Scheduler) {
+    fun BehaviourContext.setupScheduler() {
+        val scheduler = createScheduler(this@ModuleDeadlineNotifier.javaClass.canonicalName)
         scheduler.setJobFactory { _, _ -> Job(this) }
         getModuleDeadlines().onEach { deadlines ->
             scheduler.deleteJob(JobKey.jobKey(JOB_IDENTITY))
@@ -44,6 +44,7 @@ class ModuleDeadlineNotifier(
             }
             scheduler.scheduleJob(job, triggers.toSet(), false)
         }.launchIn(this)
+        scheduler.start()
     }
 
     private fun createTriggers(

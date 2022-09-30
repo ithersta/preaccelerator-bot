@@ -7,30 +7,38 @@ import org.koin.core.annotation.Single
 import org.quartz.CronScheduleBuilder.dailyAtHourAndMinute
 import org.quartz.JobBuilder
 import org.quartz.JobExecutionContext
-import org.quartz.Scheduler
 import org.quartz.TriggerBuilder.newTrigger
+import org.quartz.impl.StdSchedulerFactory
 import ru.spbstu.preaccelerator.domain.entities.module.Module
 import ru.spbstu.preaccelerator.domain.usecases.GetUnfinishedTrackersUseCase
 import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.notifications.ProtocolDeadlineNotifier.Config
 import java.time.LocalTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.util.*
 import kotlin.time.Duration
 
 @Single
 class ProtocolDeadlineNotifier(
     private val massSendLimiter: MassSendLimiter,
     private val config: Config,
-    private val getUnfinishedTrackers: GetUnfinishedTrackersUseCase
+    private val getUnfinishedTrackers: GetUnfinishedTrackersUseCase,
+    private val zoneId: ZoneId
 ) {
-    fun BehaviourContext.setupJobs(scheduler: Scheduler) {
+    fun BehaviourContext.setupScheduler() {
+        val scheduler = createScheduler(this@ProtocolDeadlineNotifier.javaClass.canonicalName)
         scheduler.setJobFactory { _, _ -> Job(this) }
         val job = JobBuilder.newJob(Job::class.java).build()
         val trigger = newTrigger()
-            .withSchedule(dailyAtHourAndMinute(config.at.hour, config.at.minute))
+            .withSchedule(
+                dailyAtHourAndMinute(config.at.hour, config.at.minute)
+                    .inTimeZone(TimeZone.getTimeZone(zoneId.id))
+            )
             .startNow()
             .build()
         scheduler.scheduleJob(job, trigger)
+        scheduler.start()
     }
 
     inner class Job(private val behaviourContext: BehaviourContext) : org.quartz.Job {

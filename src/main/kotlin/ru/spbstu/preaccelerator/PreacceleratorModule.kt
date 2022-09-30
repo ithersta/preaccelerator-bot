@@ -36,7 +36,7 @@ val preacceleratorModule = module(createdAtStart = true) {
         }
     }
     single {
-        protocolDeadlineNotifications(LocalTime.of(19, 0)) {
+        protocolDeadlineNotifications(LocalTime.of(23, 11)) {
             5.days afterFirstMeetingSend ProtocolDeadline::inLessThanTwoDays
         }
     }
