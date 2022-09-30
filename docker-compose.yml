@@ -15,7 +15,7 @@ services:
       - postgres:/var/lib/postgresql/data/
 
   pgadmin:
-    image: "dpage/pgadmin4:6.13"
+    image: "dpage/pgadmin4:6.14"
     environment:
       PGADMIN_DEFAULT_EMAIL: schilyaev.vlad@gmail.com
       PGADMIN_DEFAULT_PASSWORD: preaccelerator_default_password
