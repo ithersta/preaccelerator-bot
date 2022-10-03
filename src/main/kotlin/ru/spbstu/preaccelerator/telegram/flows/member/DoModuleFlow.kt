@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
+import dev.inmo.tgbotapi.utils.row
 import org.apache.commons.validator.routines.UrlValidator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
