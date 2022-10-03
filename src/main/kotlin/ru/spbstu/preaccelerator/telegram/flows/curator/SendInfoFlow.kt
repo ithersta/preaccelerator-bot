@@ -4,19 +4,20 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import com.ithersta.tgbotapi.fsm.entities.triggers.onTransition
 import com.ithersta.tgbotapi.pagination.statefulInlineKeyboardPager
-import dev.inmo.micro_utils.coroutines.launchSynchronously
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.*
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.PreviewFeature
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import dev.inmo.tgbotapi.utils.row
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.koin.core.component.inject
@@ -38,7 +39,6 @@ import ru.spbstu.preaccelerator.telegram.extensions.TrackerExt.userId
 import ru.spbstu.preaccelerator.telegram.notifications.MassSendLimiter
 import ru.spbstu.preaccelerator.telegram.resources.strings.ButtonStrings
 import ru.spbstu.preaccelerator.telegram.resources.strings.MessageStrings.SendInfo
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(PreviewFeature::class)
 fun StateMachineBuilder.sendInfoFlow() {

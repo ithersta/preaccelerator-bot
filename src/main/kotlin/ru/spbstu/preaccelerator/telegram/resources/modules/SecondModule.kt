@@ -60,7 +60,7 @@ fun ModuleConfigBuilder.secondModule() {
                     "• [Секрет успешных стартапов\\. Minimum Viable Product: что это, и как его создают](https://vc.ru/marketing/139040-sekret-uspeshnyh-startapov-minimum-viable-product-chto-eto-i-kak-ego-sozdayut)\n" +
                     "• [Что такое MVP? Зачем он нужен и как его правильно создать?](https://spark.ru/startup/platpick/blog/55354/chto-takoe-mvp-zachem-on-nuzhen-i-kak-ego-pravilno-sozdat)\n" +
                     "• [StartTrack: проект Healbe \\- история успеха и опыт создателей](https://www.youtube.com/watch?v=6m92yJoaAgw&feature=emb_logo)\n" +
-                    "• [Promobot: как российские роботы покорили целый мир](https://www.youtube.com/watch?v=jVuW06R7KS0&feature=emb_logo)\n" +
+                    "• [Promobot: как российские роботы покорили целый мир](https://www.youtube.com/watch?v=txdWqERuhQA)\n" +
                     "• [Видео\\-ролик с MVP от Dropbox](https://www.youtube.com/watch?v=7QmCUDHpNzE&feature=emb_logo)"
         )
         task(
