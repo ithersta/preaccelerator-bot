@@ -21,7 +21,7 @@ dependencies {
     implementation("com.ithersta.tgbotapi:tgbotapi-menu:0.17.0")
     implementation("com.ithersta.tgbotapi:tgbotapi-pagination:0.17.0")
     implementation("dev.inmo:tgbotapi:3.2.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.4.1")
     implementation("org.postgresql:postgresql:42.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("app.cash.sqldelight:jdbc-driver:2.0.0-alpha04")
