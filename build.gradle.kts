@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.serialization") version "1.7.20"
-    id("app.cash.sqldelight") version "2.0.0-SNAPSHOT"
+    id("app.cash.sqldelight") version "2.0.0-alpha04"
     id("com.google.devtools.ksp") version "1.7.20-1.0.6"
     application
 }
@@ -14,7 +14,6 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven { url = uri("https://repo.repsy.io/mvn/ithersta/tgbotapi") }
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
 dependencies {
@@ -25,7 +24,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.4.0")
     implementation("org.postgresql:postgresql:42.5.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("app.cash.sqldelight:jdbc-driver:2.0.0-SNAPSHOT")
+    implementation("app.cash.sqldelight:jdbc-driver:2.0.0-alpha04")
     implementation("io.insert-koin:koin-core:3.2.2")
     implementation("io.insert-koin:koin-annotations:1.0.3")
     implementation("org.slf4j:slf4j-simple:2.0.3")
@@ -54,8 +53,7 @@ application {
 sqldelight {
     database("AppDatabase") {
         packageName = "ru.spbstu.preaccelerator.data"
-        dialect("app.cash.sqldelight:postgresql-dialect:2.0.0-SNAPSHOT")
-        //deriveSchemaFromMigrations = true
+        dialect("app.cash.sqldelight:postgresql-dialect:2.0.0-alpha04")
     }
 }
 
