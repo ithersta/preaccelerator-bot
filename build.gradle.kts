@@ -53,7 +53,7 @@ application {
 sqldelight {
     database("AppDatabase") {
         packageName = "ru.spbstu.preaccelerator.data"
-        dialect("app.cash.sqldelight:postgresql-dialect:2.0.0-alpha04")
+        dialect("app.cash.sqldelight:postgresql-dialect:2.0.0-SNAPSHOT")
     }
 }
 
