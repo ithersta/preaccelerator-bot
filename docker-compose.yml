@@ -6,7 +6,7 @@ secrets:
 
 services:
   db:
-    image: "postgres:14"
+    image: "postgres:15"
     environment:
       POSTGRES_DB: preaccelerator
       POSTGRES_USER: postgres
