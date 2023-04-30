@@ -2,7 +2,7 @@ version: '3.9'
 
 secrets:
   telegram_token:
-    file: /home/telegram/preaccelerator/.token
+    file: /root/.preaccelerator-token
 
 services:
   db:

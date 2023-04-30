@@ -2,6 +2,7 @@ package ru.spbstu.preaccelerator.telegram.flows
 
 import com.ithersta.tgbotapi.fsm.entities.triggers.*
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
