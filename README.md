@@ -48,6 +48,7 @@
 
 ## Стек технологий
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 ![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
@@ -65,5 +66,5 @@
 | `DATABASE_USER`     | Имя пользователя Postgres     | Имя пользователя ОС   |
 | `DATABASE_PASSWORD` | Пароль Postgres               | *Пустой*              |
 
-
-
+## Дополнительное описание
+Полная демонстрация функционала приведена в рамках [презентации на английском языке](https://disk.yandex.ru/i/aWONviBDWWSwFQ)
